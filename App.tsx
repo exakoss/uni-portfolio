@@ -1,21 +1,24 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import Main from './src/components/Main'
+import { NativeRouter } from 'react-router-native'
+import {ApolloClient, InMemoryCache, ApolloProvider, HttpLink} from '@apollo/client';
 
-export default function App() {
+const apolloClient = new ApolloClient({
+    cache: new InMemoryCache(),
+    link: new HttpLink({
+        uri: "https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2",
+    })
+})
+
+const App:React.FC = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+      <NativeRouter>
+          <ApolloProvider client={apolloClient}>
+                <Main/>
+          </ApolloProvider>
+      </NativeRouter>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App
