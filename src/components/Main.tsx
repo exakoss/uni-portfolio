@@ -1,22 +1,34 @@
 import React from 'react'
-import {View, StyleSheet} from 'react-native'
+import {View, StyleSheet, ScrollView} from 'react-native'
 import theme from '../theme';
 import SearchBar from './SearchBar';
 import Constants from 'expo-constants'
+import {Route, Switch, useHistory} from 'react-router-native'
+import AppBar from './AppBar';
+
 
 const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
         flexShrink: 1,
-        backgroundColor: theme.colors.mainBackground,
-        marginTop: Constants.statusBarHeight
+        backgroundColor: theme.colors.background,
+        paddingTop: Constants.statusBarHeight,
     },
 });
 
 const Main:React.FC = () => {
     return (
         <View style={styles.container}>
-            <SearchBar/>
+            <ScrollView>
+                <Switch>
+                    <Route path='/' exact>
+                        <SearchBar/>
+                    </Route>
+                </Switch>
+            </ScrollView>
+            <View>
+                <AppBar/>
+            </View>
         </View>
     )
 }

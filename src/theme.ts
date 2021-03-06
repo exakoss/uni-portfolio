@@ -5,7 +5,7 @@ const theme = {
         textSecondary: '#586069',
         textWhite: 'white',
         primary: '#0366d6',
-        background: '#24292e',
+        background: '#000000',
         warning: '#d73a4a',
         mainBackground: '#e1e4e8'
     },
