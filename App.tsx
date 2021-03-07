@@ -3,6 +3,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import Main from './src/components/Main'
 import { NativeRouter } from 'react-router-native'
 import {ApolloClient, InMemoryCache, ApolloProvider, HttpLink} from '@apollo/client';
+import { Provider as ReduxProvider} from 'react-redux'
+import store from './src/store'
 
 const apolloClient = new ApolloClient({
     cache: new InMemoryCache(),
@@ -13,11 +15,13 @@ const apolloClient = new ApolloClient({
 
 const App:React.FC = () => {
   return (
-      <NativeRouter>
-          <ApolloProvider client={apolloClient}>
-                <Main/>
-          </ApolloProvider>
-      </NativeRouter>
+      <ReduxProvider store={store}>
+          <NativeRouter>
+              <ApolloProvider client={apolloClient}>
+                    <Main/>
+              </ApolloProvider>
+          </NativeRouter>
+      </ReduxProvider>
   );
 }
 

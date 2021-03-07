@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import {FlatList, View, Text} from 'react-native'
 import TextInput from './common/TextInput';
 import {useLazyQuery, useQuery} from '@apollo/react-hooks'
-import {FIND_TOKENS_BY_NAME, BasicToken, ETH_PRICE_QUERY} from '../graphql/queries';
+import {FIND_TOKENS_BY_NAME, ETH_PRICE_QUERY} from '../graphql/queries';
 import {Dimensions} from 'react-native';
 import BaseTokenList from './BaseTokenList';
 import theme from '../theme';

@@ -5,6 +5,7 @@ import SearchBar from './SearchBar';
 import Constants from 'expo-constants'
 import {Route, Switch, useHistory} from 'react-router-native'
 import AppBar from './AppBar';
+import WatchList from './WatchList';
 
 
 const styles = StyleSheet.create({
@@ -23,6 +24,9 @@ const Main:React.FC = () => {
                 <Switch>
                     <Route path='/' exact>
                         <SearchBar/>
+                    </Route>
+                    <Route path='/watchlist'>
+                        <WatchList/>
                     </Route>
                 </Switch>
             </ScrollView>
