@@ -1,5 +1,4 @@
-import {TokenAction, BasicToken} from '../types';
-import {TokenState} from '../types';
+import {TokenAction, BasicToken, TokenState} from '../types';
 
 const initialState:TokenState = {
     tokenIds: []

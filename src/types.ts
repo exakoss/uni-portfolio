@@ -13,3 +13,12 @@ export interface BasicToken {
 export interface TokenState {
     tokenIds: BasicToken['id'][]
 }
+
+export interface ETHAction {
+    type: 'SET_ETH_PRICE',
+    data: number
+}
+
+export interface ETHState {
+    price: number
+}

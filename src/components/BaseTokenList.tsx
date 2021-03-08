@@ -7,7 +7,7 @@ import theme from '../theme'
 
 interface Props {
     tokens: BasicToken[] | [],
-    ethPriceInUSD: string
+    ethPriceInUSD: number
 }
 
 const styles = StyleSheet.create({
@@ -47,15 +47,14 @@ const AddDeleteButton:React.FC<{token: BasicToken, isInList: boolean}> = ({token
     }
 }
 
-const TokenTile:React.FC<{ token: BasicToken, ethPriceInUSD: string }> = ({token,ethPriceInUSD}) => {
+const TokenTile:React.FC<{ token: BasicToken, ethPriceInUSD: number }> = ({token,ethPriceInUSD}) => {
 
     const idList = useSelector((state:RootStateOrAny) => state.tokenIds)
     const isInList:boolean = !!(idList.tokenIds.includes(token.id))
     return(
         <View style={styles.tile}>
-            {/*<Image style={{height: 30}} source={{uri: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0x37236CD05b34Cc79d3715AF2383E96dd7443dCF1/logo.png'}} />*/}
             <Text style={{color: theme.colors.textWhite, fontSize: 30 }}>{token.symbol}</Text>
-            <Text style={{color: theme.colors.textWhite, fontSize: 30 }}> ${(parseFloat(token.derivedETH as string) * parseFloat(ethPriceInUSD)).toFixed(4)}</Text>
+            <Text style={{color: theme.colors.textWhite, fontSize: 30 }}> ${(parseFloat(token.derivedETH as string) * ethPriceInUSD).toFixed(4)}</Text>
             <AddDeleteButton token={token} isInList={isInList}/>
         </View>
     )
