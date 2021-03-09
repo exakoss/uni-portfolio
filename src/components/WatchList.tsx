@@ -1,8 +1,8 @@
 import React from 'react'
 import BaseTokenList from './BaseTokenList';
 import {useQuery} from '@apollo/client';
-import {ETH_PRICE_QUERY, FETCH_TOKENS_BY_ID} from '../graphql/queries';
-import {Dimensions, View} from 'react-native';
+import {FETCH_TOKENS_BY_ID} from '../graphql/queries';
+import {Dimensions, View, Text} from 'react-native';
 import theme from '../theme';
 import {RootStateOrAny, useSelector} from 'react-redux';
 
@@ -14,8 +14,9 @@ const WatchList:React.FC = () => {
     const {data: tokenData, loading: tokenLoading} = useQuery(FETCH_TOKENS_BY_ID,{variables: {tokenIds: idList.tokenIds}})
     let passedTokens = (tokenData === undefined) ? [] : tokenData.tokens
     return(
-        <View style={{height: height}}>
-         <BaseTokenList tokens={passedTokens} ethPriceInUSD={ethPriceInUSD}/>
+        <View style={{flex: 1,height: height}}>
+            <Text style={{color: theme.colors.textWhite, textAlign: "center"}}>Current ETH price: ${ethPriceInUSD}</Text>
+            <BaseTokenList tokens={passedTokens} ethPriceInUSD={ethPriceInUSD}/>
         </View>
     )
 }

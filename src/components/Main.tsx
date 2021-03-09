@@ -1,16 +1,14 @@
 import React, {useEffect} from 'react'
-import {View, StyleSheet, ScrollView, Text} from 'react-native'
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native'
 import theme from '../theme';
 import SearchBar from './SearchBar';
 import Constants from 'expo-constants'
-import {Route, Switch, useHistory} from 'react-router-native'
 import AppBar from './AppBar';
 import WatchList from './WatchList';
-import {useQuery} from '@apollo/client';
-import {ETH_PRICE_QUERY} from '../graphql/queries';
-import {useDispatch} from 'react-redux';
-import {setETHPrice} from '../reducers/ethPriceReducer';
-
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons'
+import useETH from '../hooks/useETH';
 
 const styles = StyleSheet.create({
     container: {
@@ -22,28 +20,46 @@ const styles = StyleSheet.create({
 });
 
 const Main:React.FC = () => {
-    const dispatch = useDispatch()
-    const {loading: ethLoading, data: ethPriceData } = useQuery(ETH_PRICE_QUERY)
-    if (ethLoading) return <View><Text>Loading</Text></View>
-    const ethPriceInUsd:number = Number(parseFloat(ethPriceData.bundles[0].ethPrice).toFixed(2))
-    useEffect(() => {
-        dispatch(setETHPrice(ethPriceInUsd))
-    },[])
+    //Fetching and pushing ETH price to the state on start up
+    useETH()
+
+    const Tab = createBottomTabNavigator();
+
     return (
         <View style={styles.container}>
-            <ScrollView>
-                <Switch>
-                    <Route path='/' exact>
-                        <SearchBar/>
-                    </Route>
-                    <Route path='/watchlist'>
-                        <WatchList/>
-                    </Route>
-                </Switch>
-            </ScrollView>
-            <View>
-                <AppBar/>
-            </View>
+            <NavigationContainer>
+                <Tab.Navigator
+                    initialRouteName="Search"
+                    tabBarOptions={{
+                        activeTintColor: '#5142c6',
+                        inactiveTintColor: 'white',
+                        activeBackgroundColor: theme.colors.background,
+                        inactiveBackgroundColor: theme.colors.background,
+                    }}
+                    sceneContainerStyle={{backgroundColor: theme.colors.background}}
+                >
+                    <Tab.Screen
+                        name="Search"
+                        component={SearchBar}
+                        options={{
+                            tabBarLabel: 'Search',
+                            tabBarIcon: ({ color, size }) => (
+                                    <Ionicons name="search" color={color} size={size} sharp/>
+                            )
+                        }}
+                    />
+                    <Tab.Screen
+                        name="Watchlist"
+                        component={WatchList}
+                        options={{
+                            tabBarLabel: 'Watchlist',
+                            tabBarIcon: ({ color, size }) => (
+                                <Ionicons name="list" color={color} size={size} sharp/>
+                            )
+                        }}
+                    />
+                </Tab.Navigator>
+            </NavigationContainer>
         </View>
     )
 }

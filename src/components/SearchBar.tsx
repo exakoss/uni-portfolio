@@ -25,8 +25,9 @@ const SearchBar:React.FC = () => {
             }}
             value={filter}
             style={{height: 36, fontSize: 24}}
+            placeholder={'Input a ticker here...'}
             />
-            <Text style={{color: theme.colors.textWhite}}> Current ETH price: ${ethPriceInUSD}</Text>
+            <Text style={{color: theme.colors.textWhite, textAlign: "center"}}> Current ETH price: ${ethPriceInUSD}</Text>
             <BaseTokenList tokens={passedTokens} ethPriceInUSD={ethPriceInUSD}/>
         </View>
     )

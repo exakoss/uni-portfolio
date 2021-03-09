@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { View } from 'react-native';
 import Main from './src/components/Main'
 import { NativeRouter } from 'react-router-native'
 import {ApolloClient, InMemoryCache, ApolloProvider, HttpLink} from '@apollo/client';
