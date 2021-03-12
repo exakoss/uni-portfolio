@@ -7,7 +7,8 @@ const theme = {
         primary: '#0366d6',
         background: '#000000',
         warning: '#d73a4a',
-        mainBackground: '#e1e4e8'
+        mainBackground: '#e1e4e8',
+        green: '#46c41b'
     },
     fontWeights: {
         normal: '400',

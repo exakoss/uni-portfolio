@@ -1,34 +1,51 @@
 import React, {useState} from 'react'
-import {FlatList, View, Text} from 'react-native'
+import {Dimensions, Text, View} from 'react-native'
 import TextInput from './common/TextInput';
-import {useLazyQuery, useQuery} from '@apollo/react-hooks'
-import {FIND_TOKENS_BY_NAME, ETH_PRICE_QUERY} from '../graphql/queries';
-import {Dimensions} from 'react-native';
 import BaseTokenList from './BaseTokenList';
 import theme from '../theme';
 import {RootStateOrAny, useSelector} from 'react-redux';
+import {getDailyBlock, getTokensByName, getDailyQuotesByID} from '../utils';
+import {DailyTokenData, TokenData, Id, UnitedTokenData} from '../types';
 
 const {height} = Dimensions.get('window')
 
+
 const SearchBar:React.FC = () => {
-    const [filter,setFilter] = useState('')
-    const [loadTokens, {loading: tokenLoading, data: tokenData}] = useLazyQuery(FIND_TOKENS_BY_NAME)
+    // let tokenData: TokenData | undefined = undefined
+    // let dailyTokenData: DailyTokenData | undefined = undefined
+
+    // const [tokenData, setTokenData] = useState<TokenData>({tokens:[]})
+    // const [dailyTokenData, setDailyTokenData] = useState<DailyTokenData>({tokens:[],bundles:[]})
+
+    const [unitedTokenData, setUnitedTokenData]= useState<UnitedTokenData>({tokenData:{tokens:[]},dailyTokenData:{tokens:[],bundles:[]}})
+    const [filter,setFilter] = useState<string>('')
     const ethPriceInUSD = useSelector((state:RootStateOrAny) => state.ethPrice.price)
-    // const ethPriceInUSD = ethPriceData && ethPriceData.bundles[0].ethPrice
-    let passedTokens = (tokenData === undefined || filter === '') ? [] : tokenData.tokens
+
+    // let passedTokensNow = (tokenData === [] || filter === '') ? [] : tokenData.tokens
+    // let passedTokensDaily = (dailyTokenData === [] || filter === '') ? [] : dailyTokenData.tokens
+
     return(
         <View style={{flex: 1, height: height}}>
             <TextInput
-            onChangeText={(text:string) => {
-                setFilter(text.toUpperCase())
-                loadTokens({variables: {contains: text.toUpperCase()}})
-            }}
+            onChangeText={
+                async (text: string) => {
+                    setFilter(text.toUpperCase())
+                    if (text === '') {
+                        setUnitedTokenData({tokenData:{tokens:[]},dailyTokenData:{tokens:[],bundles:[]}})
+                    } else {
+                        const newTokenData = await getTokensByName(text.toUpperCase()).then(result => result)
+                        const tokenIds: Id[] = newTokenData.tokens.map(token => token.id)
+                        const dailyBlock = await getDailyBlock().then(result => result)
+                        const newDailyTokenData = await getDailyQuotesByID(tokenIds, dailyBlock).then(result => result)
+                        setUnitedTokenData({tokenData: newTokenData, dailyTokenData: newDailyTokenData})
+                    }
+                }}
             value={filter}
             style={{height: 36, fontSize: 24}}
             placeholder={'Input a ticker here...'}
             />
             <Text style={{color: theme.colors.textWhite, textAlign: "center"}}> Current ETH price: ${ethPriceInUSD}</Text>
-            <BaseTokenList tokens={passedTokens} ethPriceInUSD={ethPriceInUSD}/>
+            <BaseTokenList tokensNow={unitedTokenData.tokenData} ethPriceInUSD={ethPriceInUSD} tokensDaily={unitedTokenData.dailyTokenData}/>
         </View>
     )
 }

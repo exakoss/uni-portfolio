@@ -22,7 +22,6 @@ const styles = StyleSheet.create({
 const Main:React.FC = () => {
     //Fetching and pushing ETH price to the state on start up
     useETH()
-
     const Tab = createBottomTabNavigator();
 
     return (
