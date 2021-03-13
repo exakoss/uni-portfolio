@@ -4,7 +4,7 @@ import {View, Text, FlatList, StyleSheet, Button} from 'react-native'
 import {RootStateOrAny, useDispatch, useSelector} from 'react-redux';
 import {addTokenId, removeTokenId} from '../reducers/tokenReducer';
 import theme from '../theme'
-import {calculateETHPrice} from '../utils';
+import {calculateETHPrice, parsePriceToFixedNumber} from '../utils';
 
 interface Props {
     tokensNow: TokenData,
@@ -45,9 +45,8 @@ const styles = StyleSheet.create({
 const ItemSeparator = () => <View style={styles.separator} />;
 
 const PercentageChange:React.FC<{currentPrice: number, dailyPrice: number}> = ({currentPrice, dailyPrice}) => {
-    if (dailyPrice === 0) {
-        return <Text style={styles.tileText}>-</Text>
-    }
+    if (dailyPrice === 0) return <Text style={styles.tileText}>-</Text>
+
     const pricePercDiff = 100 * ((currentPrice - dailyPrice) / ((currentPrice + dailyPrice) / 2))
     const displayedDiff = Math.abs(pricePercDiff).toFixed(2)
     if (pricePercDiff > 0) {
@@ -83,28 +82,28 @@ const TokenTile:React.FC<{ token: BasicTokenDailyPrice, ethPriceInUSD: number }>
             <Text style={styles.tileText}>{token.symbol}</Text>
             <Text style={styles.tileText}> ${currentPrice}</Text>
             <PercentageChange currentPrice={currentPrice} dailyPrice={token.dailyPrice}/>
-            {/*<Text style={styles.tileText}> ${token.dailyPrice}</Text>*/}
             <AddDeleteButton token={token} isInList={isInList}/>
         </View>
     )
 }
 
 const BaseTokenList:React.FC<Props> = ({tokensNow,tokensDaily,ethPriceInUSD}) => {
-    console.log('Passed token data:')
-    console.log(tokensNow)
-    console.log('Passed daily data:')
-    console.log(tokensDaily)
-    if (tokensNow.tokens.length === 0 || tokensDaily.tokens.length === 0 ) return <View style={{flex: 1}}><Text style={{color: theme.colors.textWhite, fontSize: 24, textAlign: "center"}}>Please type in the token filter...</Text></View>
+    // console.log('Passed token data:')
+    // console.log(tokensNow)
+    // console.log('Passed daily data:')
+    // console.log(tokensDaily)
+    if (tokensNow.tokens.length === 0 || tokensDaily.tokens.length === 0 ) return <View style={{flex: 1}}><Text style={{color: theme.colors.textWhite, fontSize: 24, textAlign: "center"}}>Please type in the token ticker...</Text></View>
     else {
-        const dailyETHPriceInUSD:number = Number(parseFloat(tokensDaily.bundles[0].ethPrice).toFixed(2))
+        // const dailyETHPriceInUSD:number = Number(parseFloat(tokensDaily.bundles[0].ethPrice).toFixed(2))
+        const dailyETHPriceInUSD:number = parsePriceToFixedNumber(tokensDaily.bundles[0].ethPrice)
         const priceEntries:PriceEntry[] = tokensDaily.tokens.map(token => {
             return {
                 id: token.id,
                 price: calculateETHPrice(token.derivedETH,dailyETHPriceInUSD)
             }
             })
-        console.log('Price entries:')
-        console.log(priceEntries)
+        // console.log('Price entries:')
+        // console.log(priceEntries)
         const passedTokens:BasicTokenDailyPrice[] = tokensNow.tokens.map(token => {
             console.log('Iterating token id:')
             console.log(token.id)

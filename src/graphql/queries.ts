@@ -23,7 +23,7 @@ export const FETCH_TOKENS_BY_ID = gql`
     query fetchTokensById($tokenIds: [String!]) {
         tokens(
             where: {id_in: $tokenIds},
-            orderBy: totalLiquidity,
+            orderBy: txCount,
             orderDirection: desc)
         {
             symbol,
@@ -44,30 +44,6 @@ export const GET_BLOCK = gql`
             id
             number
             timestamp
-        }
-    }
-`
-
-export const FETCH_DAILY_PRICES_BY_NAME = gql`
-    query fetchDailyPricesByName($contains: String!,$blockNumber: Int!){
-        tokens(
-            where: {
-                symbol_contains: $contains,
-                derivedETH_gt: 0.0000001,
-                totalLiquidity_gt: 5
-            },
-            block: {number: $blockNumber},
-            orderBy: totalLiquidity,
-            orderDirection: desc
-        ) {
-            id
-            derivedETH
-        }
-        bundles(
-            where: {id: "1"}
-            block: {number: $blockNumber}
-        ) {
-            ethPrice
         }
     }
 `

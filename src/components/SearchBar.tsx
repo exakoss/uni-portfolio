@@ -11,18 +11,10 @@ const {height} = Dimensions.get('window')
 
 
 const SearchBar:React.FC = () => {
-    // let tokenData: TokenData | undefined = undefined
-    // let dailyTokenData: DailyTokenData | undefined = undefined
-
-    // const [tokenData, setTokenData] = useState<TokenData>({tokens:[]})
-    // const [dailyTokenData, setDailyTokenData] = useState<DailyTokenData>({tokens:[],bundles:[]})
-
     const [unitedTokenData, setUnitedTokenData]= useState<UnitedTokenData>({tokenData:{tokens:[]},dailyTokenData:{tokens:[],bundles:[]}})
     const [filter,setFilter] = useState<string>('')
     const ethPriceInUSD = useSelector((state:RootStateOrAny) => state.ethPrice.price)
 
-    // let passedTokensNow = (tokenData === [] || filter === '') ? [] : tokenData.tokens
-    // let passedTokensDaily = (dailyTokenData === [] || filter === '') ? [] : dailyTokenData.tokens
 
     return(
         <View style={{flex: 1, height: height}}>

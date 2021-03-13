@@ -2,9 +2,9 @@ import {blockClient} from '../graphql/client';
 import {TIMESTAMP_INTERVAL} from '../constants';
 import {
     FETCH_TOKENS_BY_NAME,
-    FETCH_DAILY_PRICES_BY_NAME,
     GET_BLOCK,
-    FETCH_DAILY_PRICES_BY_ID
+    FETCH_DAILY_PRICES_BY_ID,
+    FETCH_TOKENS_BY_ID
 } from '../graphql/queries';
 import dayjs from 'dayjs';
 import {TokenData, DailyTokenData} from '../types';
@@ -49,12 +49,11 @@ export const getTokensByName = async (contains:string): Promise<TokenData> => {
     return result.data
 }
 
-export const getDailyQuotesByName = async (contains:string,blockNumber:number): Promise<DailyTokenData> => {
+export const getTokensByID = async (tokenIds:string[]): Promise<TokenData> => {
     let result = await client.query({
-        query:  FETCH_DAILY_PRICES_BY_NAME,
+        query: FETCH_TOKENS_BY_ID,
         variables: {
-            contains: contains,
-            blockNumber: blockNumber
+            tokenIds: tokenIds
         },
         fetchPolicy: 'network-only'
     })
@@ -71,6 +70,10 @@ export const getDailyQuotesByID = async (tokenIds:string[],blockNumber:number): 
         fetchPolicy: 'network-only'
     })
     return result.data
+}
+
+export const parsePriceToFixedNumber = (stringPrice: string):number => {
+    return Number(parseFloat(stringPrice).toFixed(2))
 }
 
 export const calculateETHPrice = (derivedETH:string,ethPriceInUSD:number):number => {
