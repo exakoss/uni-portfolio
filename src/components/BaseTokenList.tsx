@@ -9,36 +9,53 @@ import {calculateETHPrice, parsePriceToFixedNumber} from '../utils';
 interface Props {
     tokensNow: TokenData,
     tokensDaily: DailyTokenData,
-    ethPriceInUSD: number
+    ethPriceInUSD: number,
+    placeholder: string
 }
 
 const styles = StyleSheet.create({
     tile: {
-        backgroundColor: theme.colors.textSecondary,
+        backgroundColor: "#353333",
         display: 'flex',
         borderRadius: 10,
         flexDirection: 'row',
-        justifyContent: 'space-evenly'
+        justifyContent: 'space-around'
     },
     separator: {
         height: theme.distance.small,
         color: theme.colors.background
     },
     button: {
-        borderRadius: 20,
-        height: 40
+        borderRadius: 10,
+        fontSize: 30,
+        height: 40,
+        width:40,
+        backgroundColor: '#21446d'
     },
     tileText: {
         color: theme.colors.textWhite,
-        fontSize: 30
+        fontSize: 20
+    },
+    nameText: {
+      color: theme.colors.textSecondary,
+      fontSize: 15,
     },
     positivePercentage: {
         color: theme.colors.green,
-        fontSize: 30
+        fontSize: 20
     },
     negativePercentage: {
         color: theme.colors.warning,
-        fontSize: 30
+        fontSize: 20
+    },
+    nameContainer: {
+        display: "flex",
+        flexDirection:"column"
+    },
+    placeholder: {
+        color: theme.colors.textWhite,
+        fontSize: 24,
+        textAlign: "center"
     }
 })
 
@@ -79,7 +96,10 @@ const TokenTile:React.FC<{ token: BasicTokenDailyPrice, ethPriceInUSD: number }>
     const currentPrice:number = calculateETHPrice(token.derivedETH, ethPriceInUSD)
     return(
         <View style={styles.tile}>
-            <Text style={styles.tileText}>{token.symbol}</Text>
+            <View style={styles.nameContainer}>
+                <Text style={styles.tileText}>{token.symbol}</Text>
+                <Text style={styles.nameText}>{token.name}</Text>
+            </View>
             <Text style={styles.tileText}> ${currentPrice}</Text>
             <PercentageChange currentPrice={currentPrice} dailyPrice={token.dailyPrice}/>
             <AddDeleteButton token={token} isInList={isInList}/>
@@ -87,14 +107,13 @@ const TokenTile:React.FC<{ token: BasicTokenDailyPrice, ethPriceInUSD: number }>
     )
 }
 
-const BaseTokenList:React.FC<Props> = ({tokensNow,tokensDaily,ethPriceInUSD}) => {
+const BaseTokenList:React.FC<Props> = ({tokensNow,tokensDaily,ethPriceInUSD,placeholder}) => {
     // console.log('Passed token data:')
     // console.log(tokensNow)
     // console.log('Passed daily data:')
     // console.log(tokensDaily)
-    if (tokensNow.tokens.length === 0 || tokensDaily.tokens.length === 0 ) return <View style={{flex: 1}}><Text style={{color: theme.colors.textWhite, fontSize: 24, textAlign: "center"}}>Please type in the token ticker...</Text></View>
+    if (tokensNow.tokens.length === 0 || tokensDaily.tokens.length === 0 ) return <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text style={{color: theme.colors.textWhite, fontSize: 24, textAlign: "center"}}>{placeholder}</Text></View>
     else {
-        // const dailyETHPriceInUSD:number = Number(parseFloat(tokensDaily.bundles[0].ethPrice).toFixed(2))
         const dailyETHPriceInUSD:number = parsePriceToFixedNumber(tokensDaily.bundles[0].ethPrice)
         const priceEntries:PriceEntry[] = tokensDaily.tokens.map(token => {
             return {
@@ -122,7 +141,6 @@ const BaseTokenList:React.FC<Props> = ({tokensNow,tokensDaily,ethPriceInUSD}) =>
             />
         </View>
     )}
-
 }
 
 export default BaseTokenList
