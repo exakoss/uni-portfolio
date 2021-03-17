@@ -1,10 +1,11 @@
 import React from 'react'
-import {BasicToken, DailyTokenData, TokenData, BasicTokenDailyPrice, PriceEntry} from '../types'
-import {View, Text, FlatList, StyleSheet, Button} from 'react-native'
+import {DailyTokenData, TokenData, BasicTokenDailyPrice, PriceEntry} from '../types'
+import {View, Text, FlatList, StyleSheet, Button, TouchableOpacity} from 'react-native'
 import {RootStateOrAny, useDispatch, useSelector} from 'react-redux';
 import {addTokenId, removeTokenId} from '../reducers/tokenReducer';
 import theme from '../theme'
 import {calculateETHPrice, parsePriceToFixedNumber} from '../utils';
+import { useNavigation } from '@react-navigation/native'
 
 interface Props {
     tokensNow: TokenData,
@@ -112,6 +113,7 @@ const BaseTokenList:React.FC<Props> = ({tokensNow,tokensDaily,ethPriceInUSD,plac
     // console.log(tokensNow)
     // console.log('Passed daily data:')
     // console.log(tokensDaily)
+    const navigation = useNavigation()
     if (tokensNow.tokens.length === 0 || tokensDaily.tokens.length === 0 ) return <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text style={{color: theme.colors.textWhite, fontSize: 24, textAlign: "center"}}>{placeholder}</Text></View>
     else {
         const dailyETHPriceInUSD:number = parsePriceToFixedNumber(tokensDaily.bundles[0].ethPrice)
@@ -124,8 +126,8 @@ const BaseTokenList:React.FC<Props> = ({tokensNow,tokensDaily,ethPriceInUSD,plac
         // console.log('Price entries:')
         // console.log(priceEntries)
         const passedTokens:BasicTokenDailyPrice[] = tokensNow.tokens.map(token => {
-            console.log('Iterating token id:')
-            console.log(token.id)
+            // console.log('Iterating token id:')
+            // console.log(token.id)
             // @ts-ignore
             const dailyPrice:number = (priceEntries.find(p => p.id === token.id) === undefined) ? 0 : priceEntries.find(p => p.id === token.id).price
             return {
@@ -137,7 +139,11 @@ const BaseTokenList:React.FC<Props> = ({tokensNow,tokensDaily,ethPriceInUSD,plac
         <View style={{flex: 1}}>
             <FlatList data={passedTokens}
                       ItemSeparatorComponent={ItemSeparator}
-                      renderItem={({item}) => <TokenTile token={item} ethPriceInUSD={ethPriceInUSD}/>}
+                      renderItem={({item}) =>
+                          <TouchableOpacity onPress={() => navigation.navigate('SingleTokenView',{tokenId: item.id, tokenSymbol: item.symbol})}>
+                            <TokenTile token={item} ethPriceInUSD={ethPriceInUSD}/>
+                          </TouchableOpacity>
+                      }
             />
         </View>
     )}

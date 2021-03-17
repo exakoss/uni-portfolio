@@ -3,6 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import theme from '../../theme';
 import TabNavigator from './TabNavigator';
 import {getFocusedRouteNameFromRoute, RouteProp} from '@react-navigation/native';
+import SingleTokenView from '../SingleTokenView';
 
 const StackNavigator:React.FC = () => {
     const Stack = createStackNavigator();
@@ -25,6 +26,11 @@ const StackNavigator:React.FC = () => {
             headerTitleStyle: {color: theme.colors.textWhite, textAlign: "center", fontSize: 30},
         })}>
             <Stack.Screen name="Home" component={TabNavigator}/>
+            <Stack.Screen
+                name="SingleTokenView"
+                component={SingleTokenView}
+                options={({route}) => ({headerTitle: route.params.tokenSymbol})}
+            />
         </Stack.Navigator>
     )
 }
