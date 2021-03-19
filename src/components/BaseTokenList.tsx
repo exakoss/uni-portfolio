@@ -140,7 +140,7 @@ const BaseTokenList:React.FC<Props> = ({tokensNow,tokensDaily,ethPriceInUSD,plac
             <FlatList data={passedTokens}
                       ItemSeparatorComponent={ItemSeparator}
                       renderItem={({item}) =>
-                          <TouchableOpacity onPress={() => navigation.navigate('SingleTokenView',{tokenId: item.id, tokenSymbol: item.symbol})}>
+                          <TouchableOpacity onPress={() => navigation.navigate('SingleTokenView',{tokenId: item.id, tokenSymbol: item.symbol, tokenName: item.name})}>
                             <TokenTile token={item} ethPriceInUSD={ethPriceInUSD}/>
                           </TouchableOpacity>
                       }

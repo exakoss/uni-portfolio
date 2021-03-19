@@ -1,12 +1,10 @@
 import React, {useEffect, useState} from 'react'
 import BaseTokenList from './BaseTokenList';
-import {useQuery} from '@apollo/client';
-import {FETCH_TOKENS_BY_ID} from '../graphql/queries';
 import {Dimensions, View, Text} from 'react-native';
 import theme from '../theme';
 import {RootStateOrAny, useSelector} from 'react-redux';
 import {UnitedTokenData} from '../types';
-import {getDailyBlock, getDailyQuotesByID, getTokensByID} from '../utils';
+import {getBlock, getDailyQuotesByID, getTokensByID} from '../utils';
 
 const {height} = Dimensions.get('window')
 
@@ -18,7 +16,7 @@ const WatchList:React.FC = () => {
     useEffect(() => {
         const fetchTokens = async () => {
             const newTokenData = await getTokensByID(idList.tokenIds).then(result => result)
-            const dailyBlock = await getDailyBlock().then(result => result)
+            const dailyBlock = await getBlock('ONE_DAY').then(result => result)
             const newDailyTokenData = await getDailyQuotesByID(idList.tokenIds, dailyBlock).then(result => result)
             setUnitedTokenData({tokenData: newTokenData, dailyTokenData: newDailyTokenData})
         }

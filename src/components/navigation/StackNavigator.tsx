@@ -29,6 +29,7 @@ const StackNavigator:React.FC = () => {
             <Stack.Screen
                 name="SingleTokenView"
                 component={SingleTokenView}
+                // @ts-ignore
                 options={({route}) => ({headerTitle: route.params.tokenSymbol})}
             />
         </Stack.Navigator>

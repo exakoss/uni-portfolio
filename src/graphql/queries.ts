@@ -1,4 +1,5 @@
 import {gql} from '@apollo/client'
+import {BUNDLE_ID} from '../constants';
 
 export const FETCH_TOKENS_BY_NAME = gql`
     query findTokens($contains: String!) {
@@ -11,13 +12,23 @@ export const FETCH_TOKENS_BY_NAME = gql`
     }
 `
 
-export const ETH_PRICE_QUERY = gql`
+export const ETH_PRICE = (blockNumber?: number) => {
+    const queryString = blockNumber
+        ? `
     query bundles {
-        bundles(where: { id: "1" }) {
-            ethPrice
-        }
+      bundles(where: { id: ${BUNDLE_ID} } block: {number: ${blockNumber}}) {
+        ethPrice
+      }
     }
-`
+  `
+        : ` query bundles {
+      bundles(where: { id: ${BUNDLE_ID} }) {
+        ethPrice
+      }
+    }
+  `
+    return gql(queryString)
+}
 
 export const FETCH_TOKENS_BY_ID = gql`
     query fetchTokensById($tokenIds: [String!]) {
@@ -67,3 +78,19 @@ export const FETCH_DAILY_PRICES_BY_ID = gql`
         }
     }
 `
+
+export const FETCH_TOKEN_DATA_BY_ID = (tokenAddress:string, blockNumber?:number) => {
+    const queryString = `
+        query tokens {
+        tokens(${blockNumber ? `block : {number: ${blockNumber}}` : ``} where: {id:"${tokenAddress}"}) {
+            id
+            derivedETH
+            untrackedVolumeUSD
+            totalLiquidity
+            txCount
+            }
+        }
+    `
+
+    return gql(queryString)
+}

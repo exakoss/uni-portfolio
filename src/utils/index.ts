@@ -4,11 +4,15 @@ import {
     FETCH_TOKENS_BY_NAME,
     GET_BLOCK,
     FETCH_DAILY_PRICES_BY_ID,
-    FETCH_TOKENS_BY_ID
+    FETCH_TOKENS_BY_ID,
+    FETCH_TOKEN_DATA_BY_ID,
+    ETH_PRICE
 } from '../graphql/queries';
 import dayjs from 'dayjs';
-import {TokenData, DailyTokenData} from '../types';
+import {TokenData, DailyTokenData, ExtendedTokenData} from '../types';
 import {client} from '../graphql/client';
+
+type GetBlockProp = 'ONE_DAY' | 'TWO_DAYS'
 
 //Get a single block from a timestamp
 export const getBlockFromTimestamp = async (timestamp: number) => {
@@ -23,19 +27,36 @@ export const getBlockFromTimestamp = async (timestamp: number) => {
     return Number(result?.data?.blocks?.[0]?.number)
 }
 
-//Get a 24hr ago unix timestamp
-export const getDailyTimestamp = ():number => {
+//Get a unix timestamp
+export const getTimestamp = (period:GetBlockProp):number => {
     const utcCurrentTime = dayjs()
-    const day = utcCurrentTime
-        .subtract(1,'day')
-        .startOf('minute')
-        .unix()
+    let day: number = 0;
+    if (period === 'ONE_DAY') {
+         day = utcCurrentTime
+            .subtract(1,'day')
+            .startOf('minute')
+            .unix()
+    } else if (period === 'TWO_DAYS') {
+        day = utcCurrentTime
+            .subtract(2,'day')
+            .startOf('minute')
+            .unix()
+    }
     return day
 }
 
-export const getDailyBlock = async (): Promise<number> => {
-    const lastTimestamp = getDailyTimestamp()
+//Get a block corresponding to the period
+export const getBlock = async (period:GetBlockProp): Promise<number> => {
+    const lastTimestamp = getTimestamp(period)
     return await getBlockFromTimestamp(lastTimestamp)
+}
+
+//Get ETH price depending on a block
+export const getETHPrice = async (blockNumber?:number): Promise<number> => {
+    let result = await client.query({
+        query: ETH_PRICE(blockNumber)
+    })
+    return parsePriceToFixedNumber(result.data.bundles[0].ethPrice)
 }
 
 export const getTokensByName = async (contains:string): Promise<TokenData> => {
@@ -72,6 +93,15 @@ export const getDailyQuotesByID = async (tokenIds:string[],blockNumber:number): 
     return result.data
 }
 
+export const getTokenDataById = async (tokenId:string, blockNumber?:number): Promise<ExtendedTokenData> => {
+    let result = await client.query({
+        query: FETCH_TOKEN_DATA_BY_ID(tokenId,blockNumber),
+        fetchPolicy: 'network-only'
+    })
+    return result.data
+}
+
+//Parsing and calculating functions
 export const parsePriceToFixedNumber = (stringPrice: string):number => {
     return Number(parseFloat(stringPrice).toFixed(2))
 }
