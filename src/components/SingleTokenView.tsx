@@ -1,9 +1,52 @@
 import React, {useEffect, useState} from 'react'
-import {View, Text} from 'react-native';
+import {View, Text, Dimensions, StyleSheet} from 'react-native';
 import {ExtendedToken} from '../types';
 import {getETHPrice, getTokenDataById, getBlock, calculateETHPrice, parsePriceToFixedNumber} from '../utils';
 import {RootStateOrAny, useSelector} from 'react-redux';
 import { useRoute } from '@react-navigation/native';
+import theme from '../theme';
+import {PercentageChange} from './BaseTokenList';
+import {toMoney} from '../utils';
+
+const {height} = Dimensions.get('window')
+
+const styles = StyleSheet.create({
+    tileText: {
+        color: theme.colors.textWhite,
+        fontSize: theme.fontsize.normal
+    },
+    mainHeader: {
+        color: theme.colors.textWhite,
+        fontSize: theme.fontsize.large,
+        textAlign: 'center',
+        marginTop: theme.distance.small
+    },
+    headerText: {
+        color: theme.colors.textWhite,
+        fontSize: theme.fontsize.big,
+        textAlign: 'center',
+        marginBottom: theme.distance.tiny
+    },
+    tokenStat: {
+        borderRadius: 5,
+        marginVertical: 10,
+        borderWidth: 2,
+        borderColor: theme.colors.textSecondary
+    }
+})
+
+const SingleTokenStat:React.FC<{title:string, currentValue:number, previousValue: number, isUSD:boolean}> = ({title,currentValue,previousValue,isUSD}) => {
+    const displayedCurrentValue = isUSD ? toMoney(currentValue) : currentValue
+    return (
+        <View style={styles.tokenStat}>
+            <Text style={styles.headerText}>{title}</Text>
+            <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+                <Text style={styles.tileText}>{displayedCurrentValue}</Text>
+                <PercentageChange currentPrice={currentValue} dailyPrice={previousValue}/>
+            </View>
+        </View>
+    )
+}
 
 const SingleTokenView:React.FC = () => {
     //Extracting tokenId from the route params
@@ -28,18 +71,18 @@ const SingleTokenView:React.FC = () => {
 
     const [extendedToken, setExtendedToken] = useState<ExtendedToken>(initialState)
     const currentETHPrice = useSelector((state:RootStateOrAny) => state.ethPrice.price)
+    const dailyBlockNumber = useSelector((state:RootStateOrAny) => state.dailyBlock.blockNumber)
 
     useEffect(() => {
         const updateTokenData = async () => {
             //Fetching all the necessary data about the token
-            const oneDayBlock = await getBlock('ONE_DAY').then(result => result)
             const twoDaysBlock = await getBlock('TWO_DAYS').then(result => result)
-            const oneDayETHPrice = await getETHPrice(oneDayBlock).then(result => result)
+            const oneDayETHPrice = await getETHPrice(dailyBlockNumber).then(result => result)
             const twoDaysETHPrice = await getETHPrice(twoDaysBlock).then(result => result)
             const currentTokenData = await getTokenDataById(tokenId).then(result => result)
             console.log(`Current token data:`)
             console.log(currentTokenData)
-            const oneDayTokenData = await getTokenDataById(tokenId,oneDayBlock).then(result => result)
+            const oneDayTokenData = await getTokenDataById(tokenId,dailyBlockNumber).then(result => result)
             console.log(`One day token data:`)
             console.log(oneDayTokenData)
             const twoDaysTokenData = await getTokenDataById(tokenId,twoDaysBlock).then(result => result)
@@ -77,13 +120,17 @@ const SingleTokenView:React.FC = () => {
     },[])
 
     return (
-        <View>
-            <Text>Single Token View</Text>
-            <Text>Current price: ${extendedToken.currentPrice}</Text>
-            <Text>Previous day price: ${extendedToken.oneDayPrice}</Text>
-            <Text>Current liquidity: ${extendedToken.currentLiquidity}</Text>
-            <Text>Current volume: ${extendedToken.currentUntrackedVolume - extendedToken.oneDayUntrackedVolume}</Text>
-            <Text>Transactions 24hrs: {extendedToken.currentTxs - extendedToken.oneDayTxs}</Text>
+        <View style={{height: height, flex: 1, backgroundColor: theme.colors.background}}>
+            <Text style={styles.headerText}>{extendedToken.name}</Text>
+            <SingleTokenStat title='Current Price' currentValue={extendedToken.currentPrice} previousValue={extendedToken.oneDayPrice} isUSD={true}/>
+            <SingleTokenStat title='Total Liquidity' currentValue={extendedToken.currentLiquidity} previousValue={extendedToken.oneDayLiquidity} isUSD={true}/>
+            <SingleTokenStat title='Volume (24hrs)' currentValue={extendedToken.currentUntrackedVolume - extendedToken.oneDayUntrackedVolume} previousValue={extendedToken.oneDayUntrackedVolume - extendedToken.twoDaysUntrackedVolume} isUSD={true}/>
+            <SingleTokenStat title='Transactions (24hrs)' currentValue={extendedToken.currentTxs - extendedToken.oneDayTxs} previousValue={extendedToken.oneDayTxs - extendedToken.twoDaysTxs} isUSD={false}/>
+            {/*<Text style={styles.tileText}>Current price: ${extendedToken.currentPrice}</Text>*/}
+            {/*<Text style={styles.tileText}>Previous day price: ${extendedToken.oneDayPrice}</Text>*/}
+            {/*<Text style={styles.tileText}>Current liquidity: ${extendedToken.currentLiquidity}</Text>*/}
+            {/*<Text style={styles.tileText}>Current volume: ${extendedToken.currentUntrackedVolume - extendedToken.oneDayUntrackedVolume}</Text>*/}
+            {/*<Text style={styles.tileText}>Transactions 24hrs: {extendedToken.currentTxs - extendedToken.oneDayTxs}</Text>*/}
         </View>
     )
 }

@@ -109,3 +109,7 @@ export const parsePriceToFixedNumber = (stringPrice: string):number => {
 export const calculateETHPrice = (derivedETH:string,ethPriceInUSD:number):number => {
     return Number((parseFloat(derivedETH) * ethPriceInUSD).toFixed(4))
 }
+
+export const toMoney = (value:number):string => {
+    return '$' + value.toFixed(3).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
+}

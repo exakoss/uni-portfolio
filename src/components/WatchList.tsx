@@ -12,12 +12,13 @@ const WatchList:React.FC = () => {
     const idList = useSelector((state:RootStateOrAny) => state.tokenIds)
     const listPlaceholder = 'You do not have any tokens in your watchlist. Switch to the Search tab and add a token from there.'
     const ethPriceInUSD = useSelector((state:RootStateOrAny) => state.ethPrice.price)
+    const dailyBlockNumber = useSelector((state:RootStateOrAny) => state.dailyBlock.blockNumber)
     const [unitedTokenData, setUnitedTokenData]= useState<UnitedTokenData>({tokenData:{tokens:[]},dailyTokenData:{tokens:[],bundles:[]}})
+
     useEffect(() => {
         const fetchTokens = async () => {
             const newTokenData = await getTokensByID(idList.tokenIds).then(result => result)
-            const dailyBlock = await getBlock('ONE_DAY').then(result => result)
-            const newDailyTokenData = await getDailyQuotesByID(idList.tokenIds, dailyBlock).then(result => result)
+            const newDailyTokenData = await getDailyQuotesByID(idList.tokenIds, dailyBlockNumber).then(result => result)
             setUnitedTokenData({tokenData: newTokenData, dailyTokenData: newDailyTokenData})
         }
         fetchTokens()

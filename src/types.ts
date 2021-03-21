@@ -92,3 +92,12 @@ export interface TokenAction {
     type: "ADD_TOKEN_ID" | "REMOVE_TOKEN_ID",
     data: string
 }
+
+export interface dailyBlockState {
+    blockNumber: number
+}
+
+export interface dailyBlockAction {
+    type: 'SET_DAILY_BLOCK',
+    data: number
+}

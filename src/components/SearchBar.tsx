@@ -9,12 +9,13 @@ import {Id, UnitedTokenData} from '../types';
 
 const {height} = Dimensions.get('window')
 
-
 const SearchBar:React.FC = () => {
 
     const [unitedTokenData, setUnitedTokenData]= useState<UnitedTokenData>({tokenData:{tokens:[]},dailyTokenData:{tokens:[],bundles:[]}})
     const [filter,setFilter] = useState<string>('')
     const ethPriceInUSD = useSelector((state:RootStateOrAny) => state.ethPrice.price)
+    const dailyBlockNumber = useSelector((state:RootStateOrAny) => state.dailyBlock.blockNumber)
+    console.log(`Daily block from the state: ${dailyBlockNumber}`)
     const listPlaceholder = 'Please input a ticker in the searchbar...'
 
     return(
@@ -29,9 +30,7 @@ const SearchBar:React.FC = () => {
                     } else {
                         const newTokenData = await getTokensByName(text.toUpperCase()).then(result => result)
                         const tokenIds: Id[] = newTokenData.tokens.map(token => token.id)
-                        const dailyBlock = await getBlock('ONE_DAY').then(result => result)
-                        console.log(dailyBlock)
-                        const newDailyTokenData = await getDailyQuotesByID(tokenIds, dailyBlock).then(result => result)
+                        const newDailyTokenData = await getDailyQuotesByID(tokenIds, dailyBlockNumber).then(result => result)
                         setUnitedTokenData({tokenData: newTokenData, dailyTokenData: newDailyTokenData})
                     }
                 }}

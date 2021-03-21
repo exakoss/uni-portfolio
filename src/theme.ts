@@ -22,7 +22,8 @@ const theme = {
     fontsize: {
         small: 15,
         normal : 20,
-        big: 25
+        big: 25,
+        large: 30
     }
 }
 

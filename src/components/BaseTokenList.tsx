@@ -35,19 +35,19 @@ const styles = StyleSheet.create({
     },
     tileText: {
         color: theme.colors.textWhite,
-        fontSize: 20
+        fontSize: theme.fontsize.normal
     },
     nameText: {
       color: theme.colors.textSecondary,
-      fontSize: 15,
+      fontSize: theme.fontsize.small,
     },
     positivePercentage: {
         color: theme.colors.green,
-        fontSize: 20
+        fontSize: theme.fontsize.normal
     },
     negativePercentage: {
         color: theme.colors.warning,
-        fontSize: 20
+        fontSize: theme.fontsize.normal
     },
     nameContainer: {
         display: "flex",
@@ -55,14 +55,14 @@ const styles = StyleSheet.create({
     },
     placeholder: {
         color: theme.colors.textWhite,
-        fontSize: 24,
+        fontSize: theme.fontsize.big,
         textAlign: "center"
     }
 })
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
-const PercentageChange:React.FC<{currentPrice: number, dailyPrice: number}> = ({currentPrice, dailyPrice}) => {
+export const PercentageChange:React.FC<{currentPrice: number, dailyPrice: number}> = ({currentPrice, dailyPrice}) => {
     if (dailyPrice === 0) return <Text style={styles.tileText}>-</Text>
 
     const pricePercDiff = 100 * ((currentPrice - dailyPrice) / ((currentPrice + dailyPrice) / 2))
