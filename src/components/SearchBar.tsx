@@ -13,6 +13,7 @@ const SearchBar:React.FC = () => {
 
     const [unitedTokenData, setUnitedTokenData]= useState<UnitedTokenData>({tokenData:{tokens:[]},dailyTokenData:{tokens:[],bundles:[]}})
     const [filter,setFilter] = useState<string>('')
+    const [isLoading,setIsLoading] = useState<boolean>(false)
     const ethPriceInUSD = useSelector((state:RootStateOrAny) => state.ethPrice.price)
     const dailyBlockNumber = useSelector((state:RootStateOrAny) => state.dailyBlock.blockNumber)
     console.log(`Daily block from the state: ${dailyBlockNumber}`)
@@ -24,6 +25,7 @@ const SearchBar:React.FC = () => {
             <TextInput
             onChangeText={
                 async (text: string) => {
+                    setIsLoading(true)
                     setFilter(text.toUpperCase())
                     if (text === '') {
                         setUnitedTokenData({tokenData:{tokens:[]},dailyTokenData:{tokens:[],bundles:[]}})
@@ -33,13 +35,14 @@ const SearchBar:React.FC = () => {
                         const newDailyTokenData = await getDailyQuotesByID(tokenIds, dailyBlockNumber).then(result => result)
                         setUnitedTokenData({tokenData: newTokenData, dailyTokenData: newDailyTokenData})
                     }
+                    setIsLoading(false)
                 }}
             value={filter}
             style={{height: 36, fontSize: 24}}
             placeholder={'Input a ticker here...'}
             />
 
-            <BaseTokenList tokensNow={unitedTokenData.tokenData} ethPriceInUSD={ethPriceInUSD} tokensDaily={unitedTokenData.dailyTokenData} placeholder={listPlaceholder}/>
+            <BaseTokenList tokensNow={unitedTokenData.tokenData} ethPriceInUSD={ethPriceInUSD} tokensDaily={unitedTokenData.dailyTokenData} placeholder={listPlaceholder} isLoading={isLoading}/>
         </View>
     )
 }

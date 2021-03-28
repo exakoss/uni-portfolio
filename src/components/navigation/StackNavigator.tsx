@@ -14,6 +14,8 @@ const StackNavigator:React.FC = () => {
                 return 'Search'
             case 'Watchlist':
                 return 'Watchlist'
+            case 'Portfolio':
+                return 'Portfolio'
             default:
                 return 'Search'
         }

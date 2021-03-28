@@ -6,17 +6,19 @@ import {addTokenId, removeTokenId} from '../reducers/tokenReducer';
 import theme from '../theme'
 import {calculateETHPrice, parsePriceToFixedNumber} from '../utils';
 import { useNavigation } from '@react-navigation/native'
+import LoadingScreen from './LoadingScreen';
 
 interface Props {
     tokensNow: TokenData,
     tokensDaily: DailyTokenData,
     ethPriceInUSD: number,
-    placeholder: string
+    placeholder: string,
+    isLoading: boolean
 }
 
 const styles = StyleSheet.create({
     tile: {
-        backgroundColor: "#353333",
+        backgroundColor: theme.colors.background,
         display: 'flex',
         borderRadius: 10,
         flexDirection: 'row',
@@ -31,7 +33,7 @@ const styles = StyleSheet.create({
         fontSize: 30,
         height: 40,
         width:40,
-        backgroundColor: '#21446d'
+        backgroundColor: '#e0c68b'
     },
     tileText: {
         color: theme.colors.textWhite,
@@ -108,11 +110,12 @@ const TokenTile:React.FC<{ token: BasicTokenDailyPrice, ethPriceInUSD: number }>
     )
 }
 
-const BaseTokenList:React.FC<Props> = ({tokensNow,tokensDaily,ethPriceInUSD,placeholder}) => {
+const BaseTokenList:React.FC<Props> = ({tokensNow,tokensDaily,ethPriceInUSD,placeholder,isLoading}) => {
     // console.log('Passed token data:')
     // console.log(tokensNow)
     // console.log('Passed daily data:')
     // console.log(tokensDaily)
+    if (isLoading) return <LoadingScreen/>
     const navigation = useNavigation()
     if (tokensNow.tokens.length === 0 || tokensDaily.tokens.length === 0 ) return <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text style={{color: theme.colors.textWhite, fontSize: 24, textAlign: "center"}}>{placeholder}</Text></View>
     else {

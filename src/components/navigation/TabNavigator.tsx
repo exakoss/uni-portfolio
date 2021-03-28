@@ -3,6 +3,7 @@ import theme from '../../theme';
 import SearchBar from '../SearchBar';
 import {Ionicons} from '@expo/vector-icons';
 import WatchList from '../WatchList';
+import PortfolioNavigator from './PortfolioNavigator';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 const TabNavigator:React.FC = () => {
@@ -20,24 +21,34 @@ const TabNavigator:React.FC = () => {
 >
     <Tab.Screen
         name="Search"
-    component={SearchBar}
-    options={{
+        component={SearchBar}
+        options={{
         tabBarLabel: 'Search',
             tabBarIcon: ({ color, size }) => (
             <Ionicons name="search" color={color} size={size} sharp/>
-    )
-    }}
+        )
+        }}
     />
     <Tab.Screen
-    name="Watchlist"
-    component={WatchList}
-    options={{
-        tabBarLabel: 'Watchlist',
-            tabBarIcon: ({ color, size }) => (
-            <Ionicons name="list" color={color} size={size} sharp/>
-    )
-    }}
+        name="Watchlist"
+        component={WatchList}
+        options={{
+            tabBarLabel: 'Watchlist',
+                tabBarIcon: ({ color, size }) => (
+                <Ionicons name="list" color={color} size={size} sharp/>
+        )
+        }}
     />
+            <Tab.Screen
+                name="Portfolio"
+                component={PortfolioNavigator}
+                options={{
+                    tabBarLabel: 'Portfolio',
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="briefcase" color={color} size={size} sharp/>
+                    )
+                }}
+            />
     </Tab.Navigator>
 )
 }

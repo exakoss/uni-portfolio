@@ -1,5 +1,5 @@
 {
-  "name": "uniportfolio-client",
+  "name": "x-portfolio",
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
@@ -12,6 +12,7 @@
   "dependencies": {
     "@apollo/client": "^3.3.11",
     "@apollo/react-hooks": "^4.0.0",
+    "@ethersproject/shims": "^5.0.11",
     "@react-native-community/masked-view": "0.1.10",
     "@react-navigation/bottom-tabs": "^5.11.8",
     "@react-navigation/native": "^5.9.3",
@@ -19,6 +20,7 @@
     "@types/react-redux": "^7.1.16",
     "dayjs": "^1.10.4",
     "dotenv": "^8.2.0",
+    "ethers": "^5.0.32",
     "expo": "~40.0.0",
     "expo-constants": "^10.0.1",
     "expo-font": "~8.4.0",
@@ -30,6 +32,7 @@
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.1.tar.gz",
     "react-native-gesture-handler": "~1.8.0",
+    "react-native-get-random-values": "^1.6.0",
     "react-native-reanimated": "~1.13.0",
     "react-native-safe-area-context": "3.1.9",
     "react-native-screens": "~2.15.2",
