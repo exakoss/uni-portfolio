@@ -5,6 +5,7 @@ import Constants from 'expo-constants'
 import { NavigationContainer} from '@react-navigation/native';
 import useETH from '../hooks/useETH';
 import StackNavigator from './navigation/StackNavigator';
+import useDailyBlock from '../hooks/useDailyBlock';
 
 const styles = StyleSheet.create({
     container: {
@@ -18,6 +19,7 @@ const styles = StyleSheet.create({
 const Main:React.FC = () => {
     //Fetching and pushing ETH price to the state on start up
     useETH()
+    useDailyBlock()
 
     return (
         <View style={styles.container}>

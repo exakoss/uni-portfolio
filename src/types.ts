@@ -18,6 +18,29 @@ export interface BasicToken extends TokenEntry{
     symbol: string
 }
 
+type NoDerivedETHBasicToken = Omit<BasicToken, "derivedETH">
+
+export interface ExtendedTokenEntry extends BasicToken {
+    untrackedVolumeUSD: string,
+    totalLiquidity: string,
+    txCount: string
+
+}
+
+export interface ExtendedToken extends NoDerivedETHBasicToken {
+    currentPrice: number,
+    oneDayPrice: number,
+    currentLiquidity: number,
+    oneDayLiquidity: number,
+    twoDaysLiquidity: number,
+    currentUntrackedVolume: number,
+    oneDayUntrackedVolume: number,
+    twoDaysUntrackedVolume: number,
+    currentTxs: number,
+    oneDayTxs: number,
+    twoDaysTxs: number
+}
+
 export interface BasicTokenDailyPrice extends BasicToken {
     dailyPrice: number
 }
@@ -48,6 +71,9 @@ export interface UnitedTokenData {
     dailyTokenData: DailyTokenData
 }
 
+export interface ExtendedTokenData {
+    tokens: ExtendedTokenEntry[]
+}
 //Redux states and actions
 export interface TokenState {
     tokenIds: BasicToken['id'][]
@@ -65,4 +91,13 @@ export interface ETHState {
 export interface TokenAction {
     type: "ADD_TOKEN_ID" | "REMOVE_TOKEN_ID",
     data: string
+}
+
+export interface dailyBlockState {
+    blockNumber: number
+}
+
+export interface dailyBlockAction {
+    type: 'SET_DAILY_BLOCK',
+    data: number
 }

@@ -1,21 +1,24 @@
 import React from 'react'
-import {BasicToken, DailyTokenData, TokenData, BasicTokenDailyPrice, PriceEntry} from '../types'
-import {View, Text, FlatList, StyleSheet, Button} from 'react-native'
+import {DailyTokenData, TokenData, BasicTokenDailyPrice, PriceEntry} from '../types'
+import {View, Text, FlatList, StyleSheet, Button, TouchableOpacity} from 'react-native'
 import {RootStateOrAny, useDispatch, useSelector} from 'react-redux';
 import {addTokenId, removeTokenId} from '../reducers/tokenReducer';
 import theme from '../theme'
 import {calculateETHPrice, parsePriceToFixedNumber} from '../utils';
+import { useNavigation } from '@react-navigation/native'
+import LoadingScreen from './LoadingScreen';
 
 interface Props {
     tokensNow: TokenData,
     tokensDaily: DailyTokenData,
     ethPriceInUSD: number,
-    placeholder: string
+    placeholder: string,
+    isLoading: boolean
 }
 
 const styles = StyleSheet.create({
     tile: {
-        backgroundColor: "#353333",
+        backgroundColor: theme.colors.background,
         display: 'flex',
         borderRadius: 10,
         flexDirection: 'row',
@@ -30,23 +33,23 @@ const styles = StyleSheet.create({
         fontSize: 30,
         height: 40,
         width:40,
-        backgroundColor: '#21446d'
+        backgroundColor: '#e0c68b'
     },
     tileText: {
         color: theme.colors.textWhite,
-        fontSize: 20
+        fontSize: theme.fontsize.normal
     },
     nameText: {
       color: theme.colors.textSecondary,
-      fontSize: 15,
+      fontSize: theme.fontsize.small,
     },
     positivePercentage: {
         color: theme.colors.green,
-        fontSize: 20
+        fontSize: theme.fontsize.normal
     },
     negativePercentage: {
         color: theme.colors.warning,
-        fontSize: 20
+        fontSize: theme.fontsize.normal
     },
     nameContainer: {
         display: "flex",
@@ -54,14 +57,14 @@ const styles = StyleSheet.create({
     },
     placeholder: {
         color: theme.colors.textWhite,
-        fontSize: 24,
+        fontSize: theme.fontsize.big,
         textAlign: "center"
     }
 })
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
-const PercentageChange:React.FC<{currentPrice: number, dailyPrice: number}> = ({currentPrice, dailyPrice}) => {
+export const PercentageChange:React.FC<{currentPrice: number, dailyPrice: number}> = ({currentPrice, dailyPrice}) => {
     if (dailyPrice === 0) return <Text style={styles.tileText}>-</Text>
 
     const pricePercDiff = 100 * ((currentPrice - dailyPrice) / ((currentPrice + dailyPrice) / 2))
@@ -107,11 +110,13 @@ const TokenTile:React.FC<{ token: BasicTokenDailyPrice, ethPriceInUSD: number }>
     )
 }
 
-const BaseTokenList:React.FC<Props> = ({tokensNow,tokensDaily,ethPriceInUSD,placeholder}) => {
+const BaseTokenList:React.FC<Props> = ({tokensNow,tokensDaily,ethPriceInUSD,placeholder,isLoading}) => {
     // console.log('Passed token data:')
     // console.log(tokensNow)
     // console.log('Passed daily data:')
     // console.log(tokensDaily)
+    if (isLoading) return <LoadingScreen/>
+    const navigation = useNavigation()
     if (tokensNow.tokens.length === 0 || tokensDaily.tokens.length === 0 ) return <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text style={{color: theme.colors.textWhite, fontSize: 24, textAlign: "center"}}>{placeholder}</Text></View>
     else {
         const dailyETHPriceInUSD:number = parsePriceToFixedNumber(tokensDaily.bundles[0].ethPrice)
@@ -124,8 +129,8 @@ const BaseTokenList:React.FC<Props> = ({tokensNow,tokensDaily,ethPriceInUSD,plac
         // console.log('Price entries:')
         // console.log(priceEntries)
         const passedTokens:BasicTokenDailyPrice[] = tokensNow.tokens.map(token => {
-            console.log('Iterating token id:')
-            console.log(token.id)
+            // console.log('Iterating token id:')
+            // console.log(token.id)
             // @ts-ignore
             const dailyPrice:number = (priceEntries.find(p => p.id === token.id) === undefined) ? 0 : priceEntries.find(p => p.id === token.id).price
             return {
@@ -137,7 +142,11 @@ const BaseTokenList:React.FC<Props> = ({tokensNow,tokensDaily,ethPriceInUSD,plac
         <View style={{flex: 1}}>
             <FlatList data={passedTokens}
                       ItemSeparatorComponent={ItemSeparator}
-                      renderItem={({item}) => <TokenTile token={item} ethPriceInUSD={ethPriceInUSD}/>}
+                      renderItem={({item}) =>
+                          <TouchableOpacity onPress={() => navigation.navigate('SingleTokenView',{tokenId: item.id, tokenSymbol: item.symbol, tokenName: item.name})}>
+                            <TokenTile token={item} ethPriceInUSD={ethPriceInUSD}/>
+                          </TouchableOpacity>
+                      }
             />
         </View>
     )}
