@@ -7,7 +7,6 @@ import {store, persistor} from './src/store'
 import { PersistGate } from 'redux-persist/integration/react'
 import { client } from './src/graphql/client';
 
-
 const App:React.FC = () => {
   return (
       <ReduxProvider store={store}>

@@ -6,6 +6,7 @@ import { NavigationContainer} from '@react-navigation/native';
 import useETH from '../hooks/useETH';
 import StackNavigator from './navigation/StackNavigator';
 import useDailyBlock from '../hooks/useDailyBlock';
+import 'react-native-get-random-values'
 
 const styles = StyleSheet.create({
     container: {
