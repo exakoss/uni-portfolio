@@ -3,17 +3,21 @@ import Main from './src/components/Main'
 import { NativeRouter } from 'react-router-native'
 import {ApolloProvider} from '@apollo/client';
 import { Provider as ReduxProvider} from 'react-redux'
-import store from './src/store'
+import {store, persistor} from './src/store'
+import { PersistGate } from 'redux-persist/integration/react'
 import { client } from './src/graphql/client';
+
 
 const App:React.FC = () => {
   return (
       <ReduxProvider store={store}>
-          <NativeRouter>
-              <ApolloProvider client={client}>
-                    <Main/>
-              </ApolloProvider>
-          </NativeRouter>
+          <PersistGate loading={null} persistor={persistor}>
+              <NativeRouter>
+                  <ApolloProvider client={client}>
+                        <Main/>
+                  </ApolloProvider>
+              </NativeRouter>
+          </PersistGate>
       </ReduxProvider>
   );
 }
