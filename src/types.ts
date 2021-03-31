@@ -1,3 +1,4 @@
+import {Wallet} from 'ethers'
 //Crypto entities
 export type Id = string
 
@@ -100,4 +101,13 @@ export interface dailyBlockState {
 export interface dailyBlockAction {
     type: 'SET_DAILY_BLOCK',
     data: number
+}
+
+export interface WalletState {
+    wallet: Wallet | {};
+}
+
+export interface WalletAction {
+    type: 'SET_WALLET',
+    data: Wallet
 }

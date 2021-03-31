@@ -6,6 +6,7 @@ import {composeWithDevTools} from 'redux-devtools-extension';
 import thunk from 'redux-thunk';
 import ethPriceReducer from './reducers/ethPriceReducer';
 import dailyBlockReducer from './reducers/dailyBlockReducer';
+import walletReducer from './reducers/walletReducer';
 
 // Since current ETH price and the number of block that
 // was mined 24 hrs ago are being used virtually by
@@ -20,6 +21,7 @@ const persistConfig = {
 const reducer = combineReducers({
     tokenIds: persistReducer(persistConfig, tokenReducer),
     ethPrice: ethPriceReducer,
+    wallet: walletReducer,
     dailyBlock: dailyBlockReducer
 })
 

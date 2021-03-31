@@ -5,6 +5,8 @@ import theme from '../../theme';
 import { Wallet } from 'ethers'
 import {createRinkebyWallet} from '../../utils/ethersTools';
 import LoadingScreen from '../LoadingScreen';
+import {RootStateOrAny, useDispatch, useSelector} from 'react-redux';
+import {setWallet} from '../../reducers/walletReducer';
 
 export const MnemonicPhraseView:React.FC<{phrase: string| undefined}> = ({phrase}) => {
     if (!phrase) return null
@@ -30,15 +32,15 @@ export const MnemonicPhraseView:React.FC<{phrase: string| undefined}> = ({phrase
 
 const Mnemonic:React.FC = () => {
     const navigation = useNavigation()
+    const dispatch = useDispatch()
     const [isLoading,setIsLoading] = useState<boolean>(true)
-    const [connectedWallet, setConnectedWallet] = useState<Wallet>()
 
     useEffect(() => {
         const newWallet = createRinkebyWallet()
-        setConnectedWallet(newWallet)
+        dispatch(setWallet(newWallet))
         setIsLoading(false)
     },[])
-
+    const connectedWallet = useSelector((state:RootStateOrAny) => state.wallet.wallet)
     if (isLoading) return <LoadingScreen/>
 
     return(
