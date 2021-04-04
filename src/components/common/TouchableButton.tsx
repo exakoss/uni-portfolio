@@ -17,7 +17,8 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         color:theme.colors.textWhite,
-        fontSize: theme.fontsize.big
+        fontSize: theme.fontsize.big,
+        textAlign: 'center'
     }
 })
 

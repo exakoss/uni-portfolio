@@ -1,11 +1,21 @@
 import 'react-native-get-random-values'
 import "@ethersproject/shims"
-import { ethers, Wallet } from 'ethers'
+import {ethers, Wallet} from 'ethers'
 import {RINKEBY_API_KEY} from '../constants';
+import {store} from '../store';
 
-const createRinkebyWallet = ():Wallet => {
+export const createRinkebyWallet = ():Wallet => {
     const provider = new ethers.providers.JsonRpcProvider(RINKEBY_API_KEY)
     return ethers.Wallet.createRandom().connect(provider)
 }
 
-export {createRinkebyWallet}
+export const encryptWallet = async (wallet:Wallet,password:string):Promise<string> => {
+    return await wallet.encrypt(password)
+}
+
+export const getCurrentBalance = async (wallet:Wallet) => {
+    return await wallet.getBalance()
+}
+
+export const isLoggedIn = ():boolean => (store.getState().wallet.wallet !== {})
+export const isImported = ():boolean => (store.getState().seed.seed! !== '')

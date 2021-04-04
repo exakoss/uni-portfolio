@@ -111,3 +111,12 @@ export interface WalletAction {
     type: 'SET_WALLET',
     data: Wallet
 }
+
+export interface SeedState {
+    seed: string
+}
+
+export interface SeedAction {
+    type: 'SET_SEED',
+    data: string
+}

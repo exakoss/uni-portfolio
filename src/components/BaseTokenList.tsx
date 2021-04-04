@@ -111,11 +111,7 @@ const TokenTile:React.FC<{ token: BasicTokenDailyPrice, ethPriceInUSD: number }>
 }
 
 const BaseTokenList:React.FC<Props> = ({tokensNow,tokensDaily,ethPriceInUSD,placeholder,isLoading}) => {
-    // console.log('Passed token data:')
-    // console.log(tokensNow)
-    // console.log('Passed daily data:')
-    // console.log(tokensDaily)
-    if (isLoading) return <LoadingScreen/>
+    if (isLoading) return <LoadingScreen placeholder='Loading token data...'/>
     const navigation = useNavigation()
     if (tokensNow.tokens.length === 0 || tokensDaily.tokens.length === 0 ) return <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text style={{color: theme.colors.textWhite, fontSize: 24, textAlign: "center"}}>{placeholder}</Text></View>
     else {

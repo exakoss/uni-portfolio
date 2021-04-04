@@ -21,11 +21,11 @@ const styles = StyleSheet.create({
     }
 })
 
-const LoadingScreen:React.FC = () => {
+const LoadingScreen:React.FC<{placeholder:string}> = ({placeholder}) => {
     return(
         <View style={styles.container}>
             <Image source={loading} style={styles.gif}/>
-            <Text style={styles.loadingText}>Loading data...</Text>
+            <Text style={styles.loadingText}>{placeholder}</Text>
         </View>
     )
 }

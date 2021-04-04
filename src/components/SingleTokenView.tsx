@@ -126,11 +126,6 @@ const SingleTokenView:React.FC = () => {
             <SingleTokenStat title='Total Liquidity' currentValue={extendedToken.currentLiquidity} previousValue={extendedToken.oneDayLiquidity} isUSD={true}/>
             <SingleTokenStat title='Volume (24hrs)' currentValue={extendedToken.currentUntrackedVolume - extendedToken.oneDayUntrackedVolume} previousValue={extendedToken.oneDayUntrackedVolume - extendedToken.twoDaysUntrackedVolume} isUSD={true}/>
             <SingleTokenStat title='Transactions (24hrs)' currentValue={extendedToken.currentTxs - extendedToken.oneDayTxs} previousValue={extendedToken.oneDayTxs - extendedToken.twoDaysTxs} isUSD={false}/>
-            {/*<Text style={styles.tileText}>Current price: ${extendedToken.currentPrice}</Text>*/}
-            {/*<Text style={styles.tileText}>Previous day price: ${extendedToken.oneDayPrice}</Text>*/}
-            {/*<Text style={styles.tileText}>Current liquidity: ${extendedToken.currentLiquidity}</Text>*/}
-            {/*<Text style={styles.tileText}>Current volume: ${extendedToken.currentUntrackedVolume - extendedToken.oneDayUntrackedVolume}</Text>*/}
-            {/*<Text style={styles.tileText}>Transactions 24hrs: {extendedToken.currentTxs - extendedToken.oneDayTxs}</Text>*/}
         </View>
     )
 }

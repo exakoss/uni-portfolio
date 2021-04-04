@@ -7,12 +7,13 @@ import {createRinkebyWallet} from '../../utils/ethersTools';
 import LoadingScreen from '../LoadingScreen';
 import {RootStateOrAny, useDispatch, useSelector} from 'react-redux';
 import {setWallet} from '../../reducers/walletReducer';
+import TouchableButton from '../common/TouchableButton';
 
 export const MnemonicPhraseView:React.FC<{phrase: string| undefined}> = ({phrase}) => {
     if (!phrase) return null
     const mnemonicPhrase = phrase.split(" ")
     return(
-        <View style={{flexDirection:"row", flexWrap:"wrap", justifyContent:'center'}}>
+        <View style={{flexDirection:"row", flexWrap:"wrap", justifyContent:'center', marginTop:theme.distance.normal}}>
             {mnemonicPhrase.map(w => {
                     return(
                         <View style={{borderRadius: 5,
@@ -41,11 +42,12 @@ const Mnemonic:React.FC = () => {
         setIsLoading(false)
     },[])
     const connectedWallet = useSelector((state:RootStateOrAny) => state.wallet.wallet)
-    if (isLoading) return <LoadingScreen/>
+    if (isLoading) return <LoadingScreen placeholder='Generating a wallet...'/>
 
     return(
         <View style={{flex: 1,backgroundColor: theme.colors.background, alignItems: "center", justifyContent:'center'}}>
             <MnemonicPhraseView phrase={connectedWallet?.mnemonic.phrase}/>
+            <TouchableButton text='Set up the password' onPress={() => navigation.navigate('PasswordInput')}/>
         </View>
     )
 }

@@ -6,13 +6,26 @@ import theme from '../theme';
 import {RootStateOrAny, useSelector} from 'react-redux';
 import {getBlock, getTokensByName, getDailyQuotesByID} from '../utils';
 import {Id, UnitedTokenData} from '../types';
+// import {useDebounce} from 'use-debounce'
+import CurrentETHPrice from './CurrentETHPrice';
 
 const {height} = Dimensions.get('window')
 
+const initialTokenData:UnitedTokenData = {
+    tokenData:{
+        tokens:[]
+    },
+    dailyTokenData:{
+        tokens:[],
+        bundles:[]
+    }
+}
+
 const SearchBar:React.FC = () => {
 
-    const [unitedTokenData, setUnitedTokenData]= useState<UnitedTokenData>({tokenData:{tokens:[]},dailyTokenData:{tokens:[],bundles:[]}})
+    const [unitedTokenData, setUnitedTokenData]= useState<UnitedTokenData>(initialTokenData)
     const [filter,setFilter] = useState<string>('')
+    // const [filterValue] = useDebounce(filter,400)
     const [isLoading,setIsLoading] = useState<boolean>(false)
     const ethPriceInUSD = useSelector((state:RootStateOrAny) => state.ethPrice.price)
     const dailyBlockNumber = useSelector((state:RootStateOrAny) => state.dailyBlock.blockNumber)
@@ -21,14 +34,15 @@ const SearchBar:React.FC = () => {
 
     return(
         <View style={{flex: 1, height: height}}>
-            <Text style={{color: theme.colors.textWhite, textAlign: "center", fontSize: theme.fontsize.normal}}> Current ETH price: ${ethPriceInUSD}</Text>
+            <CurrentETHPrice/>
             <TextInput
+                //@ts-ignore
             onChangeText={
                 async (text: string) => {
                     setIsLoading(true)
                     setFilter(text.toUpperCase())
                     if (text === '') {
-                        setUnitedTokenData({tokenData:{tokens:[]},dailyTokenData:{tokens:[],bundles:[]}})
+                        setUnitedTokenData(initialTokenData)
                     } else {
                         const newTokenData = await getTokensByName(text.toUpperCase()).then(result => result)
                         const tokenIds: Id[] = newTokenData.tokens.map(token => token.id)
@@ -38,7 +52,6 @@ const SearchBar:React.FC = () => {
                     setIsLoading(false)
                 }}
             value={filter}
-            style={{height: 36, fontSize: 24}}
             placeholder={'Input a ticker here...'}
             />
 
