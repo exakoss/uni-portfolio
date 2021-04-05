@@ -10,13 +10,23 @@ import CurrentETHPrice from './CurrentETHPrice';
 
 const {height} = Dimensions.get('window')
 
+const initialTokenData:UnitedTokenData = {
+    tokenData:{
+        tokens:[]
+    },
+    dailyTokenData:{
+        tokens:[],
+        bundles:[]
+    }
+}
+
 const WatchList:React.FC = () => {
     const idList = useSelector((state:RootStateOrAny) => state.tokenIds)
     const listPlaceholder = 'You do not have any tokens in your watchlist. Switch to the Search tab and add a token from there.'
     const [isLoading,setIsLoading] = useState<boolean>(true)
     const ethPriceInUSD = useSelector((state:RootStateOrAny) => state.ethPrice.price)
     const dailyBlockNumber = useSelector((state:RootStateOrAny) => state.dailyBlock.blockNumber)
-    const [unitedTokenData, setUnitedTokenData]= useState<UnitedTokenData>({tokenData:{tokens:[]},dailyTokenData:{tokens:[],bundles:[]}})
+    const [unitedTokenData, setUnitedTokenData]= useState<UnitedTokenData>(initialTokenData)
 
 
     useEffect(() => {
@@ -29,7 +39,7 @@ const WatchList:React.FC = () => {
         setIsLoading(false)
     },[idList])
 
-    if (isLoading) return <LoadingScreen/>
+    if (isLoading) return <LoadingScreen placeholder='Loading token data...'/>
     return(
         <View style={{flex: 1,height: height}}>
             <CurrentETHPrice/>

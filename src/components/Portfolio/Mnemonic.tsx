@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {View, Button, Text} from 'react-native';
+import {View, Button, Text, ScrollView} from 'react-native';
 import { useNavigation } from '@react-navigation/native'
 import theme from '../../theme';
 import { Wallet } from 'ethers'
@@ -17,10 +17,14 @@ export const MnemonicPhraseView:React.FC<{phrase: string| undefined}> = ({phrase
             {mnemonicPhrase.map(w => {
                     return(
                         <View style={{borderRadius: 5,
-                            margin: 10,
-                            padding: 10,
+                            marginVertical: theme.distance.small,
+                            marginHorizontal: theme.distance.tiny,
+                            padding: theme.distance.tiny,
                             borderWidth: 2,
-                            borderColor: theme.colors.textSecondary}}
+                            borderColor: theme.colors.textSecondary,
+                            backgroundColor: theme.colors.darkBrown
+
+                        }}
                             key = {w}
                         >
                             <Text style={{color: theme.colors.textWhite, fontSize: theme.fontsize.normal}}>{w}</Text>
@@ -46,7 +50,12 @@ const Mnemonic:React.FC = () => {
 
     return(
         <View style={{flex: 1,backgroundColor: theme.colors.background, alignItems: "center", justifyContent:'center'}}>
+            <View style={{marginHorizontal: theme.distance.small}}>
+                <Text style={{color: theme.colors.textWhite, fontSize: theme.fontsize.normal, textAlign:'center'}}>This is your new mnemonic phrase:</Text>
+            </View>
             <MnemonicPhraseView phrase={connectedWallet?.mnemonic.phrase}/>
+            <View style={{marginHorizontal: theme.distance.small}}><Text style={{color: theme.colors.textWhite, fontSize: theme.fontsize.big, textAlign:'center'}}>MAKE SURE TO WRITE IT DOWN AND NEVER SHARE IT WITH ANYBODY ELSE!</Text></View>
+            <View style={{marginHorizontal: theme.distance.small}}><Text style={{color: theme.colors.textWhite, fontSize: theme.fontsize.normal, textAlign:'center'}}>Your mnemonic phrase could be used to import the wallet and get full access to it.</Text></View>
             <TouchableButton text='Set up the password' onPress={() => navigation.navigate('PasswordInput')}/>
         </View>
     )

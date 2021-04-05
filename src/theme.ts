@@ -8,11 +8,12 @@ const theme = {
         background: '#333333',
         warning: '#d73a4a',
         mainBackground: '#e1e4e8',
-        green: '#46c41b'
+        green: '#46c41b',
+        darkBrown: '#140d07'
     },
     fontWeights: {
-        normal: '400',
-        bold: '700',
+        normal: 400,
+        bold: 700,
     },
     distance: {
         normal: 15,

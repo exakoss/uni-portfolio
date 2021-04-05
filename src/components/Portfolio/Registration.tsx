@@ -13,7 +13,6 @@ const Registration:React.FC = () => {
             <TouchableButton text='Log in into an existing wallet' onPress={() => navigation.navigate('Login')}/>
             <TouchableButton text='Import a wallet' onPress={() => navigation.navigate('MnemonicImport')}/>
             <TouchableButton text='Create a new wallet' onPress={() => navigation.navigate('Mnemonic')}/>
-
         </View>
     )
 }
