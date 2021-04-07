@@ -36,7 +36,8 @@ const SearchBar:React.FC = () => {
         <View style={{flex: 1, height: height}}>
             <CurrentETHPrice/>
             <TextInput
-                //@ts-ignore
+            //This is ugly but works for now. Rebuild later with useEffect and useDebounce
+            //@ts-ignore
             onChangeText={
                 async (text: string) => {
                     setIsLoading(true)

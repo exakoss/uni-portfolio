@@ -1,9 +1,8 @@
 import React, {useEffect} from 'react'
-import {View, Button, Text, TouchableOpacity} from 'react-native';
+import {View} from 'react-native';
 import { useNavigation } from '@react-navigation/native'
 import theme from '../../theme';
 import TouchableButton from '../common/TouchableButton';
-import {Wallet} from 'ethers';
 
 const Registration:React.FC = () => {
     const navigation = useNavigation()
