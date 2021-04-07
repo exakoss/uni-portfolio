@@ -1,12 +1,12 @@
 import React from 'react'
 import {DailyTokenData, TokenData, BasicTokenDailyPrice, PriceEntry} from '../types'
 import {View, Text, FlatList, StyleSheet, Button, TouchableOpacity} from 'react-native'
-import {RootStateOrAny, useDispatch, useSelector} from 'react-redux';
-import {addTokenId, removeTokenId} from '../reducers/tokenReducer';
+import {RootStateOrAny, useDispatch, useSelector} from 'react-redux'
+import {addTokenId, removeTokenId} from '../reducers/tokenReducer'
 import theme from '../theme'
-import {calculateETHPrice, parsePriceToFixedNumber} from '../utils';
+import {calculateETHPrice, parsePriceToFixedNumber} from '../utils'
 import { useNavigation } from '@react-navigation/native'
-import LoadingScreen from './LoadingScreen';
+import LoadingScreen from './LoadingScreen'
 
 interface Props {
     tokensNow: TokenData,
@@ -62,11 +62,10 @@ const styles = StyleSheet.create({
     }
 })
 
-const ItemSeparator = () => <View style={styles.separator} />;
+export const ItemSeparator = () => <View style={styles.separator} />;
 
 export const PercentageChange:React.FC<{currentPrice: number, dailyPrice: number}> = ({currentPrice, dailyPrice}) => {
     if (dailyPrice === 0) return <Text style={styles.tileText}>-</Text>
-
     const pricePercDiff = 100 * ((currentPrice - dailyPrice) / ((currentPrice + dailyPrice) / 2))
     const displayedDiff = Math.abs(pricePercDiff).toFixed(2)
     if (pricePercDiff > 0) {

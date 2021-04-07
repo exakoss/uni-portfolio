@@ -1,3 +1,4 @@
+import {StyleSheet} from 'react-native';
 
 const theme = {
     colors: {
@@ -27,5 +28,40 @@ const theme = {
         large: 30
     }
 }
+
+export const commonStyles = StyleSheet.create({
+    tile:{
+        backgroundColor: theme.colors.background,
+            display: 'flex',
+            borderRadius: 10,
+            flexDirection: 'row',
+            justifyContent: 'space-around'
+    },
+    tileText: {
+        color: theme.colors.textWhite,
+        fontSize: theme.fontsize.normal
+    },
+    nameText: {
+        color: theme.colors.textSecondary,
+        fontSize: theme.fontsize.small,
+    },
+    positivePercentage: {
+        color: theme.colors.green,
+        fontSize: theme.fontsize.normal
+    },
+    negativePercentage: {
+        color: theme.colors.warning,
+        fontSize: theme.fontsize.normal
+    },
+    nameContainer: {
+        display: "flex",
+        flexDirection:"column"
+    },
+    placeholder: {
+        color: theme.colors.textWhite,
+        fontSize: theme.fontsize.big,
+        textAlign: "center"
+    }
+})
 
 export default theme
