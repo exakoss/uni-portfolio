@@ -12,6 +12,8 @@ const StackNavigator:React.FC = () => {
         switch (routeName) {
             case 'Search':
                 return 'Search'
+            case 'Synthetix':
+                return 'Synthetix Trading'
             case 'Watchlist':
                 return 'Watchlist'
             case 'Portfolio':

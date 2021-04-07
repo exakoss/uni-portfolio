@@ -5,7 +5,6 @@ import theme from '../theme';
 
 const CurrentETHPrice:React.FC = () => {
     const ethPriceInUSD = useSelector((state:RootStateOrAny) => state.ethPrice.price)
-
     return (
         <View style={{
             borderBottomWidth: 1,

@@ -1,6 +1,7 @@
 import {Network, Synth, synthetix, SynthetixJS} from '@synthetixio/js'
 import {createMainnetProvider} from './ethersTools';
 import {BlockOption, SynthData} from '../types';
+import {getBlock} from './index';
 
 export const createMainnetSnxjs = () => {
     const mainnetProvider = createMainnetProvider()
@@ -26,5 +27,19 @@ export const getSynthsQuotesByBlock = async (snxjs:SynthetixJS,synths:Synth[],bl
     }))
 }
 
+export const getSNXPrice = async(snxjs:SynthetixJS,blockOption:BlockOption):Promise<number> => {
+    const {formatEther} = snxjs.utils
+
+    return Number(formatEther( await snxjs.contracts.ExchangeRates.rateForCurrency(
+        snxjs.toBytes32('SNX'),
+        blockOption
+    )))
+}
+
+export const getCurrentSNXPrice = async ():Promise<number> => {
+    const snxjs = createMainnetSnxjs()
+    const newCurrentBlock = await getBlock('CURRENT_DAY').then(result => result)
+    return await getSNXPrice(snxjs,{blockTag: newCurrentBlock}).then(result => result)
+}
 
 

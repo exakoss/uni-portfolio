@@ -104,6 +104,15 @@ export interface ETHState {
     price: number
 }
 
+export interface SNXAction {
+    type: 'SET_SNX_PRICE',
+    data: number
+}
+
+export interface SNXState {
+    price: number
+}
+
 export interface TokenAction {
     type: "ADD_TOKEN_ID" | "REMOVE_TOKEN_ID",
     data: string

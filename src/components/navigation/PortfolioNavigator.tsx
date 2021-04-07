@@ -6,7 +6,8 @@ import WalletDisplay from '../Portfolio/WalletDisplay';
 import Login from '../Portfolio/Login';
 import PasswordInput from '../Portfolio/PasswordInput';
 import MnemonicImport from '../Portfolio/MnemonicImport';
-import CurrentETHPrice from '../CurrentETHPrice';
+// import CurrentETHPrice from '../CurrentETHPrice';
+import CurrentPriceHeader from '../CurrentPriceHeader';
 
 const PortfolioNavigator:React.FC = () => {
     const Portfolio = createStackNavigator()
@@ -15,7 +16,7 @@ const PortfolioNavigator:React.FC = () => {
         <Portfolio.Navigator
         initialRouteName='Registration'
         screenOptions={{
-            header: () => <CurrentETHPrice/>
+            header: () => <CurrentPriceHeader headerToken='ETH'/>
         }}
         >
             <Portfolio.Screen name='Registration' component={Registration}/>

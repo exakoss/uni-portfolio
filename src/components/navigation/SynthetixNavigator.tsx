@@ -1,8 +1,9 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import CurrentETHPrice from '../CurrentETHPrice';
+// import CurrentETHPrice from '../CurrentETHPrice';
 import SynthWelcome from '../Synth/SynthWelcome';
 import SynthDisplay from '../Synth/SynthDisplay';
+import CurrentPriceHeader from '../CurrentPriceHeader';
 
 const SynthetixNavigator:React.FC = () => {
 
@@ -12,7 +13,7 @@ const SynthetixNavigator:React.FC = () => {
         <Synth.Navigator
         initialRouteName='SynthDisplay'
         screenOptions={{
-            header: () => <CurrentETHPrice/>
+            header: () => <CurrentPriceHeader headerToken='SXN'/>
         }}
         >
             <Synth.Screen name='SynthWelcome' component={SynthWelcome}/>

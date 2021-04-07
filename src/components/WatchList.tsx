@@ -7,6 +7,7 @@ import {UnitedTokenData} from '../types';
 import {getBlock, getDailyQuotesByID, getTokensByID} from '../utils';
 import LoadingScreen from './LoadingScreen';
 import CurrentETHPrice from './CurrentETHPrice';
+import CurrentPriceHeader from './CurrentPriceHeader';
 
 const {height} = Dimensions.get('window')
 
@@ -42,7 +43,7 @@ const WatchList:React.FC = () => {
     if (isLoading) return <LoadingScreen placeholder='Loading token data...'/>
     return(
         <View style={{flex: 1,height: height}}>
-            <CurrentETHPrice/>
+            <CurrentPriceHeader headerToken='ETH'/>
             <BaseTokenList tokensNow={unitedTokenData.tokenData} ethPriceInUSD={ethPriceInUSD} tokensDaily={unitedTokenData.dailyTokenData} placeholder={listPlaceholder} isLoading={isLoading}/>
         </View>
     )

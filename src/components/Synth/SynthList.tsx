@@ -14,7 +14,7 @@ interface Props {
 
 const SynthTile:React.FC<{synthDaily: SynthDataDaily}> = ({synthDaily}) => {
     return(
-        <View style={commonStyles.tile}>
+        <View style={commonStyles.tile} key={synthDaily.name}>
             <View style={commonStyles.nameContainer}>
                 <Text style={commonStyles.tileText}>{synthDaily.name}</Text>
                 <Text style={commonStyles.nameText}>{synthDaily.description}</Text>

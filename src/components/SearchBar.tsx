@@ -8,6 +8,7 @@ import {getBlock, getTokensByName, getDailyQuotesByID} from '../utils';
 import {Id, UnitedTokenData} from '../types';
 // import {useDebounce} from 'use-debounce'
 import CurrentETHPrice from './CurrentETHPrice';
+import CurrentPriceHeader from './CurrentPriceHeader';
 
 const {height} = Dimensions.get('window')
 
@@ -34,7 +35,7 @@ const SearchBar:React.FC = () => {
 
     return(
         <View style={{flex: 1, height: height}}>
-            <CurrentETHPrice/>
+            <CurrentPriceHeader headerToken='ETH'/>
             <TextInput
             //This is ugly but works for now. Rebuild later with useEffect and useDebounce
             //@ts-ignore
