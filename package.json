@@ -48,6 +48,7 @@
     "redux": "^4.0.5",
     "redux-persist": "^6.0.0",
     "redux-thunk": "^2.3.0",
+    "synthetix-data": "^2.1.42",
     "use-debounce": "^6.0.0",
     "yup": "^0.32.9"
   },

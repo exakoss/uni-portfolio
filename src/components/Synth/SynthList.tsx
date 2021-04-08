@@ -3,7 +3,7 @@ import LoadingScreen from '../LoadingScreen';
 import {ItemSeparator, PercentageChange} from '../BaseTokenList';
 import {SynthDataDaily} from '../../types';
 import {useNavigation} from '@react-navigation/native';
-import {FlatList, Text, View} from 'react-native';
+import {FlatList, Text, View, TouchableOpacity} from 'react-native';
 import theme, {commonStyles} from '../../theme';
 
 interface Props {
@@ -35,7 +35,11 @@ const SynthList:React.FC<Props> = ({placeholder,isLoading,synthsDaily}) => {
                 <FlatList
                     data={synthsDaily}
                     ItemSeparatorComponent={ItemSeparator}
-                    renderItem={({item}) => <SynthTile synthDaily={item} key={item.name}/>}
+                    renderItem={({item}) =>
+                        <TouchableOpacity onPress={() => navigation.navigate('SingleSynthView',{synthName: item.name})}>
+                            <SynthTile synthDaily={item} key={item.name}/>
+                        </TouchableOpacity>
+                    }
                 />
             </View>
         )

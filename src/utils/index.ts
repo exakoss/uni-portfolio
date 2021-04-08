@@ -12,7 +12,7 @@ import dayjs from 'dayjs';
 import {TokenData, DailyTokenData, ExtendedTokenData} from '../types';
 import {client} from '../graphql/client';
 
-type GetBlockProp = 'ONE_DAY' | 'TWO_DAYS' | 'CURRENT_DAY'
+export type GetBlockProp = 'ONE_DAY' | 'TWO_DAYS' | 'CURRENT_DAY'
 
 //Get a single block from a timestamp
 export const getBlockFromTimestamp = async (timestamp: number) => {

@@ -15,12 +15,12 @@ const styles = StyleSheet.create({
         color: theme.colors.textWhite,
         fontSize: theme.fontsize.normal
     },
-    mainHeader: {
-        color: theme.colors.textWhite,
-        fontSize: theme.fontsize.large,
-        textAlign: 'center',
-        marginTop: theme.distance.small
-    },
+    // mainHeader: {
+    //     color: theme.colors.textWhite,
+    //     fontSize: theme.fontsize.large,
+    //     textAlign: 'center',
+    //     marginTop: theme.distance.small
+    // },
     headerText: {
         color: theme.colors.textWhite,
         fontSize: theme.fontsize.big,
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     }
 })
 
-const SingleTokenStat:React.FC<{title:string, currentValue:number, previousValue: number, isUSD:boolean}> = ({title,currentValue,previousValue,isUSD}) => {
+export const SingleTokenStat:React.FC<{title:string, currentValue:number, previousValue: number, isUSD:boolean}> = ({title,currentValue,previousValue,isUSD}) => {
     const displayedCurrentValue = isUSD ? toMoney(currentValue) : currentValue
     return (
         <View style={styles.tokenStat}>
@@ -51,6 +51,7 @@ const SingleTokenStat:React.FC<{title:string, currentValue:number, previousValue
 const SingleTokenView:React.FC = () => {
     //Extracting tokenId from the route params
     const route = useRoute();
+    //@ts-ignore
     const { tokenId, tokenSymbol, tokenName } = route.params
     const initialState:ExtendedToken = {
         id:tokenId || '',

@@ -4,6 +4,7 @@ import theme from '../../theme';
 import TabNavigator from './TabNavigator';
 import {getFocusedRouteNameFromRoute, RouteProp} from '@react-navigation/native';
 import SingleTokenView from '../SingleTokenView';
+import SingleSynthView from '../Synth/SingleSynthView';
 
 const StackNavigator:React.FC = () => {
     const Stack = createStackNavigator();
@@ -36,6 +37,11 @@ const StackNavigator:React.FC = () => {
                 // @ts-ignore
                 options={({route}) => ({headerTitle: route.params.tokenSymbol})}
             />
+            <Stack.Screen
+                name='SingleSynthView'
+                component={SingleSynthView}
+                // @ts-ignore
+                options={({route}) => ({headerTitle: route.params.synthName})}/>
         </Stack.Navigator>
     )
 }

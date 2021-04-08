@@ -35,7 +35,7 @@ export const commonStyles = StyleSheet.create({
             display: 'flex',
             borderRadius: 10,
             flexDirection: 'row',
-            justifyContent: 'space-around'
+            justifyContent: 'space-evenly'
     },
     tileText: {
         color: theme.colors.textWhite,

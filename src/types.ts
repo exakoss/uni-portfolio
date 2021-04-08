@@ -90,6 +90,16 @@ export interface SynthDataDaily extends SynthData {
     formattedRateDaily : number
 }
 
+export interface SynthDataExtended {
+    synth: Synth,
+    formattedRate: number,
+    formattedRateDaily :number,
+    supplyInUSD:number,
+    dailySupplyInUSD:number,
+    volumeInUSD:number,
+    dailyVolumeInUSD:number
+}
+
 //Redux states and actions
 export interface TokenState {
     tokenIds: BasicToken['id'][]

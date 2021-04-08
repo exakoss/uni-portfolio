@@ -28,6 +28,8 @@ const PasswordInput:React.FC = () => {
     const wallet:Wallet = useSelector((state:RootStateOrAny) => state.wallet.wallet)
     console.log(wallet)
     const onSubmit = async ({password}: {password:string}) => {
+        // Encrypting the wallet on Native version for some reason takes up to 3-4 minutes
+        //
         // const jsonSeed = await wallet.encrypt(password)
         // console.log(JSON.parse(jsonSeed))
         // dispatch(setSeed(jsonSeed))
@@ -39,7 +41,9 @@ const PasswordInput:React.FC = () => {
             <Formik onSubmit={onSubmit} initialValues={{password:'', passwordConfirmation: ''}} validationSchema={validationSchema}>
                 {({handleSubmit})=>(
                     <View>
+                        {/*@ts-ignore*/}
                         <FormikTextInput name='password' placeholder='Enter the password' secureTextEntry/>
+                        {/*@ts-ignore*/}
                         <FormikTextInput name='passwordConfirmation' placeholder='Password confirmation' secureTextEntry/>
                         <TouchableButton text='Confirm the password' onPress={handleSubmit}/>
                     </View>)}
