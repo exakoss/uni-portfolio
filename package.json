@@ -22,7 +22,7 @@
     "@types/react-redux": "^7.1.16",
     "dayjs": "^1.10.4",
     "dotenv": "^8.2.0",
-    "ethers": "^5.0.32",
+    "ethers": " ^5.0.32",
     "expo": "~40.0.0",
     "expo-clipboard": "~1.0.1",
     "expo-constants": "^10.0.1",

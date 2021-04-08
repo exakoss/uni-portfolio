@@ -27,7 +27,7 @@ const Main:React.FC = () => {
             await useSNX()
             await useDailyBlock()
         }
-        updateData().then()
+        updateData()
     },[])
 
     return (

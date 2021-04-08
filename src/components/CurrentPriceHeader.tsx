@@ -20,7 +20,7 @@ const CurrentPriceHeader:React.FC<{headerToken: HeaderToken}> = ({headerToken}) 
                 setTokenPrice(snxPriceInUSD)
                 break;
         }
-    },[])
+    },[ethPriceInUSD, snxPriceInUSD])
       return(
           <View style={{
               borderBottomWidth: 1,

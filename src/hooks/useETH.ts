@@ -1,13 +1,11 @@
-import {useEffect} from 'react';
-import {useDispatch} from 'react-redux';
+import {store} from '../store';
 import {setETHPrice} from '../reducers/ethPriceReducer';
 import {getETHPrice} from '../utils';
 
 const useETH = async () => {
-    const dispatch = useDispatch()
-
     const newETHPrice = await getETHPrice().then(result => result)
-    dispatch(setETHPrice(newETHPrice))
+    // dispatch(setETHPrice(newETHPrice))
+    store.dispatch(setETHPrice(newETHPrice))
 }
 
 

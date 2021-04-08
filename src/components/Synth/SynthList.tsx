@@ -35,7 +35,7 @@ const SynthList:React.FC<Props> = ({placeholder,isLoading,synthsDaily}) => {
                 <FlatList
                     data={synthsDaily}
                     ItemSeparatorComponent={ItemSeparator}
-                    renderItem={({item}) => <SynthTile synthDaily={item}/>}
+                    renderItem={({item}) => <SynthTile synthDaily={item} key={item.name}/>}
                 />
             </View>
         )

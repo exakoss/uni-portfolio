@@ -1,6 +1,7 @@
 X PORTFOLIO MOBILE
 
 Functionality:
+
 -Portfolio
     Allows you to create or import an Ethereum wallet.
     Upon creating a wallet a smart contract triggers and sends a randomly generated NFT to the wallet as an incentivizing gift.
