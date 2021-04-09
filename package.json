@@ -20,6 +20,7 @@
     "@react-navigation/stack": "^5.14.3",
     "@synthetixio/js": "^2.41.0",
     "@types/react-redux": "^7.1.16",
+    "babel-plugin-inline-dotenv": "^1.6.0",
     "dayjs": "^1.10.4",
     "dotenv": "^8.2.0",
     "ethers": " ^5.0.32",

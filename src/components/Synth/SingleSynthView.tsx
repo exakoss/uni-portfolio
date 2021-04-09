@@ -15,6 +15,7 @@ import {
 } from '../../utils/synthTools';
 import {getBlock} from '../../utils';
 import {SingleTokenStat} from '../SingleTokenView';
+import LoadingScreen from '../LoadingScreen';
 
 
 const SingleSynthView:React.FC = () => {
@@ -27,7 +28,7 @@ const SingleSynthView:React.FC = () => {
             asset: '',
             category: '',
             sign: '',
-            description: ''
+            description: 'Synth description'
             },
         formattedRate: 0,
         formattedRateDaily: 0,
@@ -37,7 +38,9 @@ const SingleSynthView:React.FC = () => {
         dailySupplyInUSD: 0
     }
     const [extendedSynth, setExtendedSynth] = useState<SynthDataExtended>(initialState)
+    const [isLoading, setIsLoading] = useState<boolean>(true)
     const dailyBlockNumber = useSelector((state:RootStateOrAny) => state.dailyBlock.blockNumber)
+
     useEffect(() => {
         const updateSynthData = async () => {
             const snxjs:SynthetixJS = createMainnetSnxjs()
@@ -61,10 +64,12 @@ const SingleSynthView:React.FC = () => {
                     supplyInUSD: currentSynthSupplyInUSD,
                     dailySupplyInUSD:dailySynthSupplyInUSD
                 })
+                setIsLoading(false)
             }
         }
         updateSynthData()
     },[])
+    if (isLoading) return <LoadingScreen placeholder='Loading synth data...'/>
     return (
         <View style={{flex: 1,backgroundColor: theme.colors.background}}>
             <Text style={{
@@ -74,8 +79,8 @@ const SingleSynthView:React.FC = () => {
                 marginBottom: theme.distance.tiny
             }}>{extendedSynth.synth.description}</Text>
             <SingleTokenStat title='Current price' currentValue={extendedSynth.formattedRate} previousValue={extendedSynth.formattedRateDaily} isUSD={true}/>
-            <SingleTokenStat title='Volume 24 h:' currentValue={extendedSynth.volumeInUSD} previousValue={extendedSynth.dailyVolumeInUSD} isUSD={true}/>
-            <SingleTokenStat title='Total supply' currentValue={extendedSynth.supplyInUSD} previousValue={extendedSynth.dailySupplyInUSD - extendedSynth.supplyInUSD} isUSD={true}/>
+            <SingleTokenStat title='Volume 24 h:' currentValue={extendedSynth.volumeInUSD} previousValue={extendedSynth.dailyVolumeInUSD - extendedSynth.volumeInUSD} isUSD={true}/>
+            <SingleTokenStat title='Total supply' currentValue={extendedSynth.supplyInUSD} previousValue={extendedSynth.dailySupplyInUSD} isUSD={true}/>
             {/*<Text style={{color: theme.colors.textWhite}}>Volume: ${extendedSynth.dailyVolumeInUSD} (24hrs)</Text>*/}
             {/*<Text style={{color: theme.colors.textWhite}}>Total supply: ${extendedSynth.supplyInUSD}</Text>*/}
         </View>

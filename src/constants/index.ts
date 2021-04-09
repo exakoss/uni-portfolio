@@ -1,6 +1,8 @@
+import Constants from 'expo-constants';
+
 export const DAY_IN_SECONDS:number = 86400
 export const TIMESTAMP_INTERVAL:number = 600
 export const BUNDLE_ID:string = '1'
-export const KOVAN_API_KEY:string = "https://eth-kovan.alchemyapi.io/v2/LyssMGZ01jdfyLAdBBoD-9UIrtX6f2NL"
-export const RINKEBY_API_KEY:string =  "https://eth-rinkeby.alchemyapi.io/v2/FTSE0JLLI18yIVrl_hY9i5r_Hq6ARScl"
-export const MAINNET_API_KEY:string = "https://eth-mainnet.alchemyapi.io/v2/lc3cFWLS-9LpD9DRLYxZeM7cjvunbBKj"
+export const KOVAN_API_KEY:string = Constants.manifest.extra.kovanKey
+export const RINKEBY_API_KEY:string =  Constants.manifest.extra.rinkebyKey
+export const MAINNET_API_KEY:string = Constants.manifest.extra.mainnetKey
