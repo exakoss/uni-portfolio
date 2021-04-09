@@ -34,7 +34,7 @@ const TextInput:React.FC<Props> = ({ style, error, value, ...props }) => {
     ]
 
     return <View style={StyleSheet.flatten(viewStyles as ViewStyle)}>
-        <NativeTextInput style={textInputStyle} {...props} />
+        <NativeTextInput style={textInputStyle} value={value} {...props} />
     </View>;
 };
 

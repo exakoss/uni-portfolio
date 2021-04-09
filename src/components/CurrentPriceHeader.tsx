@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Text, View} from 'react-native';
 import {RootStateOrAny, useSelector} from 'react-redux';
 import theme from '../theme';
+import {toMoney} from '../utils';
 
 type HeaderToken = 'ETH' | 'SXN'
 
@@ -30,8 +31,8 @@ const CurrentPriceHeader:React.FC<{headerToken: HeaderToken}> = ({headerToken}) 
               flexDirection: "row",
               justifyContent: 'space-evenly'
           }}>
-              <Text style={{color: theme.colors.textWhite, textAlign: "center", fontSize: theme.fontsize.normal}}> 1 ETH = ${ethPriceInUSD}</Text>
-              <Text style={{color: theme.colors.textWhite, textAlign: "center", fontSize: theme.fontsize.normal}}> 1 SNX = ${snxPriceInUSD} </Text>
+              <Text style={{color: theme.colors.textWhite, textAlign: "center", fontSize: theme.fontsize.normal}}> 1 ETH = {toMoney(ethPriceInUSD)}</Text>
+              <Text style={{color: theme.colors.textWhite, textAlign: "center", fontSize: theme.fontsize.normal}}> 1 SNX = {toMoney(snxPriceInUSD)} </Text>
           </View>
       )
 }

@@ -16,6 +16,7 @@ import {
 import {getBlock} from '../../utils';
 import {SingleTokenStat} from '../SingleTokenView';
 import LoadingScreen from '../LoadingScreen';
+import SynthTradeBar from './SynthTradeBar';
 
 
 const SingleSynthView:React.FC = () => {
@@ -83,6 +84,7 @@ const SingleSynthView:React.FC = () => {
             <SingleTokenStat title='Total supply' currentValue={extendedSynth.supplyInUSD} previousValue={extendedSynth.dailySupplyInUSD} isUSD={true}/>
             {/*<Text style={{color: theme.colors.textWhite}}>Volume: ${extendedSynth.dailyVolumeInUSD} (24hrs)</Text>*/}
             {/*<Text style={{color: theme.colors.textWhite}}>Total supply: ${extendedSynth.supplyInUSD}</Text>*/}
+            <SynthTradeBar exchangedSynth={{...extendedSynth.synth,formattedRate: extendedSynth.formattedRate}}/>
         </View>
     )
 }

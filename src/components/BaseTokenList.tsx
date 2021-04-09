@@ -3,7 +3,7 @@ import {DailyTokenData, TokenData, BasicTokenDailyPrice, PriceEntry} from '../ty
 import {View, Text, FlatList, StyleSheet, Button, TouchableOpacity} from 'react-native'
 import {RootStateOrAny, useDispatch, useSelector} from 'react-redux'
 import {addTokenId, removeTokenId} from '../reducers/tokenReducer'
-import theme from '../theme'
+import theme, {commonStyles} from '../theme'
 import {calculateETHPrice, parsePriceToFixedNumber} from '../utils'
 import { useNavigation } from '@react-navigation/native'
 import LoadingScreen from './LoadingScreen'
@@ -17,13 +17,6 @@ interface Props {
 }
 
 const styles = StyleSheet.create({
-    tile: {
-        backgroundColor: theme.colors.background,
-        display: 'flex',
-        borderRadius: 10,
-        flexDirection: 'row',
-        justifyContent: 'space-around'
-    },
     separator: {
         height: theme.distance.small,
         color: theme.colors.background
@@ -97,7 +90,7 @@ const TokenTile:React.FC<{ token: BasicTokenDailyPrice, ethPriceInUSD: number }>
     const isInList:boolean = !!(idList.tokenIds.includes(token.id))
     const currentPrice:number = calculateETHPrice(token.derivedETH, ethPriceInUSD)
     return(
-        <View style={styles.tile}>
+        <View style={commonStyles.tile}>
             <View style={styles.nameContainer}>
                 <Text style={styles.tileText}>{token.symbol}</Text>
                 <Text style={styles.nameText}>{token.name}</Text>
