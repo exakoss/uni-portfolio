@@ -10,7 +10,6 @@ import {RootStateOrAny, useSelector, useDispatch} from 'react-redux';
 import {Wallet} from 'ethers';
 import theme from '../../theme';
 import {setSeed} from '../../reducers/jsonSeedReducer';
-import CurrentETHPrice from '../CurrentETHPrice';
 
 const validationSchema = yup.object().shape({
     password: yup

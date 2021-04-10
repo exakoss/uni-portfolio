@@ -6,6 +6,7 @@ import WatchList from '../WatchList';
 import PortfolioNavigator from './PortfolioNavigator';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import SynthetixNavigator from './SynthetixNavigator';
+import TempSynthTradeWrap from '../Synth/TempSynthTradeWrap';
 
 const TabNavigator:React.FC = () => {
     const Tab = createBottomTabNavigator();
@@ -47,6 +48,16 @@ const TabNavigator:React.FC = () => {
                     tabBarLabel: 'Trading',
                     tabBarIcon: ({ color, size }) => (
                         <Ionicons name="cash" color={color} size={size} sharp/>
+                    )
+                }}
+            />
+            <Tab.Screen
+                name="TempSynthTradeWrap"
+                component={TempSynthTradeWrap}
+                options={{
+                    tabBarLabel: 'Temp',
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="cog" color={color} size={size} sharp/>
                     )
                 }}
             />

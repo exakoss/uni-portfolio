@@ -4,8 +4,7 @@ import theme from '../../theme'
 
 interface Props {
     error?: string | false,
-    style?: any,
-    value?: string
+    style?: any
 }
 
 const styles = StyleSheet.create({
@@ -25,7 +24,7 @@ const styles = StyleSheet.create({
     }
 });
 
-const TextInput:React.FC<Props> = ({ style, error, value, ...props }) => {
+const TextInput:React.FC<Props> = ({ style, error, ...props }) => {
     const textInputStyle = [style,styles.textInput];
     const viewStyles = [
         styles.border,
@@ -34,7 +33,7 @@ const TextInput:React.FC<Props> = ({ style, error, value, ...props }) => {
     ]
 
     return <View style={StyleSheet.flatten(viewStyles as ViewStyle)}>
-        <NativeTextInput style={textInputStyle} value={value} {...props} />
+        <NativeTextInput style={textInputStyle} {...props} />
     </View>;
 };
 
