@@ -1,4 +1,4 @@
-![alt logo text](https://github.com/exakoss/x-portfolio/blob/main/assets/icon.png?raw=true)
+![alt logo text](https://github.com/exakoss/x-portfolio/blob/main/assets/icon.png?raw=true?width=256&height=256)
 X PORTFOLIO MOBILE
 ***Totally mobile, free and decentralized***
 
