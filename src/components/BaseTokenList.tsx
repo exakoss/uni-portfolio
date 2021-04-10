@@ -4,7 +4,7 @@ import {View, Text, FlatList, StyleSheet, Button, TouchableOpacity} from 'react-
 import {RootStateOrAny, useDispatch, useSelector} from 'react-redux'
 import {addTokenId, removeTokenId} from '../reducers/tokenReducer'
 import theme, {commonStyles} from '../theme'
-import {calculateETHPrice, parsePriceToFixedNumber} from '../utils'
+import {calculateETHPrice, parsePriceToFixedNumber, toMoney} from '../utils'
 import { useNavigation } from '@react-navigation/native'
 import LoadingScreen from './LoadingScreen'
 
@@ -95,7 +95,7 @@ const TokenTile:React.FC<{ token: BasicTokenDailyPrice, ethPriceInUSD: number }>
                 <Text style={styles.tileText}>{token.symbol}</Text>
                 <Text style={styles.nameText}>{token.name}</Text>
             </View>
-            <Text style={styles.tileText}> ${currentPrice}</Text>
+            <Text style={styles.tileText}> {toMoney(currentPrice,3)}</Text>
             <PercentageChange currentPrice={currentPrice} dailyPrice={token.dailyPrice}/>
             <AddDeleteButton token={token} isInList={isInList}/>
         </View>

@@ -4,6 +4,7 @@ import theme from '../../theme';
 
 interface Props {
     text: string,
+    style?: any,
     onPress: () => void
 }
 
@@ -22,10 +23,10 @@ const styles = StyleSheet.create({
     }
 })
 
-const TouchableButton:React.FC<Props> = ({text,onPress}) => {
+const TouchableButton:React.FC<Props> = ({text,onPress,style}) => {
     return(
         <TouchableOpacity onPress={onPress}>
-            <View style={styles.buttonContainer}>
+            <View style={{...styles.buttonContainer,...style}}>
                 <Text style={styles.buttonText}>{text}</Text>
             </View>
         </TouchableOpacity>

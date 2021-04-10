@@ -10,19 +10,6 @@ const CurrentPriceHeader:React.FC<{headerToken: HeaderToken}> = ({headerToken}) 
     const ethPriceInUSD = useSelector((state:RootStateOrAny) => state.ethPrice.price)
     const snxPriceInUSD = useSelector((state:RootStateOrAny) => state.snxPrice.price)
 
-    // const [tokenPrice,setTokenPrice] = useState<number>(0)
-
-    // useEffect(() => {
-    //     switch (headerToken) {
-    //         case 'ETH':
-    //             setTokenPrice(ethPriceInUSD)
-    //             break;
-    //         case 'SXN':
-    //             setTokenPrice(snxPriceInUSD)
-    //             break;
-    //     }
-    // },[ethPriceInUSD, snxPriceInUSD])
-
       return(
           <View style={{
               borderBottomWidth: 1,
@@ -31,8 +18,8 @@ const CurrentPriceHeader:React.FC<{headerToken: HeaderToken}> = ({headerToken}) 
               flexDirection: "row",
               justifyContent: 'space-evenly'
           }}>
-              <Text style={{color: theme.colors.textWhite, textAlign: "center", fontSize: theme.fontsize.normal}}> 1 ETH = {toMoney(ethPriceInUSD)}</Text>
-              <Text style={{color: theme.colors.textWhite, textAlign: "center", fontSize: theme.fontsize.normal}}> 1 SNX = {toMoney(snxPriceInUSD)} </Text>
+              <Text style={{color: theme.colors.textWhite, textAlign: "center", fontSize: theme.fontsize.normal}}> 1 ETH = {toMoney(ethPriceInUSD,2)}</Text>
+              <Text style={{color: theme.colors.textWhite, textAlign: "center", fontSize: theme.fontsize.normal}}> 1 SNX = {toMoney(snxPriceInUSD,2)} </Text>
           </View>
       )
 }

@@ -82,8 +82,6 @@ const SingleSynthView:React.FC = () => {
             <SingleTokenStat title='Current price' currentValue={extendedSynth.formattedRate} previousValue={extendedSynth.formattedRateDaily} isUSD={true}/>
             <SingleTokenStat title='Volume 24 h:' currentValue={extendedSynth.volumeInUSD} previousValue={extendedSynth.dailyVolumeInUSD - extendedSynth.volumeInUSD} isUSD={true}/>
             <SingleTokenStat title='Total supply' currentValue={extendedSynth.supplyInUSD} previousValue={extendedSynth.dailySupplyInUSD} isUSD={true}/>
-            {/*<Text style={{color: theme.colors.textWhite}}>Volume: ${extendedSynth.dailyVolumeInUSD} (24hrs)</Text>*/}
-            {/*<Text style={{color: theme.colors.textWhite}}>Total supply: ${extendedSynth.supplyInUSD}</Text>*/}
             <SynthTradeBar exchangedSynth={{...extendedSynth.synth,formattedRate: extendedSynth.formattedRate}}/>
         </View>
     )

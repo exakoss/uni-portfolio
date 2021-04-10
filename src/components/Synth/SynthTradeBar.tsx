@@ -1,11 +1,11 @@
 import React, {useState,useEffect} from 'react'
-import {View, Text, TouchableOpacity} from 'react-native';
+import {View, Text, TouchableOpacity, Alert} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import theme, {commonStyles} from '../../theme';
 import TouchableButton from '../common/TouchableButton';
 import {SynthData} from '../../types';
 import FormikTextInput from '../common/FormikTextInput';
-import {Formik , useFormikContext, useField, Field} from 'formik';
+import {Formik} from 'formik';
 
 interface TradeFormikValues {
     sUSDValue: string,
@@ -15,14 +15,16 @@ interface TradeFormikValues {
 const SynthTradeBar:React.FC<{exchangedSynth: SynthData}> = ({exchangedSynth}) => {
     const initialValues:TradeFormikValues = { sUSDValue:String(exchangedSynth.formattedRate), synthValue:'1'}
     const [isInverted,setIsInverted] = useState<boolean>(false)
+    //Not exactly efficient handling of inversion, fix later with custom React components
     if (!isInverted) return (
         <View style={{flex: 1, backgroundColor: theme.colors.background}}>
             <Formik
                 initialValues={initialValues}
-                onSubmit={async (values) => alert(JSON.stringify(values,null,2))}
+                onSubmit={(values) => {}}
             >
-                {({handleSubmit, setFieldValue}) => (
+                {({handleSubmit, setFieldValue, values}) => (
                     <View>
+                        <Text style={{color: theme.colors.textWhite, textAlign: "center", fontSize: 30}}>BUY/SELL</Text>
                         <Text style={{...commonStyles.tileText, marginHorizontal:theme.distance.tiny}}>Sell: sUSD</Text>
                         <FormikTextInput name='sUSDValue'
                                          placeholder='Amount of sUSD'
@@ -40,7 +42,8 @@ const SynthTradeBar:React.FC<{exchangedSynth: SynthData}> = ({exchangedSynth}) =
                                          placeholder={`Amount of ${exchangedSynth.name}`}
                                          addOnChange={(text:string) => {setFieldValue('sUSDValue',String(Number(text) * exchangedSynth.formattedRate))}}
                         />
-                        <TouchableButton text='Trade' onPress={() => handleSubmit}/>
+                        <Text style={{...commonStyles.nameText, marginHorizontal:theme.distance.tiny}}>Exchange fee (0.30%): ${Number(values.sUSDValue) * 0.003}</Text>
+                        <TouchableButton text='Trade' onPress={() => Alert.alert(`Error: insufficient funds`)} style={{backgroundColor: theme.colors.green}}/>
                     </View>
                 )}
             </Formik>
@@ -49,9 +52,9 @@ const SynthTradeBar:React.FC<{exchangedSynth: SynthData}> = ({exchangedSynth}) =
         <View style={{flex: 1, backgroundColor: theme.colors.background}}>
             <Formik
                 initialValues={initialValues}
-                onSubmit={async (values) => alert(JSON.stringify(values,null,2))}
+                onSubmit={async (values) => Alert.alert(`Error: insufficient funds`)}
             >
-                {({handleSubmit, setFieldValue}) => (
+                {({handleSubmit, setFieldValue, values}) => (
                     <View>
                         <Text style={{...commonStyles.tileText, marginHorizontal:theme.distance.tiny}}>Sell: {exchangedSynth.name}</Text>
                         <FormikTextInput name='synthValue'
@@ -71,7 +74,8 @@ const SynthTradeBar:React.FC<{exchangedSynth: SynthData}> = ({exchangedSynth}) =
                                          placeholder='Amount of sUSD'
                                          addOnChange={(text:string) => {setFieldValue('synthValue',String(Number(text) / exchangedSynth.formattedRate))}}
                         />
-                        <TouchableButton text='Trade' onPress={() => handleSubmit}/>
+                        <Text style={{...commonStyles.nameText, marginHorizontal:theme.distance.tiny}}>Exchange fee (0.30%): ${Number(values.sUSDValue) * 0.003}</Text>
+                        <TouchableButton text='Trade' onPress={() => Alert.alert(`Error: insufficient funds`)} style={{backgroundColor: theme.colors.green}}/>
                     </View>
                 )}
             </Formik>

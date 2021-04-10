@@ -5,6 +5,7 @@ import {SynthDataDaily} from '../../types';
 import {useNavigation} from '@react-navigation/native';
 import {FlatList, Text, View, TouchableOpacity} from 'react-native';
 import theme, {commonStyles} from '../../theme';
+import {toMoney} from '../../utils';
 
 interface Props {
     synthsDaily: SynthDataDaily[],
@@ -19,7 +20,7 @@ const SynthTile:React.FC<{synthDaily: SynthDataDaily}> = ({synthDaily}) => {
                 <Text style={commonStyles.tileText}>{synthDaily.name}</Text>
                 <Text style={commonStyles.nameText}>{synthDaily.description}</Text>
             </View>
-            <Text style={commonStyles.tileText}> ${synthDaily.formattedRate}</Text>
+            <Text style={commonStyles.tileText}> {toMoney(synthDaily.formattedRate,3)}</Text>
             <PercentageChange currentPrice={synthDaily.formattedRate} dailyPrice={synthDaily.formattedRateDaily}/>
         </View>
     )

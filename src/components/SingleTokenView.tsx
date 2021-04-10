@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
 })
 
 export const SingleTokenStat:React.FC<{title:string, currentValue:number, previousValue: number, isUSD:boolean}> = ({title,currentValue,previousValue,isUSD}) => {
-    const displayedCurrentValue = isUSD ? toMoney(currentValue) : currentValue
+    const displayedCurrentValue = isUSD ? toMoney(currentValue,3) : currentValue
     return (
         <View style={styles.tokenStat}>
             <Text style={styles.headerText}>{title}</Text>
