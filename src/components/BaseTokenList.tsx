@@ -1,12 +1,12 @@
 import React from 'react'
 import {DailyTokenData, TokenData, BasicTokenDailyPrice, PriceEntry} from '../types'
 import {View, Text, FlatList, StyleSheet, Button, TouchableOpacity} from 'react-native'
-import {RootStateOrAny, useDispatch, useSelector} from 'react-redux';
-import {addTokenId, removeTokenId} from '../reducers/tokenReducer';
-import theme from '../theme'
-import {calculateETHPrice, parsePriceToFixedNumber} from '../utils';
+import {RootStateOrAny, useDispatch, useSelector} from 'react-redux'
+import {addTokenId, removeTokenId} from '../reducers/tokenReducer'
+import theme, {commonStyles} from '../theme'
+import {calculateETHPrice, parsePriceToFixedNumber, toMoney} from '../utils'
 import { useNavigation } from '@react-navigation/native'
-import LoadingScreen from './LoadingScreen';
+import LoadingScreen from './LoadingScreen'
 
 interface Props {
     tokensNow: TokenData,
@@ -17,13 +17,6 @@ interface Props {
 }
 
 const styles = StyleSheet.create({
-    tile: {
-        backgroundColor: theme.colors.background,
-        display: 'flex',
-        borderRadius: 10,
-        flexDirection: 'row',
-        justifyContent: 'space-around'
-    },
     separator: {
         height: theme.distance.small,
         color: theme.colors.background
@@ -62,11 +55,10 @@ const styles = StyleSheet.create({
     }
 })
 
-const ItemSeparator = () => <View style={styles.separator} />;
+export const ItemSeparator = () => <View style={styles.separator} />;
 
 export const PercentageChange:React.FC<{currentPrice: number, dailyPrice: number}> = ({currentPrice, dailyPrice}) => {
     if (dailyPrice === 0) return <Text style={styles.tileText}>-</Text>
-
     const pricePercDiff = 100 * ((currentPrice - dailyPrice) / ((currentPrice + dailyPrice) / 2))
     const displayedDiff = Math.abs(pricePercDiff).toFixed(2)
     if (pricePercDiff > 0) {
@@ -98,12 +90,12 @@ const TokenTile:React.FC<{ token: BasicTokenDailyPrice, ethPriceInUSD: number }>
     const isInList:boolean = !!(idList.tokenIds.includes(token.id))
     const currentPrice:number = calculateETHPrice(token.derivedETH, ethPriceInUSD)
     return(
-        <View style={styles.tile}>
+        <View style={commonStyles.tile}>
             <View style={styles.nameContainer}>
                 <Text style={styles.tileText}>{token.symbol}</Text>
                 <Text style={styles.nameText}>{token.name}</Text>
             </View>
-            <Text style={styles.tileText}> ${currentPrice}</Text>
+            <Text style={styles.tileText}> {toMoney(currentPrice,3)}</Text>
             <PercentageChange currentPrice={currentPrice} dailyPrice={token.dailyPrice}/>
             <AddDeleteButton token={token} isInList={isInList}/>
         </View>
@@ -111,11 +103,7 @@ const TokenTile:React.FC<{ token: BasicTokenDailyPrice, ethPriceInUSD: number }>
 }
 
 const BaseTokenList:React.FC<Props> = ({tokensNow,tokensDaily,ethPriceInUSD,placeholder,isLoading}) => {
-    // console.log('Passed token data:')
-    // console.log(tokensNow)
-    // console.log('Passed daily data:')
-    // console.log(tokensDaily)
-    if (isLoading) return <LoadingScreen/>
+    if (isLoading) return <LoadingScreen placeholder='Loading token data...'/>
     const navigation = useNavigation()
     if (tokensNow.tokens.length === 0 || tokensDaily.tokens.length === 0 ) return <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text style={{color: theme.colors.textWhite, fontSize: 24, textAlign: "center"}}>{placeholder}</Text></View>
     else {

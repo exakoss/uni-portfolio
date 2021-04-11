@@ -1,5 +1,6 @@
-{
-  "expo": {
+import 'dotenv/config'
+
+export default {
     "name": "uniportfolio-client",
     "slug": "uniportfolio-client",
     "version": "1.0.0",
@@ -33,6 +34,10 @@
         "ts",
         "tsx"
       ]
+    },
+    extra: {
+      mainnetKey: process.env.ALCHEMY_MAINNET_KEY,
+      kovanKey: process.env.ALCHEMY_KOVAN_KEY,
+      rinkebyKey: process.env.ALCHEMY_RINKEBY_KEY
     }
   }
-}

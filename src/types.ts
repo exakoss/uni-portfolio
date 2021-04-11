@@ -1,3 +1,6 @@
+import {Wallet} from 'ethers'
+import {Synth} from '@synthetixio/js';
+
 //Crypto entities
 export type Id = string
 
@@ -51,6 +54,10 @@ export interface Block {
     timestamp: number
 }
 
+export interface BlockOption {
+    blockTag: number
+}
+
 export interface Bundle {
     ethPrice: string
 }
@@ -74,6 +81,25 @@ export interface UnitedTokenData {
 export interface ExtendedTokenData {
     tokens: ExtendedTokenEntry[]
 }
+
+export interface SynthData extends Synth {
+    formattedRate: number
+}
+
+export interface SynthDataDaily extends SynthData {
+    formattedRateDaily : number
+}
+
+export interface SynthDataExtended {
+    synth: Synth,
+    formattedRate: number,
+    formattedRateDaily :number,
+    supplyInUSD:number,
+    dailySupplyInUSD:number,
+    volumeInUSD:number,
+    dailyVolumeInUSD:number
+}
+
 //Redux states and actions
 export interface TokenState {
     tokenIds: BasicToken['id'][]
@@ -85,6 +111,15 @@ export interface ETHAction {
 }
 
 export interface ETHState {
+    price: number
+}
+
+export interface SNXAction {
+    type: 'SET_SNX_PRICE',
+    data: number
+}
+
+export interface SNXState {
     price: number
 }
 
@@ -100,4 +135,22 @@ export interface dailyBlockState {
 export interface dailyBlockAction {
     type: 'SET_DAILY_BLOCK',
     data: number
+}
+
+export interface WalletState {
+    wallet: Wallet | {};
+}
+
+export interface WalletAction {
+    type: 'SET_WALLET',
+    data: Wallet
+}
+
+export interface SeedState {
+    seed: string
+}
+
+export interface SeedAction {
+    type: 'SET_SEED',
+    data: string
 }

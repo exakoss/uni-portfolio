@@ -7,6 +7,7 @@ import { useRoute } from '@react-navigation/native';
 import theme from '../theme';
 import {PercentageChange} from './BaseTokenList';
 import {toMoney} from '../utils';
+import LoadingScreen from './LoadingScreen';
 
 const {height} = Dimensions.get('window')
 
@@ -15,12 +16,12 @@ const styles = StyleSheet.create({
         color: theme.colors.textWhite,
         fontSize: theme.fontsize.normal
     },
-    mainHeader: {
-        color: theme.colors.textWhite,
-        fontSize: theme.fontsize.large,
-        textAlign: 'center',
-        marginTop: theme.distance.small
-    },
+    // mainHeader: {
+    //     color: theme.colors.textWhite,
+    //     fontSize: theme.fontsize.large,
+    //     textAlign: 'center',
+    //     marginTop: theme.distance.small
+    // },
     headerText: {
         color: theme.colors.textWhite,
         fontSize: theme.fontsize.big,
@@ -35,8 +36,8 @@ const styles = StyleSheet.create({
     }
 })
 
-const SingleTokenStat:React.FC<{title:string, currentValue:number, previousValue: number, isUSD:boolean}> = ({title,currentValue,previousValue,isUSD}) => {
-    const displayedCurrentValue = isUSD ? toMoney(currentValue) : currentValue
+export const SingleTokenStat:React.FC<{title:string, currentValue:number, previousValue: number, isUSD:boolean}> = ({title,currentValue,previousValue,isUSD}) => {
+    const displayedCurrentValue = isUSD ? toMoney(currentValue,3) : currentValue
     return (
         <View style={styles.tokenStat}>
             <Text style={styles.headerText}>{title}</Text>
@@ -51,6 +52,7 @@ const SingleTokenStat:React.FC<{title:string, currentValue:number, previousValue
 const SingleTokenView:React.FC = () => {
     //Extracting tokenId from the route params
     const route = useRoute();
+    //@ts-ignore
     const { tokenId, tokenSymbol, tokenName } = route.params
     const initialState:ExtendedToken = {
         id:tokenId || '',
@@ -70,6 +72,7 @@ const SingleTokenView:React.FC = () => {
     }
 
     const [extendedToken, setExtendedToken] = useState<ExtendedToken>(initialState)
+    const [isLoading, setIsLoading] = useState<boolean>(true)
     const currentETHPrice = useSelector((state:RootStateOrAny) => state.ethPrice.price)
     const dailyBlockNumber = useSelector((state:RootStateOrAny) => state.dailyBlock.blockNumber)
 
@@ -115,10 +118,12 @@ const SingleTokenView:React.FC = () => {
                 oneDayTxs: oneDayTxs,
                 twoDaysTxs: twoDaysTxs
             })
+            setIsLoading(false)
         }
         updateTokenData()
     },[])
 
+    if (isLoading) return <LoadingScreen placeholder='Loading token data...'/>
     return (
         <View style={{height: height, flex: 1, backgroundColor: theme.colors.background}}>
             <Text style={styles.headerText}>{extendedToken.name}</Text>
@@ -126,11 +131,6 @@ const SingleTokenView:React.FC = () => {
             <SingleTokenStat title='Total Liquidity' currentValue={extendedToken.currentLiquidity} previousValue={extendedToken.oneDayLiquidity} isUSD={true}/>
             <SingleTokenStat title='Volume (24hrs)' currentValue={extendedToken.currentUntrackedVolume - extendedToken.oneDayUntrackedVolume} previousValue={extendedToken.oneDayUntrackedVolume - extendedToken.twoDaysUntrackedVolume} isUSD={true}/>
             <SingleTokenStat title='Transactions (24hrs)' currentValue={extendedToken.currentTxs - extendedToken.oneDayTxs} previousValue={extendedToken.oneDayTxs - extendedToken.twoDaysTxs} isUSD={false}/>
-            {/*<Text style={styles.tileText}>Current price: ${extendedToken.currentPrice}</Text>*/}
-            {/*<Text style={styles.tileText}>Previous day price: ${extendedToken.oneDayPrice}</Text>*/}
-            {/*<Text style={styles.tileText}>Current liquidity: ${extendedToken.currentLiquidity}</Text>*/}
-            {/*<Text style={styles.tileText}>Current volume: ${extendedToken.currentUntrackedVolume - extendedToken.oneDayUntrackedVolume}</Text>*/}
-            {/*<Text style={styles.tileText}>Transactions 24hrs: {extendedToken.currentTxs - extendedToken.oneDayTxs}</Text>*/}
         </View>
     )
 }

@@ -12,7 +12,7 @@ import dayjs from 'dayjs';
 import {TokenData, DailyTokenData, ExtendedTokenData} from '../types';
 import {client} from '../graphql/client';
 
-type GetBlockProp = 'ONE_DAY' | 'TWO_DAYS'
+export type GetBlockProp = 'ONE_DAY' | 'TWO_DAYS' | 'CURRENT_DAY'
 
 //Get a single block from a timestamp
 export const getBlockFromTimestamp = async (timestamp: number) => {
@@ -39,6 +39,11 @@ export const getTimestamp = (period:GetBlockProp):number => {
     } else if (period === 'TWO_DAYS') {
         day = utcCurrentTime
             .subtract(2,'day')
+            .startOf('minute')
+            .unix()
+    } else if (period === 'CURRENT_DAY') {
+        day = utcCurrentTime
+            .subtract(30,'seconds')
             .startOf('minute')
             .unix()
     }
@@ -110,6 +115,6 @@ export const calculateETHPrice = (derivedETH:string,ethPriceInUSD:number):number
     return Number((parseFloat(derivedETH) * ethPriceInUSD).toFixed(4))
 }
 
-export const toMoney = (value:number):string => {
-    return '$' + value.toFixed(3).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
+export const toMoney = (value:number,position:number):string => {
+    return '$' + value.toFixed(position).replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,")
 }

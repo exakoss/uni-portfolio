@@ -3,9 +3,8 @@ import {TextInput as NativeTextInput, StyleSheet, View, ViewStyle} from 'react-n
 import theme from '../../theme'
 
 interface Props {
-    error?: string,
-    style?: any,
-    value?: string
+    error?: string | false,
+    style?: any
 }
 
 const styles = StyleSheet.create({
@@ -18,11 +17,15 @@ const styles = StyleSheet.create({
     },
     warningBorder: {
         borderColor: theme.colors.warning
+    },
+    textInput: {
+        height: 36,
+        fontSize: 24,
     }
 });
 
-const TextInput:React.FC<Props> = ({ style, error, value, ...props }) => {
-    const textInputStyle = [style];
+const TextInput:React.FC<Props> = ({ style, error, ...props }) => {
+    const textInputStyle = [style,styles.textInput];
     const viewStyles = [
         styles.border,
         styles.input,
