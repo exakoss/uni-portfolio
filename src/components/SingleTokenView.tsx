@@ -7,6 +7,7 @@ import { useRoute } from '@react-navigation/native';
 import theme from '../theme';
 import {PercentageChange} from './BaseTokenList';
 import {toMoney} from '../utils';
+import LoadingScreen from './LoadingScreen';
 
 const {height} = Dimensions.get('window')
 
@@ -71,6 +72,7 @@ const SingleTokenView:React.FC = () => {
     }
 
     const [extendedToken, setExtendedToken] = useState<ExtendedToken>(initialState)
+    const [isLoading, setIsLoading] = useState<boolean>(true)
     const currentETHPrice = useSelector((state:RootStateOrAny) => state.ethPrice.price)
     const dailyBlockNumber = useSelector((state:RootStateOrAny) => state.dailyBlock.blockNumber)
 
@@ -116,10 +118,12 @@ const SingleTokenView:React.FC = () => {
                 oneDayTxs: oneDayTxs,
                 twoDaysTxs: twoDaysTxs
             })
+            setIsLoading(false)
         }
         updateTokenData()
     },[])
 
+    if (isLoading) return <LoadingScreen placeholder='Loading token data...'/>
     return (
         <View style={{height: height, flex: 1, backgroundColor: theme.colors.background}}>
             <Text style={styles.headerText}>{extendedToken.name}</Text>

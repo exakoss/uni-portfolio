@@ -15,7 +15,8 @@ interface TradeFormikValues {
 const SynthTradeBar:React.FC<{exchangedSynth: SynthData}> = ({exchangedSynth}) => {
     const initialValues:TradeFormikValues = { sUSDValue:String(exchangedSynth.formattedRate), synthValue:'1'}
     const [isInverted,setIsInverted] = useState<boolean>(false)
-    //Not exactly efficient handling of inversion, fix later with custom React components
+    //My eyes are bleeding while writing this code but it works for now
+    //Fix later with custom React components and Formik fields
     if (!isInverted) return (
         <View style={{flex: 1, backgroundColor: theme.colors.background}}>
             <Formik
@@ -56,6 +57,7 @@ const SynthTradeBar:React.FC<{exchangedSynth: SynthData}> = ({exchangedSynth}) =
             >
                 {({handleSubmit, setFieldValue, values}) => (
                     <View>
+                        <Text style={{color: theme.colors.textWhite, textAlign: "center", fontSize: 30}}>BUY/SELL</Text>
                         <Text style={{...commonStyles.tileText, marginHorizontal:theme.distance.tiny}}>Sell: {exchangedSynth.name}</Text>
                         <FormikTextInput name='synthValue'
                                          placeholder={`Amount of ${exchangedSynth.name}`}

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, ScrollView} from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import theme from '../../theme';
 import {SynthDataExtended} from '../../types';
@@ -72,18 +72,20 @@ const SingleSynthView:React.FC = () => {
     },[])
     if (isLoading) return <LoadingScreen placeholder='Loading synth data...'/>
     return (
-        <View style={{flex: 1,backgroundColor: theme.colors.background}}>
-            <Text style={{
-                color: theme.colors.textWhite,
-                fontSize: theme.fontsize.big,
-                textAlign: 'center',
-                marginBottom: theme.distance.tiny
-            }}>{extendedSynth.synth.description}</Text>
-            <SingleTokenStat title='Current price' currentValue={extendedSynth.formattedRate} previousValue={extendedSynth.formattedRateDaily} isUSD={true}/>
-            <SingleTokenStat title='Volume 24 h:' currentValue={extendedSynth.volumeInUSD} previousValue={extendedSynth.dailyVolumeInUSD - extendedSynth.volumeInUSD} isUSD={true}/>
-            <SingleTokenStat title='Total supply' currentValue={extendedSynth.supplyInUSD} previousValue={extendedSynth.dailySupplyInUSD} isUSD={true}/>
-            <SynthTradeBar exchangedSynth={{...extendedSynth.synth,formattedRate: extendedSynth.formattedRate}}/>
-        </View>
+        <ScrollView style={{flex: 1,backgroundColor: theme.colors.background}}>
+            <View style={{flex: 1,backgroundColor: theme.colors.background}}>
+                <Text style={{
+                    color: theme.colors.textWhite,
+                    fontSize: theme.fontsize.big,
+                    textAlign: 'center',
+                    marginBottom: theme.distance.tiny
+                }}>{extendedSynth.synth.description}</Text>
+                <SingleTokenStat title='Current price' currentValue={extendedSynth.formattedRate} previousValue={extendedSynth.formattedRateDaily} isUSD={true}/>
+                <SingleTokenStat title='Volume 24 h:' currentValue={extendedSynth.volumeInUSD} previousValue={extendedSynth.dailyVolumeInUSD - extendedSynth.volumeInUSD} isUSD={true}/>
+                <SingleTokenStat title='Total supply' currentValue={extendedSynth.supplyInUSD} previousValue={extendedSynth.dailySupplyInUSD} isUSD={true}/>
+                <SynthTradeBar exchangedSynth={{...extendedSynth.synth,formattedRate: extendedSynth.formattedRate}}/>
+            </View>
+        </ScrollView>
     )
 }
 

@@ -1,6 +1,7 @@
 ![alt logo text](https://github.com/exakoss/x-portfolio/blob/synthetix_integration/assets/xportfolio256.png?raw=true)
+
 X PORTFOLIO MOBILE
-***Totally mobile, free and decentralized***
+***Totally free and mobile DeFi platform***
 
 **Functionality**:
 
