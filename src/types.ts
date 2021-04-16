@@ -1,5 +1,5 @@
 import {Wallet} from 'ethers'
-import {Synth} from '@synthetixio/js';
+import {Network, Synth} from '@synthetixio/js';
 
 //Crypto entities
 export type Id = string
@@ -62,6 +62,7 @@ export interface Bundle {
     ethPrice: string
 }
 
+export type NetworkString = keyof typeof Network
 //Fetched data entities based on crypto entities
 
 export interface TokenData {
@@ -138,7 +139,7 @@ export interface dailyBlockAction {
 }
 
 export interface WalletState {
-    wallet: Wallet | {};
+    wallet: Wallet | undefined;
 }
 
 export interface WalletAction {

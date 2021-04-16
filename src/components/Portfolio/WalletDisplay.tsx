@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {View, Text, TouchableOpacity, Alert, Picker, PickerIOS} from 'react-native';
 import 'react-native-get-random-values'
 import "@ethersproject/shims"
-import {Wallet, BigNumber} from 'ethers';
+import {Wallet, BigNumber, ethers} from 'ethers';
 import {RootStateOrAny, useSelector} from 'react-redux';
 import Clipboard from 'expo-clipboard';
 import {Ionicons} from '@expo/vector-icons';
@@ -11,6 +11,7 @@ import {getCurrentBalance} from '../../utils/ethersTools';
 import LoadingScreen from '../LoadingScreen';
 import BaseTokenList from '../BaseTokenList';
 import {UnitedTokenData} from '../../types';
+import {toMoney} from '../../utils';
 
 const initialTokenData:UnitedTokenData = {
     tokenData:{
@@ -55,14 +56,15 @@ const WalletDisplay:React.FC = () => {
     const [isLoading,setIsLoading] = useState<boolean>(true)
     const [selectedValue, setSelectedValue] = useState<"ERC20" | "ERC721">("ERC20");
 
+    //Fix current balance to be displayed as a number
     useEffect(() => {
         const updateCurrentBalance = async () => {
             const newBalance:BigNumber = await getCurrentBalance(wallet)
-            setCurrentBalance(newBalance.toNumber())
+            setCurrentBalance(Number(ethers.utils.formatEther(newBalance)))
         }
         updateCurrentBalance()
         setIsLoading(false)
-    },[])
+    },[wallet])
 
     if (isLoading) return <LoadingScreen placeholder='Loading wallet data...'/>
     return(
@@ -73,7 +75,7 @@ const WalletDisplay:React.FC = () => {
             </View>
             <View style={{alignItems:'center'}}>
                 <Text style={{color:theme.colors.textWhite, fontSize: theme.fontsize.big}}>{currentBalance} ETH</Text>
-                <Text style={{color:theme.colors.textSecondary, fontSize: theme.fontsize.big}}>${currentBalance * ethPriceInUSD}</Text>
+                <Text style={{color:theme.colors.textSecondary, fontSize: theme.fontsize.big}}>{toMoney(currentBalance*ethPriceInUSD,2)}</Text>
             </View>
             {/*Fix picker on iOS and look at AirBnb app for inspiration*/}
             <View style={{flex: 1, alignItems: "center", marginTop: -25}}>

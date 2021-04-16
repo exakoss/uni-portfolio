@@ -2,7 +2,7 @@ import {WalletAction, WalletState} from '../types';
 import {Wallet} from 'ethers'
 
 const initialState:WalletState = {
-    wallet: {}
+    wallet: undefined
 }
 
 //Reducer

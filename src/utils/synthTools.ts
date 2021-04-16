@@ -1,14 +1,19 @@
 import {Network, Synth, synthetix, SynthetixJS} from '@synthetixio/js'
 import {createMainnetProvider} from './ethersTools';
-import {BlockOption, SynthData} from '../types';
-import {getBlock} from './index';
-import {GetBlockProp} from './index';
+import {BlockOption, NetworkString, SynthData} from '../types';
+import {getBlock, GetBlockProp} from './index';
+import {store} from '../store';
 //@ts-ignore
 import snxData from 'synthetix-data'
 
 export const createMainnetSnxjs = () => {
     const mainnetProvider = createMainnetProvider()
     return synthetix({network: Network.Mainnet, provider: mainnetProvider})
+}
+
+export const createConnectedSnxjs = () => {
+    const wallet = store.getState().wallet.wallet
+    if (wallet) return synthetix({signer: wallet})
 }
 
 export const listAllSynths = (snxjs:SynthetixJS):Synth[] => {

@@ -3,7 +3,7 @@ import {View, Button, Text, ScrollView} from 'react-native';
 import { useNavigation } from '@react-navigation/native'
 import theme from '../../theme';
 import { Wallet } from 'ethers'
-import {createRinkebyWallet} from '../../utils/ethersTools';
+import {createKovanWallet, createRinkebyWallet} from '../../utils/ethersTools';
 import LoadingScreen from '../LoadingScreen';
 import {RootStateOrAny, useDispatch, useSelector} from 'react-redux';
 import {setWallet} from '../../reducers/walletReducer';
@@ -11,7 +11,9 @@ import TouchableButton from '../common/TouchableButton';
 
 export const MnemonicPhraseView:React.FC<{phrase: string| undefined}> = ({phrase}) => {
     if (!phrase) return null
-    const mnemonicPhrase = phrase.split(" ")
+    // console.log(phrase)
+    const mnemonicPhrase = phrase.split(" ",12)
+    // console.log(mnemonicPhrase)
     return(
         <View style={{flexDirection:"row", flexWrap:"wrap", justifyContent:'center', marginTop:theme.distance.normal}}>
             {mnemonicPhrase.map(w => {
@@ -41,13 +43,14 @@ const Mnemonic:React.FC = () => {
     const [isLoading,setIsLoading] = useState<boolean>(true)
 
     useEffect(() => {
-        const newWallet = createRinkebyWallet()
+        // const newWallet = createRinkebyWallet()
+        const newWallet = createKovanWallet()
         dispatch(setWallet(newWallet))
         setIsLoading(false)
     },[])
     const connectedWallet = useSelector((state:RootStateOrAny) => state.wallet.wallet)
-    if (isLoading) return <LoadingScreen placeholder='Generating a wallet...'/>
 
+    if (isLoading) return <LoadingScreen placeholder='Generating a wallet...'/>
     return(
         <View style={{flex: 1,backgroundColor: theme.colors.background, alignItems: "center", justifyContent:'center'}}>
             <View style={{marginHorizontal: theme.distance.small}}>
