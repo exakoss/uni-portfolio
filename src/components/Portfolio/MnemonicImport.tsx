@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, Text} from 'react-native';
 import theme, {commonStyles} from '../../theme';
 import FormikTextInput from '../common/FormikTextInput';
@@ -17,6 +17,14 @@ const MnemonicImport:React.FC = () => {
     const dispatch = useDispatch()
     const [currentPhrase,setCurrentPhrase] = useState('')
     const [isLoading,setIsLoading] = useState<boolean>(false)
+    const [isEditable,setIsEditable] = useState<boolean>(true)
+
+
+    useEffect(() => {
+        if (currentPhrase.split(' ').length === 12) {
+            setIsEditable(false)
+        }
+    },[currentPhrase])
 
     const onSubmit = () => {
         setIsLoading(true)
@@ -25,8 +33,7 @@ const MnemonicImport:React.FC = () => {
         dispatch(setWallet(newWallet))
         navigation.navigate('PasswordInput')
     }
-
-    if (isLoading) return <LoadingScreen placeholder='Generating a wallet...'/>
+    if (isLoading) return <View style={{flex: 1}}><LoadingScreen placeholder='Generating a wallet...'/></View>
     return(
         <View style={{flex: 1, backgroundColor: theme.colors.background, paddingTop: theme.distance.small}}>
             <Formik initialValues={{phraseWord:''}} onSubmit={onSubmit}>
@@ -35,6 +42,7 @@ const MnemonicImport:React.FC = () => {
                         <FormikTextInput name='phraseWord'
                                          //@ts-ignore
                                          autoCapitalize="none"
+                                         editable={isEditable}
                                          placeholder='Input your mnemonic phrase here'
                                          addOnChange={(text) => {
                             if (text.slice(-1) === ' ') {
