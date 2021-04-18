@@ -28,6 +28,10 @@ export const getCurrentBalance = async (wallet:Wallet) => {
     return await wallet.getBalance()
 }
 
+export const getCurrentGas = async (wallet:Wallet) => {
+    return await wallet.getGasPrice()
+}
+
 export const getContractCurrentBalance = async (wallet:Wallet,contract:Contract) => {
     return await contract.balanceOf()
 }

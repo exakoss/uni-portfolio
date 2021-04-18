@@ -3,7 +3,7 @@ import {View, Button, Text, ScrollView} from 'react-native';
 import { useNavigation } from '@react-navigation/native'
 import theme from '../../theme';
 import { Wallet } from 'ethers'
-import {createKovanWallet, createRinkebyWallet} from '../../utils/ethersTools';
+import {createKovanWallet, createRinkebyWallet, createMainnetWallet} from '../../utils/ethersTools';
 import LoadingScreen from '../LoadingScreen';
 import {RootStateOrAny, useDispatch, useSelector} from 'react-redux';
 import {setWallet} from '../../reducers/walletReducer';
@@ -45,6 +45,7 @@ const Mnemonic:React.FC = () => {
     useEffect(() => {
         // const newWallet = createRinkebyWallet()
         const newWallet = createKovanWallet()
+        // const newWallet = createMainnetWallet()
         dispatch(setWallet(newWallet))
         setIsLoading(false)
     },[])

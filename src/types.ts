@@ -1,5 +1,6 @@
 import {Wallet} from 'ethers'
 import {Network, Synth} from '@synthetixio/js';
+import {bool} from 'yup';
 
 //Crypto entities
 export type Id = string
@@ -154,4 +155,13 @@ export interface SeedState {
 export interface SeedAction {
     type: 'SET_SEED',
     data: string
+}
+
+export interface ModalState {
+    visible: boolean
+}
+
+export interface ModalAction {
+    type: 'SET_VISIBILITY',
+    data: boolean
 }

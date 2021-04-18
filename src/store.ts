@@ -9,6 +9,7 @@ import dailyBlockReducer from './reducers/dailyBlockReducer';
 import walletReducer from './reducers/walletReducer';
 import seedReducer from './reducers/jsonSeedReducer';
 import snxPriceReducer from './reducers/snxPriceReducer';
+import modalReducer from './reducers/modalReducer';
 
 // Since current ETH price and the number of block that
 // was mined 24 hrs ago are being used virtually by
@@ -26,7 +27,8 @@ const reducer = combineReducers({
     snxPrice: snxPriceReducer,
     wallet: walletReducer,
     dailyBlock: dailyBlockReducer,
-    seed: seedReducer
+    seed: seedReducer,
+    modal: modalReducer
 })
 
 const composeEnhancers = composeWithDevTools({ trace: true})
