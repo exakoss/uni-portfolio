@@ -7,6 +7,7 @@ import theme, {commonStyles} from '../theme'
 import {calculateETHPrice, parsePriceToFixedNumber, toMoney} from '../utils'
 import { useNavigation } from '@react-navigation/native'
 import LoadingScreen from './LoadingScreen'
+import {PercentageChange} from './TokenList';
 
 interface Props {
     tokensNow: TokenData,
@@ -57,16 +58,16 @@ const styles = StyleSheet.create({
 
 export const ItemSeparator = () => <View style={styles.separator} />;
 
-export const PercentageChange:React.FC<{currentPrice: number, dailyPrice: number}> = ({currentPrice, dailyPrice}) => {
-    if (dailyPrice === 0) return <Text style={styles.tileText}>-</Text>
-    const pricePercDiff = 100 * ((currentPrice - dailyPrice) / ((currentPrice + dailyPrice) / 2))
-    const displayedDiff = Math.abs(pricePercDiff).toFixed(2)
-    if (pricePercDiff > 0) {
-        return <Text style={styles.positivePercentage}>{displayedDiff}%</Text>
-    } else {
-        return <Text style={styles.negativePercentage}>{displayedDiff}%</Text>
-    }
-}
+// export const PercentageChange:React.FC<{currentPrice: number, dailyPrice: number}> = ({currentPrice, dailyPrice}) => {
+//     if (dailyPrice === 0) return <Text style={styles.tileText}>-</Text>
+//     const pricePercDiff = 100 * ((currentPrice - dailyPrice) / ((currentPrice + dailyPrice) / 2))
+//     const displayedDiff = Math.abs(pricePercDiff).toFixed(2)
+//     if (pricePercDiff > 0) {
+//         return <Text style={styles.positivePercentage}>{displayedDiff}%</Text>
+//     } else {
+//         return <Text style={styles.negativePercentage}>{displayedDiff}%</Text>
+//     }
+// }
 
 const AddDeleteButton:React.FC<{token: BasicTokenDailyPrice, isInList: boolean}> = ({token,isInList}) => {
     const dispatch = useDispatch()

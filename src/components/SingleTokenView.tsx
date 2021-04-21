@@ -5,7 +5,7 @@ import {getETHPrice, getTokenDataById, getBlock, calculateETHPrice, parsePriceTo
 import {RootStateOrAny, useSelector} from 'react-redux';
 import { useRoute } from '@react-navigation/native';
 import theme from '../theme';
-import {PercentageChange} from './BaseTokenList';
+import {PercentageChange} from './TokenList';
 import {toMoney} from '../utils';
 import LoadingScreen from './LoadingScreen';
 

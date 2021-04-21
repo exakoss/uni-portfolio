@@ -19,7 +19,7 @@ const FormikTextInput:React.FC<{name:string, placeholder:string, addOnChange?: (
 
 
     return (
-        <View style={{marginBottom: theme.distance.tiny, marginHorizontal: theme.distance.tiny}}>
+        <View style={{margin: theme.distance.tiny}}>
             <TextInput
                 //@ts-ignore
                 onChangeText={(value:string) => {

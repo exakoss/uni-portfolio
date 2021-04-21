@@ -6,7 +6,7 @@ import WatchList from '../WatchList';
 import PortfolioNavigator from './PortfolioNavigator';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import SynthetixNavigator from './SynthetixNavigator';
-// import TempSynthTradeWrap from '../Synth/TempSynthTradeWrap';
+import FormikSearchBar from '../FormikSearchBar';
 
 const TabNavigator:React.FC = () => {
     const Tab = createBottomTabNavigator();
@@ -28,6 +28,16 @@ const TabNavigator:React.FC = () => {
                 tabBarLabel: 'Search',
                     tabBarIcon: ({ color, size }) => (
                     <Ionicons name="search" color={color} size={size} sharp/>
+                    )
+                }}
+            />
+            <Tab.Screen
+                name="FormikSearch"
+                component={FormikSearchBar}
+                options={{
+                    tabBarLabel: 'Formik Search',
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="search-circle" color={color} size={size} sharp/>
                     )
                 }}
             />

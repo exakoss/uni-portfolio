@@ -28,7 +28,6 @@ export interface ExtendedTokenEntry extends BasicToken {
     untrackedVolumeUSD: string,
     totalLiquidity: string,
     txCount: string
-
 }
 
 export interface ExtendedToken extends NoDerivedETHBasicToken {
@@ -92,14 +91,20 @@ export interface SynthDataDaily extends SynthData {
     formattedRateDaily : number
 }
 
+export interface TokenListEntry extends SynthDataDaily {
+    quantity?: number,
+    address?: string,
+    dataSource: 'UNI' | 'SYNTH'
+}
+
 export interface SynthDataExtended {
     synth: Synth,
     formattedRate: number,
-    formattedRateDaily :number,
-    supplyInUSD:number,
-    dailySupplyInUSD:number,
-    volumeInUSD:number,
-    dailyVolumeInUSD:number
+    formattedRateDaily: number,
+    supplyInUSD: number,
+    dailySupplyInUSD: number,
+    volumeInUSD: number,
+    dailyVolumeInUSD: number
 }
 
 //Redux states and actions

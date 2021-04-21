@@ -1,16 +1,15 @@
-import {blockClient} from '../graphql/client';
+import {blockClient, client} from '../graphql/client';
 import {TIMESTAMP_INTERVAL} from '../constants';
 import {
-    FETCH_TOKENS_BY_NAME,
-    GET_BLOCK,
+    ETH_PRICE,
     FETCH_DAILY_PRICES_BY_ID,
-    FETCH_TOKENS_BY_ID,
     FETCH_TOKEN_DATA_BY_ID,
-    ETH_PRICE
+    FETCH_TOKENS_BY_ID,
+    FETCH_TOKENS_BY_NAME,
+    GET_BLOCK
 } from '../graphql/queries';
 import dayjs from 'dayjs';
-import {TokenData, DailyTokenData, ExtendedTokenData} from '../types';
-import {client} from '../graphql/client';
+import {DailyTokenData, ExtendedTokenData, TokenData, TokenListEntry} from '../types';
 
 export type GetBlockProp = 'ONE_DAY' | 'TWO_DAYS' | 'CURRENT_DAY'
 
@@ -96,6 +95,25 @@ export const getDailyQuotesByID = async (tokenIds:string[],blockNumber:number): 
         fetchPolicy: 'network-only'
     })
     return result.data
+}
+
+export const transformUNIQuotesToTokenListEntry = (tokensNow:TokenData,tokensDaily:DailyTokenData,currentETHPrice:number):TokenListEntry[] => {
+    const dailyETHPriceInUSD:number = parsePriceToFixedNumber(tokensDaily.bundles[0].ethPrice)
+    return tokensNow.tokens.map(t1 => {
+        const t2 = tokensDaily.tokens.find(t => t.id === t1.id)
+        return {
+            dataSource: 'UNI',
+            formattedRate: calculateETHPrice(t1.derivedETH, currentETHPrice),
+            name: t1.symbol,
+            asset: t1.symbol,
+            description: t1.name,
+            category: 'crypto',
+            sign: '',
+            address: t1.id,
+            // @ts-ignore
+            formattedRateDaily: calculateETHPrice(t2.derivedETH,dailyETHPriceInUSD),
+        }
+    })
 }
 
 export const getTokenDataById = async (tokenId:string, blockNumber?:number): Promise<ExtendedTokenData> => {

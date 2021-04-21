@@ -78,7 +78,7 @@ const WalletDisplay:React.FC = () => {
                 <Text style={{color:theme.colors.textWhite, fontSize: theme.fontsize.big}}>{currentBalance} ETH</Text>
                 <Text style={{color:theme.colors.textSecondary, fontSize: theme.fontsize.big}}>{toMoney(currentBalance*ethPriceInUSD,2)}</Text>
             </View>
-            <BuysUSD/>
+            {/*<BuysUSD/>*/}
             {/*Fix picker on iOS and look at AirBnb app for inspiration*/}
             <View style={{flex: 1, alignItems: "center", marginTop: -25}}>
                 <Picker

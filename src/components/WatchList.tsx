@@ -43,7 +43,7 @@ const WatchList:React.FC = () => {
     if (isLoading) return <LoadingScreen placeholder='Loading token data...'/>
     return(
         <View style={{flex: 1,height: height}}>
-            <CurrentPriceHeader headerToken='ETH'/>
+            <CurrentPriceHeader/>
             <BaseTokenList tokensNow={unitedTokenData.tokenData} ethPriceInUSD={ethPriceInUSD} tokensDaily={unitedTokenData.dailyTokenData} placeholder={listPlaceholder} isLoading={isLoading}/>
         </View>
     )

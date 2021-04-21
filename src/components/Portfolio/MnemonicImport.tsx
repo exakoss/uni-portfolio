@@ -33,9 +33,9 @@ const MnemonicImport:React.FC = () => {
         dispatch(setWallet(newWallet))
         navigation.navigate('PasswordInput')
     }
-    if (isLoading) return <View style={{flex: 1}}><LoadingScreen placeholder='Generating a wallet...'/></View>
+    if (isLoading) return <LoadingScreen placeholder='Generating a wallet...'/>
     return(
-        <View style={{flex: 1, backgroundColor: theme.colors.background, paddingTop: theme.distance.small}}>
+        <View style={{flex: 1, backgroundColor: theme.colors.background}}>
             <Formik initialValues={{phraseWord:''}} onSubmit={onSubmit}>
                 {({handleSubmit, setFieldValue}) => (
                     <View>

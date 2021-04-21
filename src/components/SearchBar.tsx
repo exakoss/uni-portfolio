@@ -30,12 +30,12 @@ const SearchBar:React.FC = () => {
     const [isLoading,setIsLoading] = useState<boolean>(false)
     const ethPriceInUSD = useSelector((state:RootStateOrAny) => state.ethPrice.price)
     const dailyBlockNumber = useSelector((state:RootStateOrAny) => state.dailyBlock.blockNumber)
-    console.log(`Daily block from the state: ${dailyBlockNumber}`)
+    // console.log(`Daily block from the state: ${dailyBlockNumber}`)
     const listPlaceholder = 'Please input a ticker in the searchbar...'
 
     return(
         <View style={{flex: 1, height: height}}>
-            <CurrentPriceHeader headerToken='ETH'/>
+            <CurrentPriceHeader/>
             <TextInput
             //This is ugly but works for now. Rebuild later with useEffect and useDebounce
             //@ts-ignore

@@ -1,13 +1,14 @@
 import React from 'react'
 import {FlatList, Text, View, TouchableOpacity, Alert} from 'react-native';
 import LoadingScreen from '../LoadingScreen';
-import {ItemSeparator, PercentageChange} from '../BaseTokenList';
+import {ItemSeparator} from '../BaseTokenList';
 import {SynthDataDaily} from '../../types';
 import {useNavigation} from '@react-navigation/native';
 import theme, {commonStyles} from '../../theme';
 import {toMoney} from '../../utils';
 import {Wallet} from 'ethers';
 import {RootStateOrAny, useSelector} from 'react-redux';
+import {PercentageChange} from '../TokenList';
 
 interface Props {
     synthsDaily: SynthDataDaily[],
@@ -31,14 +32,14 @@ const SynthTile:React.FC<{synthDaily: SynthDataDaily}> = ({synthDaily}) => {
 const SynthList:React.FC<Props> = ({placeholder,isLoading,synthsDaily}) => {
     if (isLoading) return <LoadingScreen placeholder='Loading synth data...'/>
     const navigation = useNavigation()
-    const wallet:Wallet | {} = useSelector((state:RootStateOrAny) => state.wallet.wallet)
+    const wallet:Wallet | undefined = useSelector((state:RootStateOrAny) => state.wallet.wallet)
     console.log('wallet in synth list')
 
     console.log(wallet)
     if (synthsDaily.length === 0) return <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}><Text style={{color: theme.colors.textWhite, fontSize: 24, textAlign: "center"}}>{placeholder}</Text></View>
 
-    const handleNavigationToSynthTile = (wallet:Wallet | {},synthName:string) => {
-        if (wallet === {}) {
+    const handleNavigationToSynthTile = (wallet:Wallet | undefined,synthName:string) => {
+        if (!wallet) {
             Alert.alert(`You do not have any signer connected. Please switch to Portfolio tab to log in or create a wallet.`)
         } else {
             navigation.navigate('SingleSynthView',{synthName: synthName})

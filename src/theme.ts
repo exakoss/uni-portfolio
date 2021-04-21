@@ -61,6 +61,10 @@ export const commonStyles = StyleSheet.create({
         color: theme.colors.textWhite,
         fontSize: theme.fontsize.big,
         textAlign: "center"
+    },
+    separator: {
+        height: theme.distance.small,
+        color: theme.colors.background
     }
 })
 
