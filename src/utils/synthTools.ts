@@ -1,7 +1,7 @@
 import {Network, Synth, synthetix, SynthetixJS} from '@synthetixio/js'
 import {createMainnetProvider} from './ethersTools';
-import {BlockOption, NetworkString, SynthData} from '../types';
-import {getBlock, GetBlockProp} from './index';
+import {BlockOption, NetworkString, SynthData, TokenListEntry, WatchlistEntry,} from '../types';
+import {getBlock, GetBlockProp, getDailyQuotesByID, getTokensByID, transformUNIQuotesToTokenListEntry} from './index';
 import {store} from '../store';
 //@ts-ignore
 import snxData from 'synthetix-data'
@@ -51,6 +51,38 @@ export const getSNXPrice = async(snxjs:SynthetixJS,blockOption:BlockOption):Prom
         snxjs.toBytes32('SNX'),
         blockOption
     )))
+}
+
+export const getTokenListEntryFromWatchlistEntry = async (snxjs:SynthetixJS,watchlistEntry:WatchlistEntry,currentBlock:number,dailyBlock:number,currentETHPrice:number):Promise<TokenListEntry> => {
+    switch (watchlistEntry.dataSource) {
+        case 'SYNTH':
+            const currentSynth = findSynthByName(snxjs,watchlistEntry.id)
+            if (currentSynth) {
+                const currentSynthQuote = await getSynthQuoteByBlock(snxjs, currentSynth, {blockTag: currentBlock})
+                const dailySynthQuote = await getSynthQuoteByBlock(snxjs, currentSynth, {blockTag: dailyBlock})
+                return {
+                    ...currentSynth,
+                    formattedRate: currentSynthQuote.formattedRate,
+                    formattedRateDaily: dailySynthQuote.formattedRate,
+                    dataSource: watchlistEntry.dataSource
+                }
+            }
+        case 'UNI':
+            const newTokenData = await getTokensByID([watchlistEntry.id])
+            const newDailyTokenData = await getDailyQuotesByID([watchlistEntry.id],dailyBlock)
+            return transformUNIQuotesToTokenListEntry(newTokenData,newDailyTokenData,currentETHPrice)[0]
+    }
+}
+
+export const getTokenListEntriesFromWatchlistEntries = async (watchlistEntries:WatchlistEntry[]):Promise<TokenListEntry[]> => {
+    const snxjs = createMainnetSnxjs()
+    if (!snxjs) throw ('No signer has been connected')
+    const newCurrentBlock = await getBlock('CURRENT_DAY').then(result => result)
+    const newDailyBlock = store.getState().dailyBlock.blockNumber
+    const newCurrentETHPrice = store.getState().ethPrice.price
+    return await Promise.all(watchlistEntries.map(async (e) => {
+        return await getTokenListEntryFromWatchlistEntry(snxjs,e,newCurrentBlock,newDailyBlock,newCurrentETHPrice)
+    }))
 }
 
 export const getCurrentSNXPrice = async ():Promise<number> => {

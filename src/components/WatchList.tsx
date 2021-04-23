@@ -1,12 +1,10 @@
 import React, {useEffect, useState} from 'react'
 import BaseTokenList from './BaseTokenList';
 import {Dimensions, View, Text} from 'react-native';
-import theme from '../theme';
 import {RootStateOrAny, useSelector} from 'react-redux';
 import {UnitedTokenData} from '../types';
 import {getBlock, getDailyQuotesByID, getTokensByID} from '../utils';
 import LoadingScreen from './LoadingScreen';
-import CurrentETHPrice from './CurrentETHPrice';
 import CurrentPriceHeader from './CurrentPriceHeader';
 
 const {height} = Dimensions.get('window')

@@ -5,8 +5,14 @@ import {bool} from 'yup';
 //Crypto entities
 export type Id = string
 
+export type DataSource = 'UNI' | 'SYNTH'
+
 export interface IdEntry {
     id:Id
+}
+
+export interface WatchlistEntry extends IdEntry{
+    dataSource: DataSource
 }
 
 export interface TokenEntry extends IdEntry{
@@ -169,4 +175,13 @@ export interface ModalState {
 export interface ModalAction {
     type: 'SET_VISIBILITY',
     data: boolean
+}
+
+export interface WatchlistState {
+    watchlistEntries: WatchlistEntry[]
+}
+
+export interface WatchlistAction {
+    type: "ADD_WATCHLIST_ENTRY" | "REMOVE_WATCHLIST_ENTRY",
+    data: WatchlistEntry
 }

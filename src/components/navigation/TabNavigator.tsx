@@ -7,6 +7,7 @@ import PortfolioNavigator from './PortfolioNavigator';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import SynthetixNavigator from './SynthetixNavigator';
 import FormikSearchBar from '../FormikSearchBar';
+import NewWatchlist from '../NewWatchlist';
 
 const TabNavigator:React.FC = () => {
     const Tab = createBottomTabNavigator();
@@ -21,16 +22,16 @@ const TabNavigator:React.FC = () => {
             }}
             sceneContainerStyle={{backgroundColor: theme.colors.background}}
         >
-            <Tab.Screen
-                name="Search"
-                component={SearchBar}
-                options={{
-                tabBarLabel: 'Search',
-                    tabBarIcon: ({ color, size }) => (
-                    <Ionicons name="search" color={color} size={size} sharp/>
-                    )
-                }}
-            />
+            {/*<Tab.Screen*/}
+            {/*    name="Search"*/}
+            {/*    component={SearchBar}*/}
+            {/*    options={{*/}
+            {/*    tabBarLabel: 'Search',*/}
+            {/*        tabBarIcon: ({ color, size }) => (*/}
+            {/*        <Ionicons name="search" color={color} size={size} sharp/>*/}
+            {/*        )*/}
+            {/*    }}*/}
+            {/*/>*/}
             <Tab.Screen
                 name="FormikSearch"
                 component={FormikSearchBar}
@@ -41,14 +42,24 @@ const TabNavigator:React.FC = () => {
                     )
                 }}
             />
+            {/*<Tab.Screen*/}
+            {/*    name="Watchlist"*/}
+            {/*    component={WatchList}*/}
+            {/*    options={{*/}
+            {/*        tabBarLabel: 'Watchlist',*/}
+            {/*            tabBarIcon: ({ color, size }) => (*/}
+            {/*            <Ionicons name="list" color={color} size={size} sharp/>*/}
+            {/*            )*/}
+            {/*    }}*/}
+            {/*/>*/}
             <Tab.Screen
-                name="Watchlist"
-                component={WatchList}
+                name="NewWatchlist"
+                component={NewWatchlist}
                 options={{
-                    tabBarLabel: 'Watchlist',
-                        tabBarIcon: ({ color, size }) => (
+                    tabBarLabel: 'New Watchlist',
+                    tabBarIcon: ({ color, size }) => (
                         <Ionicons name="list" color={color} size={size} sharp/>
-                        )
+                    )
                 }}
             />
             <Tab.Screen

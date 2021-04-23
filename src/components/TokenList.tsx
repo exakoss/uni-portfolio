@@ -1,12 +1,14 @@
 import React from 'react'
-import {Alert, Text, View, FlatList, TouchableOpacity} from 'react-native'
-import {TokenListEntry} from '../types';
+import {Alert, Text, View, FlatList, TouchableOpacity, Button} from 'react-native'
+import {TokenListEntry, WatchlistEntry} from '../types';
 import theme, {commonStyles} from '../theme';
-import {toMoney} from '../utils';
+import {toMoney, isTokenListEntryIncluded, transformTokenListEntryToWatchlistEntry} from '../utils';
 import LoadingScreen from './LoadingScreen';
 import {useNavigation} from '@react-navigation/native';
 import {Wallet} from 'ethers';
-import {RootStateOrAny, useSelector} from 'react-redux';
+import {RootStateOrAny, useDispatch, useSelector} from 'react-redux';
+import {removeWatchlistEntry, addWatchlistEntry} from '../reducers/watchlistReducer';
+
 
 interface Props {
     tokens: TokenListEntry[],
@@ -27,17 +29,39 @@ export const PercentageChange:React.FC<{currentPrice: number, dailyPrice: number
 
 export const ItemSeparator = () => <View style={commonStyles.separator} />
 
-const TokenListTile:React.FC<{token: TokenListEntry}> = ({token}) =>
-    <View style={commonStyles.tile}>
-        <View style={commonStyles.nameContainer}>
-            <Text style={commonStyles.tileText}>{token.name}</Text>
-            <Text style={commonStyles.nameText}>{token.description}</Text>
-        </View>
-        <Text style={commonStyles.tileText}> {toMoney(token.formattedRate,3)}</Text>
-        {(token.quantity) ? <Text style={commonStyles.tileText}>{token.quantity}</Text> : null}
-        <PercentageChange currentPrice={token.formattedRate} dailyPrice={token.formattedRateDaily}/>
-    </View>
+const AddDeleteButton:React.FC<{token: TokenListEntry,isIncluded:boolean}> = ({token,isIncluded}) => {
+    const dispatch = useDispatch()
+    if (isIncluded) {
+        return (
+            <View style={commonStyles.button}>
+                <Button title='X' color='red' onPress={() => dispatch(removeWatchlistEntry(transformTokenListEntryToWatchlistEntry(token)))}/>
+            </View>
+        )
+    } else {
+        return (
+            <View style={commonStyles.button}>
+                <Button title='+' color='green' onPress={() => dispatch(addWatchlistEntry(transformTokenListEntryToWatchlistEntry(token)))}/>
+            </View>
+        )
+    }
+}
 
+const TokenListTile:React.FC<{token: TokenListEntry}> = ({token}) => {
+    const watchlistEntries = useSelector((state:RootStateOrAny) => state.watchlist.watchlistEntries)
+    const isIncluded:boolean = isTokenListEntryIncluded(token,watchlistEntries)
+    return (
+        <View style={commonStyles.tile}>
+            <View style={commonStyles.nameContainer}>
+                <Text style={commonStyles.tileText}>{token.name}</Text>
+                <Text style={commonStyles.nameText}>{token.description}</Text>
+            </View>
+            <Text style={commonStyles.tileText}> {toMoney(token.formattedRate,3)}</Text>
+            {(token.quantity) ? <Text style={commonStyles.tileText}>{token.quantity}</Text> : null}
+            <PercentageChange currentPrice={token.formattedRate} dailyPrice={token.formattedRateDaily}/>
+            <AddDeleteButton token={token} isIncluded={isIncluded}/>
+        </View>
+    )
+}
 
 const TokenList:React.FC<Props> = ({tokens,placeholder,isLoading}) => {
 
@@ -61,6 +85,7 @@ const TokenList:React.FC<Props> = ({tokens,placeholder,isLoading}) => {
         <View style={{flex: 1}}>
             <FlatList data={tokens}
                       ItemSeparatorComponent={ItemSeparator}
+                      keyExtractor={(item,index) => index.toString()}
                       renderItem={({item}) =>
                           <TouchableOpacity onPress={() => handleNavigation(wallet,item)}>
                               <TokenListTile token={item} key={item.name}/>
