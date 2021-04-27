@@ -51,6 +51,14 @@ export const getTimestamp = (period:GetBlockProp):number => {
     }
     return day
 }
+//Generates a certain amount of dates with an hourly interval
+export const generateDates = (amount:number):{unixTimestamps:number[],plotlyTimestamps:string[]} => {
+    const utcCurrentTime = dayjs()
+    const blankDates = Array(amount+1).fill(0).map((v,index) => utcCurrentTime.subtract(amount - index,'hours').startOf('minute'))
+    const unixTimestamps:number[] = blankDates.map((v) => v.unix())
+    const plotlyTimestamps:string[] = blankDates.map((v) => v.format('YYYY-MM-DD HH:mm:ss'))
+    return {unixTimestamps,plotlyTimestamps}
+}
 
 //Get a block corresponding to the period
 export const getBlock = async (period:GetBlockProp): Promise<number> => {

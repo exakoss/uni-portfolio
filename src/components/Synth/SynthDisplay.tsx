@@ -1,18 +1,16 @@
 import React, {useEffect, useState} from 'react'
 import {View} from 'react-native';
 import theme from '../../theme';
-import {SynthDataDaily} from '../../types';
-import SynthList from './SynthList'
+import {SynthDataDaily,TokenListEntry} from '../../types';
 import {RootStateOrAny, useSelector} from 'react-redux';
 import {createMainnetSnxjs, listAllSynths, getSynthsQuotesByBlock} from '../../utils/synthTools';
 import {SynthetixJS} from '@synthetixio/js';
 import {getBlock} from '../../utils';
-
-const initialSynthData:SynthDataDaily[] = []
+import TokenList from '../TokenList';
 
 const SynthDisplay:React.FC = () => {
     const [isLoading,setIsLoading] = useState<boolean>(true)
-    const [synthDataDaily, setSynthDataDaily] = useState<SynthDataDaily[]>(initialSynthData)
+    const [tokenData,setTokenData] = useState<TokenListEntry[]>([])
     const listPlaceholder = 'The synth list is currently empty'
     const dailyBlockNumber = useSelector((state:RootStateOrAny) => state.dailyBlock.blockNumber)
 
@@ -23,15 +21,16 @@ const SynthDisplay:React.FC = () => {
                 const newCurrentBlock = await getBlock('CURRENT_DAY').then(result => result)
                 const currentSynths = await getSynthsQuotesByBlock(snxjs,synthList,{blockTag: newCurrentBlock}).then(result => result)
                 const dailySynths = await getSynthsQuotesByBlock(snxjs,synthList,{blockTag: dailyBlockNumber})
-                const passedSynths:SynthDataDaily[] = currentSynths.map((s) => {
+                const passedSynths:TokenListEntry[] = currentSynths.map((s) => {
                     // @ts-ignore
                     const dailyRate:number = (dailySynths.find(sd => sd.name === s.name) === undefined) ? 0 : dailySynths.find(sd => sd.name === s.name).formattedRate
                     return {
                         ...s,
+                        dataSource: "SYNTH",
                         formattedRateDaily:dailyRate
                     }
                 })
-                setSynthDataDaily(passedSynths)
+                setTokenData(passedSynths)
                 setIsLoading(false)
             }
             fetchAndUpdateSynthData()
@@ -40,7 +39,8 @@ const SynthDisplay:React.FC = () => {
 
     return(
         <View style={{flex: 1,backgroundColor: theme.colors.background}}>
-            <SynthList synthsDaily={synthDataDaily} placeholder={listPlaceholder} isLoading={isLoading}/>
+            <TokenList tokens={tokenData} placeholder={listPlaceholder} isLoading={isLoading}/>
+            {/*<SynthList synthsDaily={synthDataDaily} placeholder={listPlaceholder} isLoading={isLoading}/>*/}
         </View>
     )
 }

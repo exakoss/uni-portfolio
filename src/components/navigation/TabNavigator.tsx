@@ -1,13 +1,12 @@
 import React from 'react';
 import theme from '../../theme';
-import SearchBar from '../SearchBar';
 import {Ionicons} from '@expo/vector-icons';
-import WatchList from '../WatchList';
 import PortfolioNavigator from './PortfolioNavigator';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import SynthetixNavigator from './SynthetixNavigator';
 import FormikSearchBar from '../FormikSearchBar';
 import NewWatchlist from '../NewWatchlist';
+import SampleChart from '../temporary/SampleChart';
 
 const TabNavigator:React.FC = () => {
     const Tab = createBottomTabNavigator();
@@ -22,16 +21,6 @@ const TabNavigator:React.FC = () => {
             }}
             sceneContainerStyle={{backgroundColor: theme.colors.background}}
         >
-            {/*<Tab.Screen*/}
-            {/*    name="Search"*/}
-            {/*    component={SearchBar}*/}
-            {/*    options={{*/}
-            {/*    tabBarLabel: 'Search',*/}
-            {/*        tabBarIcon: ({ color, size }) => (*/}
-            {/*        <Ionicons name="search" color={color} size={size} sharp/>*/}
-            {/*        )*/}
-            {/*    }}*/}
-            {/*/>*/}
             <Tab.Screen
                 name="FormikSearch"
                 component={FormikSearchBar}
@@ -79,6 +68,16 @@ const TabNavigator:React.FC = () => {
                     tabBarLabel: 'Portfolio',
                     tabBarIcon: ({ color, size }) => (
                         <Ionicons name="briefcase" color={color} size={size} sharp/>
+                        )
+                }}
+            />
+            <Tab.Screen
+                name="Chart"
+                component={SampleChart}
+                options={{
+                    tabBarLabel: 'Sample chart',
+                        tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="bar-chart" color={color} size={size} sharp/>
                         )
                 }}
             />
