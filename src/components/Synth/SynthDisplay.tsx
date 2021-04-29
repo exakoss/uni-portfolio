@@ -3,7 +3,7 @@ import {View} from 'react-native';
 import theme from '../../theme';
 import {SynthDataDaily,TokenListEntry} from '../../types';
 import {RootStateOrAny, useSelector} from 'react-redux';
-import {createMainnetSnxjs, listAllSynths, getSynthsQuotesByBlock} from '../../utils/synthTools';
+import {createMainnetSnxjs, listAllSynths, getSynthsQuotesByBlock, getLatestSynthsDatas} from '../../utils/synthTools';
 import {SynthetixJS} from '@synthetixio/js';
 import {getBlock} from '../../utils';
 import TokenList from '../TokenList';
@@ -18,8 +18,7 @@ const SynthDisplay:React.FC = () => {
             const fetchAndUpdateSynthData = async () => {
                 const snxjs:SynthetixJS = createMainnetSnxjs()
                 const synthList = listAllSynths(snxjs)
-                const newCurrentBlock = await getBlock('CURRENT_DAY').then(result => result)
-                const currentSynths = await getSynthsQuotesByBlock(snxjs,synthList,{blockTag: newCurrentBlock}).then(result => result)
+                const currentSynths = await getLatestSynthsDatas(synthList)
                 const dailySynths = await getSynthsQuotesByBlock(snxjs,synthList,{blockTag: dailyBlockNumber})
                 const passedSynths:TokenListEntry[] = currentSynths.map((s) => {
                     // @ts-ignore
@@ -40,7 +39,6 @@ const SynthDisplay:React.FC = () => {
     return(
         <View style={{flex: 1,backgroundColor: theme.colors.background}}>
             <TokenList tokens={tokenData} placeholder={listPlaceholder} isLoading={isLoading}/>
-            {/*<SynthList synthsDaily={synthDataDaily} placeholder={listPlaceholder} isLoading={isLoading}/>*/}
         </View>
     )
 }

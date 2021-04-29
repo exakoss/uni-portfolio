@@ -23,6 +23,11 @@ export interface PriceEntry extends IdEntry{
     price:number
 }
 
+export interface PriceChartEntry {
+    formattedRate: number,
+    timestamp:number
+}
+
 export interface BasicToken extends TokenEntry{
     name: string,
     symbol: string
@@ -55,7 +60,6 @@ export interface BasicTokenDailyPrice extends BasicToken {
 }
 
 export interface Block {
-    id:string,
     number: number,
     timestamp: number
 }

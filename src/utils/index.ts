@@ -6,10 +6,11 @@ import {
     FETCH_TOKEN_DATA_BY_ID,
     FETCH_TOKENS_BY_ID,
     FETCH_TOKENS_BY_NAME,
-    GET_BLOCK
+    GET_BLOCK,
+    GET_BLOCKS, GET_UNI_PRICES_BY_BLOCK
 } from '../graphql/queries';
 import dayjs from 'dayjs';
-import {DailyTokenData, ExtendedTokenData, TokenData, TokenListEntry, WatchlistEntry} from '../types';
+import {Block, DailyTokenData, ExtendedTokenData, TokenData, TokenListEntry, WatchlistEntry, PriceChartEntry} from '../types';
 import {store} from '../store';
 import {StyleSheet} from 'react-native';
 
@@ -27,6 +28,18 @@ export const getBlockFromTimestamp = async (timestamp: number) => {
         fetchPolicy: 'cache-first'
     })
     return Number(result?.data?.blocks?.[0]?.number)
+}
+
+export const getBlocksFromTimestamps = async (startTimestamp:number,endTimestamp:number):Promise<Block[]> => {
+    let result = await blockClient.query({
+        query: GET_BLOCKS,
+        variables: {
+            timestampFrom: startTimestamp,
+            timestampTo: endTimestamp
+        },
+        fetchPolicy: 'cache-first'
+    })
+    return (result.data.blocks)
 }
 
 //Get a unix timestamp
@@ -51,6 +64,14 @@ export const getTimestamp = (period:GetBlockProp):number => {
     }
     return day
 }
+
+export const getTimestampsBackward = (hours:number):{currentUnix:number,backwardUnix:number} => {
+    const utcCurrentTime = dayjs()
+    const currentUnix = utcCurrentTime.startOf('minute').unix()
+    const backwardUnix = utcCurrentTime.subtract(hours,'hours').startOf('minute').unix()
+    return {currentUnix,backwardUnix}
+}
+
 //Generates a certain amount of dates with an hourly interval
 export const generateDates = (amount:number):{unixTimestamps:number[],plotlyTimestamps:string[]} => {
     const utcCurrentTime = dayjs()
@@ -108,6 +129,33 @@ export const getDailyQuotesByID = async (tokenIds:string[],blockNumber:number): 
     return result.data
 }
 
+export const getTokenDataById = async (tokenId:string, blockNumber?:number): Promise<ExtendedTokenData> => {
+    let result = await client.query({
+        query: FETCH_TOKEN_DATA_BY_ID(tokenId,blockNumber),
+        fetchPolicy: 'network-only'
+    })
+    return result.data
+}
+
+export const getTokenPrices = async (tokenId:string,blocks:Block[]) => {
+    let result = await client.query({
+        query: GET_UNI_PRICES_BY_BLOCK(tokenId,blocks),
+        fetchPolicy:'cache-first'
+    })
+    const keys = Object.keys(result.data)
+    console.log(keys.length)
+    //@ts-ignore
+    const formattedPrices:PriceChartEntry[] = keys.map((k) => {
+        if (k[0] === 'b') {
+            const tokenIndex = `t${k.slice(1)}`
+            const derivedETH = result.data[tokenIndex].derivedETH as string
+            const parsedETHPrice = parsePriceToFixedNumber(result.data[k].ethPrice)
+            return {timestamp:Number(k.slice(1)),formattedRate:calculateETHPrice(derivedETH,parsedETHPrice)}
+        } else return
+    })
+    return formattedPrices
+}
+
 export const transformUNIQuotesToTokenListEntry = (tokensNow:TokenData,tokensDaily:DailyTokenData,currentETHPrice:number):TokenListEntry[] => {
     const dailyETHPriceInUSD:number = parsePriceToFixedNumber(tokensDaily.bundles[0].ethPrice)
     return tokensNow.tokens.map(t1 => {
@@ -152,14 +200,6 @@ export const transformTokenListEntryToWatchlistEntry = (tokenListEntry:TokenList
                 id: tokenListEntry.name
             }
     }
-}
-
-export const getTokenDataById = async (tokenId:string, blockNumber?:number): Promise<ExtendedTokenData> => {
-    let result = await client.query({
-        query: FETCH_TOKEN_DATA_BY_ID(tokenId,blockNumber),
-        fetchPolicy: 'network-only'
-    })
-    return result.data
 }
 
 //Parsing and calculating functions

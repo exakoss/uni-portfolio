@@ -3,6 +3,9 @@ import {createMainnetProvider} from './ethersTools';
 import {BlockOption, NetworkString, SynthData, TokenListEntry, WatchlistEntry,} from '../types';
 import {getBlock, GetBlockProp, getDailyQuotesByID, getTokensByID, transformUNIQuotesToTokenListEntry} from './index';
 import {store} from '../store';
+import {synthRateClient} from '../graphql/client';
+import {GET_LATEST_RATE} from '../graphql/synthQueries';
+import {ethers} from 'ethers'
 //@ts-ignore
 import snxData from 'synthetix-data'
 
@@ -29,6 +32,30 @@ export const findSynthByName = (snxjs:SynthetixJS, synthName:string):Synth | und
     }
 }
 
+export const getLatestSynthRate = async (synthName:string) => {
+    let result = await synthRateClient.query({
+        query:GET_LATEST_RATE,
+        variables: {
+            synthName: synthName
+        }
+    })
+    return Number(ethers.utils.formatEther(result.data.latestRate.rate))
+}
+
+export const getLatestSynthData = async(synth:Synth):Promise<SynthData> => {
+    const newSynthRate = await getLatestSynthRate(synth.name)
+    return {
+        ...synth,
+        formattedRate: newSynthRate
+    }
+}
+
+export const getLatestSynthsDatas = async(synths:Synth[]):Promise<SynthData[]> => {
+    return await Promise.all(synths.map(async (s) => {
+        return await getLatestSynthData(s)
+    }))
+}
+
 export const getSynthQuoteByBlock = async(snxjs:SynthetixJS,synth:Synth,blockOption:BlockOption):Promise<SynthData> => {
     const {formatEther} = snxjs.utils
     const rateForSynth = formatEther(await snxjs.contracts.ExchangeRates.rateForCurrency(snxjs.toBytes32(synth.name), blockOption));
@@ -44,25 +71,16 @@ export const getSynthsQuotesByBlock = async (snxjs:SynthetixJS,synths:Synth[],bl
     }))
 }
 
-export const getSNXPrice = async(snxjs:SynthetixJS,blockOption:BlockOption):Promise<number> => {
-    const {formatEther} = snxjs.utils
-
-    return Number(formatEther( await snxjs.contracts.ExchangeRates.rateForCurrency(
-        snxjs.toBytes32('SNX'),
-        blockOption
-    )))
-}
-
-export const getTokenListEntryFromWatchlistEntry = async (snxjs:SynthetixJS,watchlistEntry:WatchlistEntry,currentBlock:number,dailyBlock:number,currentETHPrice:number):Promise<TokenListEntry> => {
+export const getTokenListEntryFromWatchlistEntry = async (snxjs:SynthetixJS,watchlistEntry:WatchlistEntry,dailyBlock:number,currentETHPrice:number):Promise<TokenListEntry> => {
     switch (watchlistEntry.dataSource) {
         case 'SYNTH':
             const currentSynth = findSynthByName(snxjs,watchlistEntry.id)
             if (currentSynth) {
-                const currentSynthQuote = await getSynthQuoteByBlock(snxjs, currentSynth, {blockTag: currentBlock})
+                const currentSyntRate = await getLatestSynthRate(currentSynth.name)
                 const dailySynthQuote = await getSynthQuoteByBlock(snxjs, currentSynth, {blockTag: dailyBlock})
                 return {
                     ...currentSynth,
-                    formattedRate: currentSynthQuote.formattedRate,
+                    formattedRate: currentSyntRate,
                     formattedRateDaily: dailySynthQuote.formattedRate,
                     dataSource: watchlistEntry.dataSource
                 }
@@ -77,18 +95,11 @@ export const getTokenListEntryFromWatchlistEntry = async (snxjs:SynthetixJS,watc
 export const getTokenListEntriesFromWatchlistEntries = async (watchlistEntries:WatchlistEntry[]):Promise<TokenListEntry[]> => {
     const snxjs = createMainnetSnxjs()
     if (!snxjs) throw ('No signer has been connected')
-    const newCurrentBlock = await getBlock('CURRENT_DAY').then(result => result)
     const newDailyBlock = store.getState().dailyBlock.blockNumber
     const newCurrentETHPrice = store.getState().ethPrice.price
     return await Promise.all(watchlistEntries.map(async (e) => {
-        return await getTokenListEntryFromWatchlistEntry(snxjs,e,newCurrentBlock,newDailyBlock,newCurrentETHPrice)
+        return await getTokenListEntryFromWatchlistEntry(snxjs,e,newDailyBlock,newCurrentETHPrice)
     }))
-}
-
-export const getCurrentSNXPrice = async ():Promise<number> => {
-    const snxjs = createMainnetSnxjs()
-    const newCurrentBlock = await getBlock('CURRENT_DAY').then(result => result)
-    return await getSNXPrice(snxjs,{blockTag: newCurrentBlock}).then(result => result)
 }
 
 export const getTimestampInSeconds = (period: GetBlockProp):number => {

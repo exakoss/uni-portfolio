@@ -11,7 +11,7 @@ export const createRinkebyWallet = ():Wallet => {
 }
 
 export const createKovanWallet = ():Wallet => {
-    const provider = new ethers.providers.JsonRpcProvider(KOVAN_API_KEY)
+    const provider = createKovanProvider()
     return ethers.Wallet.createRandom().connect(provider)
 }
 
