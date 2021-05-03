@@ -29,9 +29,9 @@ const PasswordInput:React.FC = () => {
     const onSubmit = async ({password}: {password:string}) => {
         // Encrypting the wallet on Native version for some reason takes up to 3-4 minutes
         //
-        // const jsonSeed = await wallet.encrypt(password)
-        // console.log(JSON.parse(jsonSeed))
-        // dispatch(setSeed(jsonSeed))
+        const jsonSeed = await wallet.encrypt(password)
+        console.log(JSON.parse(jsonSeed))
+        dispatch(setSeed(jsonSeed))
         navigation.navigate('WalletDisplay')
     }
 

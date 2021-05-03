@@ -9,25 +9,26 @@ import {Ionicons} from '@expo/vector-icons';
 import theme from '../../theme';
 import {getCurrentBalance} from '../../utils/ethersTools';
 import LoadingScreen from '../LoadingScreen';
-import BaseTokenList from '../BaseTokenList';
+import TokenList from '../TokenList';
 import {UnitedTokenData} from '../../types';
 import {toMoney} from '../../utils';
 import BuysUSD from '../Synth/BuysUSD';
 
-const initialTokenData:UnitedTokenData = {
-    tokenData:{
-        tokens:[]
-    },
-    dailyTokenData:{
-        tokens:[],
-        bundles:[]
-    }
-}
+// const initialTokenData:UnitedTokenData = {
+//     tokenData:{
+//         tokens:[]
+//     },
+//     dailyTokenData:{
+//         tokens:[],
+//         bundles:[]
+//     }
+// }
 
 const WalletTokenDisplay:React.FC<{value: 'ERC20'| 'ERC721',ethPriceInUSD:number}> = ({value,ethPriceInUSD}) => {
  switch (value) {
      case 'ERC20':
-         return <BaseTokenList tokensNow={initialTokenData.tokenData} tokensDaily={initialTokenData.dailyTokenData} ethPriceInUSD={ethPriceInUSD} placeholder='Your token list is currently empty' isLoading={false}/>
+         // return <BaseTokenList tokensNow={initialTokenData.tokenData} tokensDaily={initialTokenData.dailyTokenData} ethPriceInUSD={ethPriceInUSD} placeholder='Your token list is currently empty' isLoading={false}/>
+            return <TokenList tokens={[]} placeholder='Your token list is currently empty' isLoading={false}/>
      case 'ERC721':
          return <View style={{flex:1, backgroundColor:theme.colors.background, alignItems: 'center', justifyContent: 'center'}}>
              <Text style={{color: theme.colors.textWhite, fontSize: 24, textAlign: "center"}}>You currently don't have any NFTs</Text>

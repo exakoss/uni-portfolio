@@ -1,18 +1,25 @@
-import 'react-native-get-random-values'
+// import 'react-native-get-random-values'
+import * as Random from 'expo-random'
 import "@ethersproject/shims"
-import {ethers, Wallet, Contract} from 'ethers'
-import {RINKEBY_API_KEY, MAINNET_API_KEY, KOVAN_API_KEY} from '../constants';
+import {Contract, ethers, Wallet} from 'ethers'
+import {KOVAN_API_KEY, MAINNET_API_KEY, RINKEBY_API_KEY} from '../constants';
 import {store} from '../store';
-import {Network} from '@synthetixio/js';
 
 export const createRinkebyWallet = ():Wallet => {
     const provider = new ethers.providers.JsonRpcProvider(RINKEBY_API_KEY)
     return ethers.Wallet.createRandom().connect(provider)
 }
 
-export const createKovanWallet = ():Wallet => {
+export const createWallet = async ():Promise<Wallet> => {
+    const randomBytes = await Random.getRandomBytesAsync(16);
+    const mnemonic = ethers.utils.entropyToMnemonic(randomBytes)
+    return ethers.Wallet.fromMnemonic(mnemonic)
+}
+
+export const createKovanWallet = async () => {
     const provider = createKovanProvider()
-    return ethers.Wallet.createRandom().connect(provider)
+    const newWallet:Wallet = await createWallet()
+    return newWallet.connect(provider)
 }
 
 export const createMainnetWallet = ():Wallet => {

@@ -1,10 +1,10 @@
 import {Network, Synth, synthetix, SynthetixJS} from '@synthetixio/js'
 import {createMainnetProvider} from './ethersTools';
-import {BlockOption, NetworkString, SynthData, TokenListEntry, WatchlistEntry,} from '../types';
-import {getBlock, GetBlockProp, getDailyQuotesByID, getTokensByID, transformUNIQuotesToTokenListEntry} from './index';
+import {BlockOption, SynthData, TokenListEntry, WatchlistEntry,} from '../types';
+import {GetBlockProp, getDailyQuotesByID, getTokensByID, transformUNIQuotesToTokenListEntry} from './index';
 import {store} from '../store';
 import {synthRateClient} from '../graphql/client';
-import {GET_LATEST_RATE} from '../graphql/synthQueries';
+import {GET_LATEST_RATE, GET_RATE_BY_BLOCK} from '../graphql/synthQueries';
 import {ethers} from 'ethers'
 //@ts-ignore
 import snxData from 'synthetix-data'
@@ -56,20 +56,32 @@ export const getLatestSynthsDatas = async(synths:Synth[]):Promise<SynthData[]> =
     }))
 }
 
-export const getSynthQuoteByBlock = async(snxjs:SynthetixJS,synth:Synth,blockOption:BlockOption):Promise<SynthData> => {
-    const {formatEther} = snxjs.utils
-    const rateForSynth = formatEther(await snxjs.contracts.ExchangeRates.rateForCurrency(snxjs.toBytes32(synth.name), blockOption));
-    return {
-        ...synth,
-        formattedRate: Number(rateForSynth)
-    }
+export const getSynthRateByBlock = async(synthName:string,blockNumber:number) => {
+    let result = await synthRateClient.query({
+        query:GET_RATE_BY_BLOCK,
+        variables: {
+            synthName:synthName,
+            blockNumber:blockNumber
+        }
+    })
+    if (result.data.rateUpdates[0]) return Number(ethers.utils.formatEther(result.data.rateUpdates[0].rate))
+    else return 0
 }
 
-export const getSynthsQuotesByBlock = async (snxjs:SynthetixJS,synths:Synth[],blockOption:BlockOption):Promise<SynthData[]> => {
-    return await Promise.all(synths.map(async (s) => {
-        return await getSynthQuoteByBlock(snxjs, s, blockOption)
-    }))
-}
+// export const getSynthQuoteByBlock = async(snxjs:SynthetixJS,synth:Synth,blockOption:BlockOption):Promise<SynthData> => {
+//     const {formatEther} = snxjs.utils
+//     const rateForSynth = formatEther(await snxjs.contracts.ExchangeRates.rateForCurrency(snxjs.toBytes32(synth.name), blockOption));
+//     return {
+//         ...synth,
+//         formattedRate: Number(rateForSynth)
+//     }
+// }
+//
+// export const getSynthsQuotesByBlock = async (snxjs:SynthetixJS,synths:Synth[],blockOption:BlockOption):Promise<SynthData[]> => {
+//     return await Promise.all(synths.map(async (s) => {
+//         return await getSynthQuoteByBlock(snxjs, s, blockOption)
+//     }))
+// }
 
 export const getTokenListEntryFromWatchlistEntry = async (snxjs:SynthetixJS,watchlistEntry:WatchlistEntry,dailyBlock:number,currentETHPrice:number):Promise<TokenListEntry> => {
     switch (watchlistEntry.dataSource) {
@@ -77,11 +89,11 @@ export const getTokenListEntryFromWatchlistEntry = async (snxjs:SynthetixJS,watc
             const currentSynth = findSynthByName(snxjs,watchlistEntry.id)
             if (currentSynth) {
                 const currentSyntRate = await getLatestSynthRate(currentSynth.name)
-                const dailySynthQuote = await getSynthQuoteByBlock(snxjs, currentSynth, {blockTag: dailyBlock})
+                const dailySynthRate = await getSynthRateByBlock(currentSynth.name,dailyBlock)
                 return {
                     ...currentSynth,
                     formattedRate: currentSyntRate,
-                    formattedRateDaily: dailySynthQuote.formattedRate,
+                    formattedRateDaily: dailySynthRate,
                     dataSource: watchlistEntry.dataSource
                 }
             }

@@ -43,11 +43,15 @@ const Mnemonic:React.FC = () => {
     const [isLoading,setIsLoading] = useState<boolean>(true)
 
     useEffect(() => {
-        // const newWallet = createRinkebyWallet()
-        const newWallet = createKovanWallet()
-        // const newWallet = createMainnetWallet()
-        dispatch(setWallet(newWallet))
-        setIsLoading(false)
+
+        const asyncHook = async() => {
+            // const newWallet = createRinkebyWallet()
+            const newWallet = await createKovanWallet()
+            // const newWallet = createMainnetWallet()
+            dispatch(setWallet(newWallet))
+            setIsLoading(false)
+        }
+        asyncHook()
     },[])
     const connectedWallet = useSelector((state:RootStateOrAny) => state.wallet.wallet)
 
