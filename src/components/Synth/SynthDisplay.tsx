@@ -2,15 +2,12 @@ import React, {useEffect, useState} from 'react'
 import {View} from 'react-native';
 import theme from '../../theme';
 import {TokenListEntry,WatchlistEntry} from '../../types';
-import {RootStateOrAny, useSelector} from 'react-redux';
 import {
     createMainnetSnxjs,
     listAllSynths,
-    getLatestSynthsDatas,
     getTokenListEntriesFromWatchlistEntries
 } from '../../utils/synthTools';
 import {SynthetixJS} from '@synthetixio/js';
-import {getBlock} from '../../utils';
 import TokenList from '../TokenList';
 
 const SynthDisplay:React.FC = () => {

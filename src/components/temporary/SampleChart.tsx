@@ -2,7 +2,13 @@ import React, {useEffect} from 'react';
 import {View} from 'react-native'
 import Plotly from 'react-native-plotly';
 import theme from '../../theme';
-import {generateDates, getTimestampsBackward, getBlocksFromTimestamps, getTokenPrices} from '../../utils';
+import {
+    generateDates,
+    getTimestampsBackward,
+    getAllBlocksFromTimestamps,
+    getTokenPrices,
+    getCorrespondingBlocksFromTimestamps
+} from '../../utils';
 import {Block} from '../../types';
 
 const sampleDateData = [{
@@ -36,17 +42,25 @@ const layout = {
 const SampleChart:React.FC = () => {
     useEffect(() => {
         const getHourlyBlocks = async () => {
-            const {backwardUnix,currentUnix} = getTimestampsBackward(1)
-            const blocks:Block[] = await getBlocksFromTimestamps(backwardUnix,currentUnix)
-            const parsedPrices = await getTokenPrices("0x514910771af9ca656af840dff83e8264ecf986ca",blocks)
+            // const {backwardUnix,currentUnix} = getTimestampsBackward(1)
+            // const blocks:Block[] = await getAllBlocksFromTimestamps(backwardUnix,currentUnix)
+            // const parsedPrices = await getTokenPrices("0x514910771af9ca656af840dff83e8264ecf986ca",blocks)
+            // console.log(blocks)
+            // console.log(parsedPrices)
+            const {unixTimestamps,plotlyTimestamps} = generateDates(24)
+            const blocks:Block[] = await getCorrespondingBlocksFromTimestamps(unixTimestamps)
+            console.log(unixTimestamps)
+            console.log('Blocks in chart')
             console.log(blocks)
+            const parsedPrices = await getTokenPrices("0x514910771af9ca656af840dff83e8264ecf986ca",blocks)
+
+
             console.log(parsedPrices)
+
         }
         getHourlyBlocks()
     },[])
-    // const {unixTimestamps,plotlyTimestamps} = generateDates(24)
-    // console.log(unixTimestamps)
-    // console.log(plotlyTimestamps)
+
     return(
         <View style={{flex: 1}}>
             <Plotly

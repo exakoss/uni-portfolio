@@ -12,7 +12,7 @@ const TabNavigator:React.FC = () => {
     const Tab = createBottomTabNavigator();
     return (
         <Tab.Navigator
-            initialRouteName="Search"
+            initialRouteName="FormikSearch"
             tabBarOptions={{
                 activeTintColor: '#5142c6',
                 inactiveTintColor: 'white',
@@ -25,7 +25,7 @@ const TabNavigator:React.FC = () => {
                 name="FormikSearch"
                 component={FormikSearchBar}
                 options={{
-                    tabBarLabel: 'Formik Search',
+                    tabBarLabel: 'Search',
                     tabBarIcon: ({ color, size }) => (
                         <Ionicons name="search-circle" color={color} size={size} sharp/>
                     )
@@ -45,7 +45,7 @@ const TabNavigator:React.FC = () => {
                 name="NewWatchlist"
                 component={NewWatchlist}
                 options={{
-                    tabBarLabel: 'New Watchlist',
+                    tabBarLabel: 'Watchlist',
                     tabBarIcon: ({ color, size }) => (
                         <Ionicons name="list" color={color} size={size} sharp/>
                     )

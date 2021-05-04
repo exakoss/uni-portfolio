@@ -12,7 +12,6 @@ import {
 import dayjs from 'dayjs';
 import {Block, DailyTokenData, ExtendedTokenData, TokenData, TokenListEntry, WatchlistEntry, PriceChartEntry} from '../types';
 import {store} from '../store';
-import {StyleSheet} from 'react-native';
 
 
 export type GetBlockProp = 'ONE_DAY' | 'TWO_DAYS' | 'CURRENT_DAY'
@@ -27,10 +26,18 @@ export const getBlockFromTimestamp = async (timestamp: number) => {
         },
         fetchPolicy: 'cache-first'
     })
-    return Number(result?.data?.blocks?.[0]?.number)
+    //Catching the case when there is no corresponding block for the timestamp, because it was too recent
+    if (!result.data.blocks[0]) return await getBlock('CURRENT_DAY')
+    return result.data.blocks[0]
 }
 
-export const getBlocksFromTimestamps = async (startTimestamp:number,endTimestamp:number):Promise<Block[]> => {
+export const getCorrespondingBlocksFromTimestamps = async (timestamps:number[]):Promise<Block[]> => {
+    return await Promise.all(timestamps.map(async (t) => {
+        return await getBlockFromTimestamp(t)
+    }))
+}
+
+export const getAllBlocksFromTimestamps = async (startTimestamp:number,endTimestamp:number):Promise<Block[]> => {
     let result = await blockClient.query({
         query: GET_BLOCKS,
         variables: {
@@ -81,8 +88,15 @@ export const generateDates = (amount:number):{unixTimestamps:number[],plotlyTime
     return {unixTimestamps,plotlyTimestamps}
 }
 
-//Get a block corresponding to the period
-export const getBlock = async (period:GetBlockProp): Promise<number> => {
+//Get a block number corresponding to the period
+export const getBlockNumber = async (period:GetBlockProp): Promise<number> => {
+    const lastTimestamp = getTimestamp(period)
+    const newBlock = await getBlockFromTimestamp(lastTimestamp)
+    return Number(newBlock.number)
+    // return await getBlockFromTimestamp(lastTimestamp)
+}
+
+export const getBlock = async (period:GetBlockProp): Promise<Block> => {
     const lastTimestamp = getTimestamp(period)
     return await getBlockFromTimestamp(lastTimestamp)
 }

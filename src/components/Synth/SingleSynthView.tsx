@@ -9,11 +9,12 @@ import {
     createMainnetSnxjs,
     fetchSynthSupply,
     findSynthByName,
-    getSynthQuoteByBlock,
+    getLatestSynthRate,
+    getSynthRateByBlock,
     getSynthSupplyInUSD,
     getSynthVolumeInUSD
 } from '../../utils/synthTools';
-import {getBlock} from '../../utils';
+import {getBlockNumber} from '../../utils';
 import {SingleTokenStat} from '../SingleTokenView';
 import LoadingScreen from '../LoadingScreen';
 import SynthTradeBar from './SynthTradeBar';
@@ -47,19 +48,21 @@ const SingleSynthView:React.FC = () => {
             const snxjs:SynthetixJS = createMainnetSnxjs()
             const synth = findSynthByName(snxjs,synthName)
             if (synth) {
-                const newCurrentBlock = await getBlock('CURRENT_DAY').then(result => result)
-                const currentSynth = await getSynthQuoteByBlock(snxjs,synth, {blockTag:newCurrentBlock})
-                const dailySynth = await getSynthQuoteByBlock(snxjs,synth,{blockTag:dailyBlockNumber})
+                const newCurrentBlock = await getBlockNumber('CURRENT_DAY').then(result => result)
+                // const currentSynth = await getSynthQuoteByBlock(snxjs,synth, {blockTag:newCurrentBlock})
+                // const dailySynth = await getSynthQuoteByBlock(snxjs,synth,{blockTag:dailyBlockNumber})
+                const currentSynthRate = await getLatestSynthRate(synthName)
+                const dailySynthRate = await getSynthRateByBlock(synthName,dailyBlockNumber)
                 const synthVolumeInUSD = await getSynthVolumeInUSD(synthName,'sUSD','ONE_DAY')
                 const dailySynthVolumeInUSD = await getSynthVolumeInUSD(synthName,'sUSD','TWO_DAYS')
                 const currentSynthSupply = await fetchSynthSupply(snxjs,synth,{blockTag:newCurrentBlock})
                 const dailySynthSupply = await fetchSynthSupply(snxjs,synth,{blockTag:dailyBlockNumber})
-                const currentSynthSupplyInUSD = getSynthSupplyInUSD(currentSynthSupply,currentSynth.formattedRate)
-                const dailySynthSupplyInUSD = getSynthSupplyInUSD(dailySynthSupply,currentSynth.formattedRate)
+                const currentSynthSupplyInUSD = getSynthSupplyInUSD(currentSynthSupply,currentSynthRate)
+                const dailySynthSupplyInUSD = getSynthSupplyInUSD(dailySynthSupply,dailySynthRate)
                 setExtendedSynth({
                     synth:synth,
-                    formattedRate: currentSynth.formattedRate,
-                    formattedRateDaily: dailySynth.formattedRate,
+                    formattedRate: currentSynthRate,
+                    formattedRateDaily: dailySynthRate,
                     volumeInUSD: synthVolumeInUSD,
                     dailyVolumeInUSD: dailySynthVolumeInUSD,
                     supplyInUSD: currentSynthSupplyInUSD,
