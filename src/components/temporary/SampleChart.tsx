@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View} from 'react-native'
 import Plotly from 'react-native-plotly';
 import theme from '../../theme';
@@ -10,6 +10,8 @@ import {
     getCorrespondingBlocksFromTimestamps
 } from '../../utils';
 import {Block} from '../../types';
+import {getPriceChartPrices} from '../../utils/synthTools';
+import PriceChart from '../PriceChart';
 
 const sampleDateData = [{
     x: ['2013-10-04 22:23:00', '2013-11-04 22:23:00', '2013-12-04 22:23:00'],
@@ -40,34 +42,36 @@ const layout = {
 
 
 const SampleChart:React.FC = () => {
-    useEffect(() => {
-        const getHourlyBlocks = async () => {
-            // const {backwardUnix,currentUnix} = getTimestampsBackward(1)
-            // const blocks:Block[] = await getAllBlocksFromTimestamps(backwardUnix,currentUnix)
-            // const parsedPrices = await getTokenPrices("0x514910771af9ca656af840dff83e8264ecf986ca",blocks)
-            // console.log(blocks)
-            // console.log(parsedPrices)
-            const {unixTimestamps,plotlyTimestamps} = generateDates(24)
-            const blocks:Block[] = await getCorrespondingBlocksFromTimestamps(unixTimestamps)
-            console.log(unixTimestamps)
-            console.log('Blocks in chart')
-            console.log(blocks)
-            const parsedPrices = await getTokenPrices("0x514910771af9ca656af840dff83e8264ecf986ca",blocks)
-
-
-            console.log(parsedPrices)
-
-        }
-        getHourlyBlocks()
-    },[])
+    // const [priceChartPrices,setPriceChartPrices] = useState<number[]>([])
+    // const [priceChartTimestamps,setPriceChartTimestamps] = useState<string[]>([])
+    //
+    // useEffect(() => {
+    //     const getHourlyBlocks = async () => {
+    //         // const {backwardUnix,currentUnix} = getTimestampsBackward(1)
+    //         // const blocks:Block[] = await getAllBlocksFromTimestamps(backwardUnix,currentUnix)
+    //         // const parsedPrices = await getTokenPrices("0x514910771af9ca656af840dff83e8264ecf986ca",blocks)
+    //         // console.log(blocks)
+    //         // console.log(parsedPrices)
+    //         const {unixTimestamps,plotlyTimestamps} = generateDates(24)
+    //         const blocks:Block[] = await getCorrespondingBlocksFromTimestamps(unixTimestamps)
+    //         const parsedPrices = await getPriceChartPrices(blocks,"sETH",'SYNTH')
+    //         const parsedPricesNumbers = parsedPrices.map(p => p.formattedRate)
+    //         setPriceChartPrices(parsedPricesNumbers)
+    //         setPriceChartTimestamps(plotlyTimestamps)
+    //         // console.log(priceChartPrices)
+    //         // console.log(priceChartTimestamps)
+    //     }
+    //     getHourlyBlocks()
+    // },[])
 
     return(
         <View style={{flex: 1}}>
-            <Plotly
-                data={sampleDateData}
-                layout={layout}
-                config={{displayModeBar : false}}
-            />
+            {/*<Plotly*/}
+            {/*    data={sampleDateData}*/}
+            {/*    layout={layout}*/}
+            {/*    config={{displayModeBar : false}}*/}
+            {/*/>*/}
+            <PriceChart id='sETH' dataSource='SYNTH'/>
         </View>
     )
 }

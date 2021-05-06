@@ -18,7 +18,7 @@ import {getBlockNumber} from '../../utils';
 import {SingleTokenStat} from '../SingleTokenView';
 import LoadingScreen from '../LoadingScreen';
 import SynthTradeBar from './SynthTradeBar';
-
+import PriceChart from '../PriceChart';
 
 const SingleSynthView:React.FC = () => {
     const route = useRoute();
@@ -49,8 +49,6 @@ const SingleSynthView:React.FC = () => {
             const synth = findSynthByName(snxjs,synthName)
             if (synth) {
                 const newCurrentBlock = await getBlockNumber('CURRENT_DAY').then(result => result)
-                // const currentSynth = await getSynthQuoteByBlock(snxjs,synth, {blockTag:newCurrentBlock})
-                // const dailySynth = await getSynthQuoteByBlock(snxjs,synth,{blockTag:dailyBlockNumber})
                 const currentSynthRate = await getLatestSynthRate(synthName)
                 const dailySynthRate = await getSynthRateByBlock(synthName,dailyBlockNumber)
                 const synthVolumeInUSD = await getSynthVolumeInUSD(synthName,'sUSD','ONE_DAY')
@@ -86,6 +84,7 @@ const SingleSynthView:React.FC = () => {
                 <SingleTokenStat title='Current price' currentValue={extendedSynth.formattedRate} previousValue={extendedSynth.formattedRateDaily} isUSD={true}/>
                 <SingleTokenStat title='Volume 24 h:' currentValue={extendedSynth.volumeInUSD} previousValue={extendedSynth.dailyVolumeInUSD - extendedSynth.volumeInUSD} isUSD={true}/>
                 <SingleTokenStat title='Total supply' currentValue={extendedSynth.supplyInUSD} previousValue={extendedSynth.dailySupplyInUSD} isUSD={true}/>
+                <PriceChart id={synthName} dataSource='SYNTH'/>
                 <SynthTradeBar exchangedSynth={{...extendedSynth.synth,formattedRate: extendedSynth.formattedRate}}/>
             </View>
         </ScrollView>

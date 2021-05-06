@@ -25,7 +25,7 @@ export interface PriceEntry extends IdEntry{
 
 export interface PriceChartEntry {
     formattedRate: number,
-    timestamp:number
+    // timestamp:number
 }
 
 export interface BasicToken extends TokenEntry{

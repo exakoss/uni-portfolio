@@ -157,16 +157,16 @@ export const getTokenPrices = async (tokenId:string,blocks:Block[]) => {
         fetchPolicy:'cache-first'
     })
     const keys = Object.keys(result.data)
-    console.log(keys.length)
     //@ts-ignore
     const formattedPrices:PriceChartEntry[] = keys.map((k) => {
         if (k[0] === 'b') {
             const tokenIndex = `t${k.slice(1)}`
             const derivedETH = result.data[tokenIndex].derivedETH as string
             const parsedETHPrice = parsePriceToFixedNumber(result.data[k].ethPrice)
-            return {timestamp:Number(k.slice(1)),formattedRate:calculateETHPrice(derivedETH,parsedETHPrice)}
-        } else return
-    })
+            // return {timestamp:Number(k.slice(1)),formattedRate:calculateETHPrice(derivedETH,parsedETHPrice)}
+            return {formattedRate:calculateETHPrice(derivedETH,parsedETHPrice)}
+        } else;
+    }).filter(Boolean)
     return formattedPrices
 }
 

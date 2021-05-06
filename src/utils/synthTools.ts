@@ -1,7 +1,14 @@
 import {Network, Synth, synthetix, SynthetixJS} from '@synthetixio/js'
 import {createMainnetProvider} from './ethersTools';
-import {BlockOption, SynthData, TokenListEntry, WatchlistEntry,} from '../types';
-import {GetBlockProp, getDailyQuotesByID, getTokensByID, transformUNIQuotesToTokenListEntry} from './index';
+import {Block, BlockOption, DataSource, PriceChartEntry, SynthData, TokenListEntry, WatchlistEntry,} from '../types';
+import {
+    calculateETHPrice,
+    GetBlockProp,
+    getDailyQuotesByID,
+    getTokenPrices,
+    getTokensByID,
+    transformUNIQuotesToTokenListEntry
+} from './index';
 import {store} from '../store';
 import {synthRateClient} from '../graphql/client';
 import {GET_LATEST_RATE, GET_RATE_BY_BLOCK} from '../graphql/synthQueries';
@@ -68,21 +75,7 @@ export const getSynthRateByBlock = async(synthName:string,blockNumber:number) =>
     else return 0
 }
 
-// export const getSynthQuoteByBlock = async(snxjs:SynthetixJS,synth:Synth,blockOption:BlockOption):Promise<SynthData> => {
-//     const {formatEther} = snxjs.utils
-//     const rateForSynth = formatEther(await snxjs.contracts.ExchangeRates.rateForCurrency(snxjs.toBytes32(synth.name), blockOption));
-//     return {
-//         ...synth,
-//         formattedRate: Number(rateForSynth)
-//     }
-// }
-//
-// export const getSynthsQuotesByBlock = async (snxjs:SynthetixJS,synths:Synth[],blockOption:BlockOption):Promise<SynthData[]> => {
-//     return await Promise.all(synths.map(async (s) => {
-//         return await getSynthQuoteByBlock(snxjs, s, blockOption)
-//     }))
-// }
-
+//Rebuild without snxjs by using synthName only
 export const getTokenListEntryFromWatchlistEntry = async (snxjs:SynthetixJS,watchlistEntry:WatchlistEntry,dailyBlock:number,currentETHPrice:number):Promise<TokenListEntry> => {
     switch (watchlistEntry.dataSource) {
         case 'SYNTH':
@@ -112,6 +105,27 @@ export const getTokenListEntriesFromWatchlistEntries = async (watchlistEntries:W
     return await Promise.all(watchlistEntries.map(async (e) => {
         return await getTokenListEntryFromWatchlistEntry(snxjs,e,newDailyBlock,newCurrentETHPrice)
     }))
+}
+
+export const getPriceChartPrices = async (blocks:Block[],id:string,dataSource:DataSource):Promise<PriceChartEntry[]> => {
+    //We slice the last element of blocks array, because this block is too recent and probably hasn't been indexed by TheGraph yet
+    //later we will concat the latest price of a synth or a uniswap token
+    const trimmedBlocks = blocks.slice(0,-1)
+    switch (dataSource) {
+        case 'UNI':
+            const lastETHPrice = store.getState().ethPrice.price
+            const parsedPrices = await getTokenPrices(id,trimmedBlocks)
+            const lastTokenData = await getTokensByID([id])
+            const lastUniRate = calculateETHPrice(lastTokenData.tokens[0].derivedETH,lastETHPrice)
+            return parsedPrices.concat({formattedRate:lastUniRate})
+        case 'SYNTH':
+            const lastSynthRate = await getLatestSynthRate(id)
+            const parsedSynthRates:PriceChartEntry[] = await Promise.all(trimmedBlocks.map(async (b)=> {
+                const newSynthRate = await getSynthRateByBlock(id,Number(b.number))
+                return {formattedRate: newSynthRate}
+            }))
+            return parsedSynthRates.concat({formattedRate:lastSynthRate})
+    }
 }
 
 export const getTimestampInSeconds = (period: GetBlockProp):number => {

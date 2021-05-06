@@ -5,13 +5,14 @@ import {useSelector, RootStateOrAny} from 'react-redux';
 import TokenList from './TokenList';
 import CurrentPriceHeader from './CurrentPriceHeader';
 import {getTokenListEntriesFromWatchlistEntries} from '../utils/synthTools';
+import LoadingScreen from './LoadingScreen';
 
 const {height} = Dimensions.get('window')
 
 const NewWatchlist:React.FC = () => {
     const [watchlistTokens,setWatchlistTokens] = useState<TokenListEntry[]>([])
     const watchlistEntries:WatchlistEntry[] = useSelector((state:RootStateOrAny) => state.watchlist.watchlistEntries)
-    const [isLoading,setIsLoading] = useState<boolean>(false)
+    const [isLoading,setIsLoading] = useState<boolean>(true)
 
     useEffect(() => {
         const fetchAndSetTokens = async () => {
@@ -24,6 +25,7 @@ const NewWatchlist:React.FC = () => {
         setIsLoading(false)
     },[watchlistEntries])
 
+    if (isLoading) return <LoadingScreen placeholder='The watchlist is loading...'/>
     return (
         <View style={{flex: 1, height:height}}>
             <CurrentPriceHeader/>
