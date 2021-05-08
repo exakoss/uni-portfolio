@@ -1,5 +1,4 @@
 import React from 'react'
-import {View} from 'react-native'
 import Plotly from 'react-native-plotly'
 import theme from '../theme'
 
@@ -55,6 +54,7 @@ const PriceChartContainer:React.FC<{priceArray:number[],datesArray:string[]}> = 
                 data={[mainData,averageData]}
                 config={{displayModeBar : false}}
                 layout={layout}
+                style={{marginTop:-80}}
             />
     )
 }

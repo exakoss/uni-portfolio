@@ -2,7 +2,7 @@ import {SynthetixJS} from '@synthetixio/js';
 import {ethers} from 'ethers'
 
 
-export const exchangesSynthforSynth = async (snxjs:SynthetixJS,baseKey:string,amount:number,quoteKey:string) => {
+export const exchangeSynthForSynth = async (snxjs:SynthetixJS,baseKey:string,amount:number,quoteKey:string) => {
     try {
         const baseKeyBytes32 = ethers.utils.formatBytes32String(baseKey)
         const amountToExchange = ethers.utils.parseEther(String(amount))

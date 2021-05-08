@@ -74,7 +74,7 @@ const SingleSynthView:React.FC = () => {
     if (isLoading) return <LoadingScreen placeholder='Loading synth data...'/>
     return (
         <ScrollView style={{flex: 1,backgroundColor: theme.colors.background}}>
-            <View style={{flex: 1,backgroundColor: theme.colors.background}}>
+            <View style={{flex: 1,backgroundColor: theme.colors.background, zIndex:-1000}}>
                 <Text style={{
                     color: theme.colors.textWhite,
                     fontSize: theme.fontsize.big,
