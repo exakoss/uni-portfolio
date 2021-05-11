@@ -2,7 +2,7 @@
 import * as Random from 'expo-random'
 import "@ethersproject/shims"
 import {Contract, ethers, Wallet} from 'ethers'
-import {KOVAN_API_KEY, MAINNET_API_KEY, RINKEBY_API_KEY} from '../constants';
+import {KOVAN_API_KEY, MAINNET_API_KEY, RINKEBY_API_KEY, BASIC_ABI} from '../constants';
 import {store} from '../store';
 
 export const createRinkebyWallet = ():Wallet => {
@@ -39,8 +39,10 @@ export const getCurrentGas = async (wallet:Wallet) => {
     return await wallet.getGasPrice()
 }
 
-export const getContractCurrentBalance = async (wallet:Wallet,contract:Contract) => {
-    return await contract.balanceOf()
+export const getContractCurrentBalance = async (wallet:Wallet,contractAddress:string):Promise<number> => {
+    const contract = new Contract(contractAddress, BASIC_ABI, wallet.provider);
+    const balance = await contract.balanceOf(wallet.address)
+    return Number(balance.toString())
 }
 
 export const createMainnetProvider = () => new ethers.providers.JsonRpcProvider(MAINNET_API_KEY)

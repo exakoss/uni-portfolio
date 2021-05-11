@@ -118,10 +118,6 @@ export interface SynthDataExtended {
 }
 
 //Redux states and actions
-export interface TokenState {
-    tokenIds: BasicToken['id'][]
-}
-
 export interface ETHAction {
     type: 'SET_ETH_PRICE',
     data: number
@@ -136,13 +132,8 @@ export interface SNXAction {
     data: number
 }
 
-export interface SNXState {
+export interface  SNXState {
     price: number
-}
-
-export interface TokenAction {
-    type: "ADD_TOKEN_ID" | "REMOVE_TOKEN_ID",
-    data: string
 }
 
 export interface dailyBlockState {
@@ -187,5 +178,14 @@ export interface WatchlistState {
 
 export interface WatchlistAction {
     type: "ADD_WATCHLIST_ENTRY" | "REMOVE_WATCHLIST_ENTRY",
+    data: WatchlistEntry
+}
+
+export interface PortfolioState {
+    portfolioEntries: WatchlistEntry[]
+}
+
+export interface PortfolioAction {
+    type: "ADD_PORTFOLIO_ENTRY" | "REMOVE_PORTFOLIO_ENTRY",
     data: WatchlistEntry
 }

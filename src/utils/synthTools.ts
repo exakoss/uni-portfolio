@@ -1,6 +1,15 @@
 import {Network, Synth, synthetix, SynthetixJS} from '@synthetixio/js'
-import {createMainnetProvider} from './ethersTools';
-import {Block, BlockOption, DataSource, PriceChartEntry, SynthData, TokenListEntry, WatchlistEntry,} from '../types';
+import {createMainnetProvider, getContractCurrentBalance} from './ethersTools';
+import {
+    Block,
+    BlockOption,
+    DataSource,
+    PriceChartEntry,
+    SynthData,
+    TokenData,
+    TokenListEntry,
+    WatchlistEntry,
+} from '../types';
 import {
     calculateETHPrice,
     GetBlockProp,
@@ -12,7 +21,7 @@ import {
 import {store} from '../store';
 import {synthRateClient} from '../graphql/client';
 import {GET_LATEST_RATE, GET_RATE_BY_BLOCK} from '../graphql/synthQueries';
-import {ethers} from 'ethers'
+import {ethers, Wallet} from 'ethers'
 //@ts-ignore
 import snxData from 'synthetix-data'
 
@@ -37,6 +46,11 @@ export const findSynthByName = (snxjs:SynthetixJS, synthName:string):Synth | und
     } else {
         return undefined
     }
+}
+
+export const getSynthAddress = (snxjs:SynthetixJS, synthName:string):string | undefined => {
+    const synthToken = snxjs.tokens.find(t => t.symbol === synthName)
+    return (synthToken) ? synthToken.address : undefined
 }
 
 export const getLatestSynthRate = async (synthName:string) => {
@@ -81,12 +95,13 @@ export const getTokenListEntryFromWatchlistEntry = async (snxjs:SynthetixJS,watc
         case 'SYNTH':
             const currentSynth = findSynthByName(snxjs,watchlistEntry.id)
             if (currentSynth) {
-                const currentSyntRate = await getLatestSynthRate(currentSynth.name)
+                const currentSynthRate = await getLatestSynthRate(currentSynth.name)
                 const dailySynthRate = await getSynthRateByBlock(currentSynth.name,dailyBlock)
                 return {
                     ...currentSynth,
-                    formattedRate: currentSyntRate,
+                    formattedRate: currentSynthRate,
                     formattedRateDaily: dailySynthRate,
+                    address: getSynthAddress(snxjs,currentSynth.name),
                     dataSource: watchlistEntry.dataSource
                 }
             }
@@ -104,6 +119,20 @@ export const getTokenListEntriesFromWatchlistEntries = async (watchlistEntries:W
     const newCurrentETHPrice = store.getState().ethPrice.price
     return await Promise.all(watchlistEntries.map(async (e) => {
         return await getTokenListEntryFromWatchlistEntry(snxjs,e,newDailyBlock,newCurrentETHPrice)
+    }))
+}
+
+export const addQuantityToTokenListEntry = async (tokenListEntry:TokenListEntry,wallet:Wallet):Promise<TokenListEntry> => {
+    const balance:number = await getContractCurrentBalance(wallet,tokenListEntry.address as string)
+    return {
+        ...tokenListEntry,
+        quantity: balance
+    }
+}
+
+export const addQuantitiesToTokenListEntries = async (tokenListEntries:TokenListEntry[],wallet:Wallet):Promise<TokenListEntry[]> => {
+    return await Promise.all(tokenListEntries.map(async (tle) => {
+        return await addQuantityToTokenListEntry(tle,wallet)
     }))
 }
 

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react'
 import {View, Text, TouchableOpacity, Alert, Picker, PickerIOS} from 'react-native';
-import 'react-native-get-random-values'
-import "@ethersproject/shims"
+// import 'react-native-get-random-values'
+// import "@ethersproject/shims"
 import {Wallet, BigNumber, ethers} from 'ethers';
 import {RootStateOrAny, useSelector} from 'react-redux';
 import Clipboard from 'expo-clipboard';
@@ -10,25 +10,14 @@ import theme from '../../theme';
 import {getCurrentBalance} from '../../utils/ethersTools';
 import LoadingScreen from '../LoadingScreen';
 import TokenList from '../TokenList';
-import {UnitedTokenData} from '../../types';
 import {toMoney} from '../../utils';
-import BuysUSD from '../Synth/BuysUSD';
+import {TokenListEntry,WatchlistEntry} from '../../types';
+import {addQuantitiesToTokenListEntries, getTokenListEntriesFromWatchlistEntries} from '../../utils/synthTools';
 
-// const initialTokenData:UnitedTokenData = {
-//     tokenData:{
-//         tokens:[]
-//     },
-//     dailyTokenData:{
-//         tokens:[],
-//         bundles:[]
-//     }
-// }
-
-const WalletTokenDisplay:React.FC<{value: 'ERC20'| 'ERC721',ethPriceInUSD:number}> = ({value,ethPriceInUSD}) => {
+const WalletTokenDisplay:React.FC<{value: 'ERC20'| 'ERC721',isLoading:boolean, portfolioTokens:TokenListEntry[]}> = ({value,isLoading,portfolioTokens}) => {
  switch (value) {
      case 'ERC20':
-         // return <BaseTokenList tokensNow={initialTokenData.tokenData} tokensDaily={initialTokenData.dailyTokenData} ethPriceInUSD={ethPriceInUSD} placeholder='Your token list is currently empty' isLoading={false}/>
-            return <TokenList tokens={[]} placeholder='Your token list is currently empty' isLoading={false}/>
+            return <TokenList tokens={portfolioTokens} placeholder='Your portfolio token list is currently empty' isLoading={isLoading}/>
      case 'ERC721':
          return <View style={{flex:1, backgroundColor:theme.colors.background, alignItems: 'center', justifyContent: 'center'}}>
              <Text style={{color: theme.colors.textWhite, fontSize: 24, textAlign: "center"}}>You currently don't have any NFTs</Text>
@@ -54,17 +43,25 @@ const CopyButton:React.FC<{text:string}> = ({text}) => {
 const WalletDisplay:React.FC = () => {
     const wallet:Wallet = useSelector((state:RootStateOrAny) => state.wallet.wallet)
     const ethPriceInUSD = useSelector((state:RootStateOrAny) => state.ethPrice.price)
+    const portfolioEntries:WatchlistEntry[] = useSelector((state:RootStateOrAny) => state.portfolio.portfolioEntries)
+    console.log(portfolioEntries)
     const [currentBalance,setCurrentBalance] = useState<number>(0)
     const [isLoading,setIsLoading] = useState<boolean>(true)
     const [selectedValue, setSelectedValue] = useState<"ERC20" | "ERC721">("ERC20");
+    const [portfolioTokens,setPortfolioTokens] = useState<TokenListEntry[]>([])
 
-    //Fix current balance to be displayed as a number
     useEffect(() => {
-        const updateCurrentBalance = async () => {
+        const updateCurrentBalanceAndPortfolioTokens = async () => {
             const newBalance:BigNumber = await getCurrentBalance(wallet)
+            const portfolioTokenEntries = await getTokenListEntriesFromWatchlistEntries(portfolioEntries)
+            // console.log(portfolioTokenEntries)
+            const portfolioTokenEntriesWithQuantity = await addQuantitiesToTokenListEntries(portfolioTokenEntries,wallet)
+            console.log(portfolioTokenEntriesWithQuantity)
             setCurrentBalance(Number(ethers.utils.formatEther(newBalance)))
+            setPortfolioTokens(portfolioTokenEntriesWithQuantity)
         }
-        updateCurrentBalance()
+        setIsLoading(true)
+        updateCurrentBalanceAndPortfolioTokens()
         setIsLoading(false)
     },[wallet])
 
@@ -79,7 +76,6 @@ const WalletDisplay:React.FC = () => {
                 <Text style={{color:theme.colors.textWhite, fontSize: theme.fontsize.big}}>{currentBalance} ETH</Text>
                 <Text style={{color:theme.colors.textSecondary, fontSize: theme.fontsize.big}}>{toMoney(currentBalance*ethPriceInUSD,2)}</Text>
             </View>
-            {/*<BuysUSD/>*/}
             {/*Fix picker on iOS and look at AirBnb app for inspiration*/}
             <View style={{flex: 1, alignItems: "center", marginTop: -25}}>
                 <Picker
@@ -99,7 +95,7 @@ const WalletDisplay:React.FC = () => {
                 </Picker>
             </View>
             <View style={{flex: 1, marginTop: -200}}>
-                <WalletTokenDisplay value={selectedValue} ethPriceInUSD={ethPriceInUSD}/>
+                <WalletTokenDisplay value={selectedValue} isLoading={isLoading} portfolioTokens={portfolioTokens}/>
             </View>
 
         </View>

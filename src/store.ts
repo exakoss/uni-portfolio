@@ -11,6 +11,7 @@ import snxPriceReducer from './reducers/snxPriceReducer';
 import modalReducer from './reducers/modalReducer';
 import watchlistReducer from './reducers/watchlistReducer';
 import hardSet from 'redux-persist/es/stateReconciler/hardSet';
+import portfolioReducer from './reducers/portfolioReducer';
 // Since current ETH price and the number of block that
 // was mined 24 hrs ago are being used virtually by
 // every component, they belong to the app state for
@@ -25,6 +26,7 @@ const persistConfig = {
 
 const reducer = combineReducers({
     watchlist: persistReducer(persistConfig, watchlistReducer),
+    portfolio: portfolioReducer,
     ethPrice: ethPriceReducer,
     snxPrice: snxPriceReducer,
     wallet: walletReducer,
