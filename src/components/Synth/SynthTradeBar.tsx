@@ -55,7 +55,7 @@ const SynthTradeBar:React.FC<{exchangedSynth: SynthData}> = ({exchangedSynth}) =
                             // Alert.alert(`Error: insufficient funds`)
                             toggleModal()
                         }} style={{backgroundColor: theme.colors.green}}/>
-                        <TransactionModal/>
+                        <TransactionModal exchangeInput={{baseKey:'sUSD',amount:Number(values.sUSDValue),rate: 1 / exchangedSynth.formattedRate,quoteKey:exchangedSynth.name}}/>
                     </View>
                 )}
             </Formik>
@@ -92,7 +92,7 @@ const SynthTradeBar:React.FC<{exchangedSynth: SynthData}> = ({exchangedSynth}) =
                             // Alert.alert(`Error: insufficient funds`)
                             toggleModal()
                         }} style={{backgroundColor: theme.colors.green}}/>
-                        <TransactionModal/>
+                        <TransactionModal exchangeInput={{baseKey:exchangedSynth.name,amount:Number(values.synthValue),quoteKey:'sUSD',rate: exchangedSynth.formattedRate}}/>
                     </View>
                 )}
             </Formik>

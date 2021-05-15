@@ -2,12 +2,14 @@ import {SynthetixJS} from '@synthetixio/js';
 import {ethers} from 'ethers'
 
 
-export const exchangeSynthForSynth = async (snxjs:SynthetixJS,baseKey:string,amount:number,quoteKey:string) => {
+export const exchangeSynthForSynth = async (snxjs:SynthetixJS,baseKey:string,amount:number,quoteKey:string,gasPrice?:number) => {
     try {
-        const baseKeyBytes32 = ethers.utils.formatBytes32String(baseKey)
+        const baseKeyBytes32 = snxjs.toBytes32(baseKey)
         const amountToExchange = ethers.utils.parseEther(String(amount))
-        const quoteKeyBytes32 = ethers.utils.formatBytes32String(quoteKey)
-        await snxjs.contracts.Synthetix.exchange(baseKeyBytes32,amountToExchange,quoteKeyBytes32)
+        const quoteKeyBytes32 = snxjs.toBytes32(quoteKey)
+        const tx = await snxjs.contracts.Synthetix.exchange(baseKeyBytes32,amountToExchange,quoteKeyBytes32)
+        console.log(tx)
+        return tx
     } catch (e) {
         console.error(e)
     }
@@ -27,10 +29,11 @@ export const generateSynthToSynthTransactionWithTracking = async (snxjs:Syntheti
 
 export const estimateGasLimitForExchange = async (snxjs:SynthetixJS,baseKey:string,amount:number,quoteKey:string) => {
     try {
-        const baseKeyBytes32 = ethers.utils.formatBytes32String(baseKey)
-        const amountToExchange = ethers.utils.parseEther(String(amount))
-        const quoteKeyBytes32 = ethers.utils.formatBytes32String(quoteKey)
+        const baseKeyBytes32 = snxjs.toBytes32(baseKey)
+        const amountToExchange = ethers.utils.parseUnits(String(amount),18)
+        const quoteKeyBytes32 = snxjs.toBytes32(quoteKey)
         const gasEstimate = await snxjs.contracts.Synthetix.estimateGas.exchange(baseKeyBytes32,amountToExchange,quoteKeyBytes32)
+        console.log(Number(gasEstimate))
         return Number(gasEstimate)
     } catch (e) {
         console.error(e)

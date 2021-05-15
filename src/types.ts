@@ -107,6 +107,15 @@ export interface TokenListEntry extends SynthDataDaily {
     dataSource: 'UNI' | 'SYNTH'
 }
 
+export interface SynthExchangeInput {
+    baseKey: string,
+    amount: number,
+    rate: number,
+    quoteKey: string,
+    gasPrice?: number,
+    gasLimit?: number
+}
+
 export interface SynthDataExtended {
     synth: Synth,
     formattedRate: number,

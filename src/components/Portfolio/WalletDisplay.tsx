@@ -52,12 +52,11 @@ const WalletDisplay:React.FC = () => {
 
     useEffect(() => {
         const updateCurrentBalanceAndPortfolioTokens = async () => {
-            const newBalance:BigNumber = await getCurrentBalance(wallet)
+            const newBalance:number = await getCurrentBalance(wallet)
             const portfolioTokenEntries = await getTokenListEntriesFromWatchlistEntries(portfolioEntries)
-            // console.log(portfolioTokenEntries)
             const portfolioTokenEntriesWithQuantity = await addQuantitiesToTokenListEntries(portfolioTokenEntries,wallet)
             console.log(portfolioTokenEntriesWithQuantity)
-            setCurrentBalance(Number(ethers.utils.formatEther(newBalance)))
+            setCurrentBalance(newBalance)
             setPortfolioTokens(portfolioTokenEntriesWithQuantity)
         }
         setIsLoading(true)

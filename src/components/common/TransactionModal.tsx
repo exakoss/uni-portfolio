@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {View, Text, Dimensions} from 'react-native';
+import {View, Text, Dimensions, Alert} from 'react-native';
 import Modal from 'react-native-modal';
 import {RootStateOrAny, useSelector, useDispatch} from 'react-redux';
 import {BigNumber, Wallet, ethers} from 'ethers';
@@ -8,24 +8,37 @@ import TouchableButton from './TouchableButton';
 import {getCurrentGas} from '../../utils/ethersTools';
 import {GWEI_IN_ETH} from '../../constants';
 import {setModal} from '../../reducers/modalReducer';
+import {SynthExchangeInput} from '../../types';
+import {estimateGasLimitForExchange,exchangeSynthForSynth} from '../../utils/transactions';
+import {createConnectedSnxjs} from '../../utils/synthTools';
+import {SynthetixJS} from '@synthetixio/js';
 
-const TransactionModal:React.FC = () => {
+const deviceWidth = Dimensions.get('window').width
+const deviceHeight = Dimensions.get('window').height
+
+const TransactionModal:React.FC<{exchangeInput: SynthExchangeInput}> = ({exchangeInput}) => {
     const dispatch = useDispatch()
     const wallet:Wallet = useSelector((state:RootStateOrAny) => state.wallet.wallet)
     const isModalVisible:boolean = useSelector((state:RootStateOrAny) => state.modal.visible)
-    const [currentGas,setCurrentGas] = useState<number>(0)
-
+    const [currentGasPrice,setCurrentGasPrice] = useState<number>(0)
+    // const [gasLimit,setGasLimit] = useState<number>(0)
     const toggleModal = () => dispatch(setModal(!isModalVisible))
-    const deviceWidth = Dimensions.get('window').width
-    const deviceHeight = Dimensions.get('window').height
+    const snxjs = createConnectedSnxjs()
 
     useEffect(() => {
         const updateGas = async () => {
             const bigNumberishGas:BigNumber = await getCurrentGas(wallet)
-            setCurrentGas(bigNumberishGas.toNumber() / GWEI_IN_ETH)
+            // const currentGasLimit = await estimateGasLimitForExchange(snxjs as SynthetixJS,exchangeInput.baseKey,exchangeInput.amount,exchangeInput.quoteKey)
+            setCurrentGasPrice(bigNumberishGas.toNumber() / GWEI_IN_ETH)
+            // setGasLimit(currentGasLimit as number)
         }
         updateGas()
-    },[wallet])
+    },[])
+
+    const confirmTransaction = async () => {
+        await exchangeSynthForSynth(snxjs as SynthetixJS,exchangeInput.baseKey,exchangeInput.amount,exchangeInput.quoteKey)
+        toggleModal()
+    }
 
     return(
         <Modal
@@ -33,11 +46,24 @@ const TransactionModal:React.FC = () => {
             deviceHeight={deviceHeight}
             deviceWidth={deviceWidth}
             onBackdropPress={() => toggleModal()}
+            style={{
+                flex:1,
+                backgroundColor: theme.colors.background,
+                justifyContent: 'space-between'
+            }}
         >
-            <View style={{flex: 1, backgroundColor: theme.colors.background}}>
-                <Text style={commonStyles.tileText}>Current gas price: {currentGas} gwei</Text>
-                <TouchableButton text='Hide modal' onPress={() => toggleModal()}/>
-            </View>
+                <View>
+                    <Text style={{...commonStyles.placeholder,marginBottom:theme.distance.normal}}>You are about to sell:</Text>
+                    <Text style={{...commonStyles.placeholder,marginBottom:theme.distance.normal}}>{exchangeInput.amount.toFixed(2)} {exchangeInput.baseKey} </Text>
+                    <Text style={{...commonStyles.placeholder,marginBottom:theme.distance.normal}}>For:</Text>
+                    <Text style={{...commonStyles.placeholder,marginBottom:theme.distance.normal}}>{(exchangeInput.amount * exchangeInput.rate)} {exchangeInput.quoteKey} </Text>
+                    <Text style={{...commonStyles.placeholder,marginBottom:theme.distance.normal}}>Current gas price: {currentGasPrice} gwei</Text>
+                    {/*<Text style={{...commonStyles.placeholder,marginBottom:theme.distance.normal}}>Gas limit: {gasLimit}</Text>*/}
+                </View>
+                <View>
+                    <TouchableButton text='Reject' onPress={() => toggleModal()} style={{backgroundColor: theme.colors.warning}}/>
+                    <TouchableButton text='Confirm' onPress={async () => await confirmTransaction()} style={{backgroundColor: theme.colors.green}}/>
+                </View>
         </Modal>
     )
 }

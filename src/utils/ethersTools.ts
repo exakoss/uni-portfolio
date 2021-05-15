@@ -1,8 +1,8 @@
 // import 'react-native-get-random-values'
 import * as Random from 'expo-random'
 import "@ethersproject/shims"
-import {Contract, ethers, Wallet} from 'ethers'
-import {KOVAN_API_KEY, MAINNET_API_KEY, RINKEBY_API_KEY, BASIC_ABI} from '../constants';
+import {ethers, Wallet} from 'ethers'
+import {BASIC_ABI, KOVAN_API_KEY, MAINNET_API_KEY, RINKEBY_API_KEY} from '../constants';
 import {store} from '../store';
 
 export const createRinkebyWallet = ():Wallet => {
@@ -31,8 +31,9 @@ export const encryptWallet = async (wallet:Wallet,password:string):Promise<strin
     return await wallet.encrypt(password)
 }
 
-export const getCurrentBalance = async (wallet:Wallet) => {
-    return await wallet.getBalance()
+export const getCurrentBalance = async (wallet:Wallet):Promise<number> => {
+    const bigNumberishBalance = await wallet.getBalance()
+    return Number(ethers.utils.formatEther(bigNumberishBalance))
 }
 
 export const getCurrentGas = async (wallet:Wallet) => {
@@ -40,9 +41,10 @@ export const getCurrentGas = async (wallet:Wallet) => {
 }
 
 export const getContractCurrentBalance = async (wallet:Wallet,contractAddress:string):Promise<number> => {
-    const contract = new Contract(contractAddress, BASIC_ABI, wallet.provider);
-    const balance = await contract.balanceOf(wallet.address)
-    return Number(balance.toString())
+    const walletAddress:string = await wallet.getAddress()
+    const contract = new ethers.Contract(contractAddress, BASIC_ABI, wallet);
+    const balance = await contract.balanceOf(walletAddress)
+    return Number(ethers.utils.formatEther(balance))
 }
 
 export const createMainnetProvider = () => new ethers.providers.JsonRpcProvider(MAINNET_API_KEY)
