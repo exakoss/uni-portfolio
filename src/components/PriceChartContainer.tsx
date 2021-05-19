@@ -24,8 +24,10 @@ const PriceChartContainer:React.FC<{priceArray:number[],datesArray:string[]}> = 
         name: 'Price'
     }
     const averagePrice = priceArray.reduce( ( p, c ) => p + c, 0 ) / priceArray.length
-    const upperRangeLimit = averagePrice * 1.05
-    const lowerRangeLimit = averagePrice * 0.95
+    const minPrice = Math.min(...priceArray)
+    const maxPrice = Math.max(...priceArray)
+    const upperRangeLimit = maxPrice * 1.05
+    const lowerRangeLimit = minPrice * 0.95
     const averageData:PriceChartData = {
         x:datesArray,
         y:new Array(priceArray.length).fill(averagePrice),

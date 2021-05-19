@@ -68,11 +68,18 @@ const TransactionModal:React.FC<{exchangeInput: SynthExchangeInput}> = ({exchang
     },[])
 
     const confirmTransaction = async () => {
-        const tx:Transaction = await exchangeSynthForSynth(snxjs as SynthetixJS,exchangeInput.baseKey,exchangeInput.amount,exchangeInput.quoteKey)
+        const tx = await exchangeSynthForSynth(snxjs as SynthetixJS,exchangeInput.baseKey,exchangeInput.amount,exchangeInput.quoteKey)
+        //Open up a small modal with transaction
         setHashString(tx.hash as string)
-        dispatch(addPortfolioEntry({id:exchangeInput.quoteKey,dataSource:'SYNTH'}))
         setHashModal(true)
-        // toggleModal()
+        //Wait for transaction either to succeed or fail
+        const txReceipt:any = await tx.wait()
+        if (txReceipt === null) {
+            console.log('The transaction failed due to an error')
+        } else {
+            console.log('The transaction has succeeded!')
+            dispatch(addPortfolioEntry({id:exchangeInput.quoteKey,dataSource:'SYNTH'}))
+        }
     }
 
     return(
