@@ -1,12 +1,16 @@
 import {PortfolioAction, WatchlistEntry, PortfolioState} from '../types';
-import {SNX_ADDRESS} from '../constants';
+// import {SNX_ADDRESS} from '../constants';
 
 const initialState:PortfolioState = {
     portfolioEntries: [
         {
-            dataSource:'UNI',
-            id:SNX_ADDRESS
+            dataSource:'SYNTH',
+            id:'sLTC'
         },
+        // {
+        //     dataSource:'SYNTH',
+        //     id:'sBTC'
+        // },
         {
             dataSource:'SYNTH',
             id:'sUSD'

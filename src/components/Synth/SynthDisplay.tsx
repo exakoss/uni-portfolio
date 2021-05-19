@@ -5,7 +5,8 @@ import {TokenListEntry,WatchlistEntry} from '../../types';
 import {
     createMainnetSnxjs,
     listAllSynths,
-    getTokenListEntriesFromWatchlistEntries
+    getTokenListEntriesFromWatchlistEntries,
+    createKovanSnxjs
 } from '../../utils/synthTools';
 import {SynthetixJS} from '@synthetixio/js';
 import TokenList from '../TokenList';
@@ -17,7 +18,8 @@ const SynthDisplay:React.FC = () => {
 
     useEffect(() => {
             const fetchAndUpdateSynthData = async () => {
-                const snxjs:SynthetixJS = createMainnetSnxjs()
+                // const snxjs:SynthetixJS = createMainnetSnxjs()
+                const snxjs = createKovanSnxjs()
                 const synthEntryList:WatchlistEntry[] = listAllSynths(snxjs).map((s) => {
                     return {id:s.name,dataSource: "SYNTH"}
                 })

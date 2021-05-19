@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {View, Text, Dimensions, Alert} from 'react-native';
 import Modal from 'react-native-modal';
 import {RootStateOrAny, useSelector, useDispatch} from 'react-redux';
-import {BigNumber, Wallet, ethers} from 'ethers';
+import {BigNumber, Wallet, ethers, Transaction} from 'ethers';
 import theme, {commonStyles} from '../../theme';
 import TouchableButton from './TouchableButton';
 import {getCurrentGas} from '../../utils/ethersTools';
@@ -12,15 +12,47 @@ import {SynthExchangeInput} from '../../types';
 import {estimateGasLimitForExchange,exchangeSynthForSynth} from '../../utils/transactions';
 import {createConnectedSnxjs} from '../../utils/synthTools';
 import {SynthetixJS} from '@synthetixio/js';
+import {addPortfolioEntry} from '../../reducers/portfolioReducer';
+import {CopyButton} from '../Portfolio/WalletDisplay';
 
 const deviceWidth = Dimensions.get('window').width
 const deviceHeight = Dimensions.get('window').height
+
+const HashModal:React.FC<{hash:string,isHashVisible:boolean,setIsHashVisible: any}> = ({hash,isHashVisible,setIsHashVisible}) => {
+
+    const dispatch = useDispatch()
+    return(
+        <Modal
+            deviceWidth={deviceWidth}
+            deviceHeight={deviceHeight}
+            isVisible={isHashVisible}
+            onBackdropPress={() => setIsHashVisible(false)}
+            style={{
+                flex:0,
+                backgroundColor: theme.colors.background,
+                height: deviceHeight / 3
+            }}
+        >
+                <Text style={{...commonStyles.placeholder,marginBottom:theme.distance.normal}}>Exchange has been initiated, the transaction hash is:</Text>
+                <View style={{flexDirection: 'row', marginVertical:theme.distance.normal, justifyContent: 'center'}}>
+                    <Text style={{color:theme.colors.textWhite, fontSize: theme.fontsize.big}}>{hash.slice(0,15) + '...'}</Text>
+                    <CopyButton text={hash} message='Copied the transaction hash!'/>
+                </View>
+            <TouchableButton text='ok' onPress={() => {
+                setIsHashVisible(false)
+                // dispatch(setModal(false))
+            }}/>
+        </Modal>
+    )
+}
 
 const TransactionModal:React.FC<{exchangeInput: SynthExchangeInput}> = ({exchangeInput}) => {
     const dispatch = useDispatch()
     const wallet:Wallet = useSelector((state:RootStateOrAny) => state.wallet.wallet)
     const isModalVisible:boolean = useSelector((state:RootStateOrAny) => state.modal.visible)
     const [currentGasPrice,setCurrentGasPrice] = useState<number>(0)
+    const [hashModal,setHashModal] = useState<boolean>(false)
+    const [hashString,setHashString] = useState<string>('')
     // const [gasLimit,setGasLimit] = useState<number>(0)
     const toggleModal = () => dispatch(setModal(!isModalVisible))
     const snxjs = createConnectedSnxjs()
@@ -36,8 +68,11 @@ const TransactionModal:React.FC<{exchangeInput: SynthExchangeInput}> = ({exchang
     },[])
 
     const confirmTransaction = async () => {
-        await exchangeSynthForSynth(snxjs as SynthetixJS,exchangeInput.baseKey,exchangeInput.amount,exchangeInput.quoteKey)
-        toggleModal()
+        const tx:Transaction = await exchangeSynthForSynth(snxjs as SynthetixJS,exchangeInput.baseKey,exchangeInput.amount,exchangeInput.quoteKey)
+        setHashString(tx.hash as string)
+        dispatch(addPortfolioEntry({id:exchangeInput.quoteKey,dataSource:'SYNTH'}))
+        setHashModal(true)
+        // toggleModal()
     }
 
     return(
@@ -64,6 +99,7 @@ const TransactionModal:React.FC<{exchangeInput: SynthExchangeInput}> = ({exchang
                     <TouchableButton text='Reject' onPress={() => toggleModal()} style={{backgroundColor: theme.colors.warning}}/>
                     <TouchableButton text='Confirm' onPress={async () => await confirmTransaction()} style={{backgroundColor: theme.colors.green}}/>
                 </View>
+            <HashModal hash={hashString} isHashVisible={hashModal} setIsHashVisible={setHashModal}/>
         </Modal>
     )
 }

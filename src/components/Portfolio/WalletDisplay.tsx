@@ -29,11 +29,11 @@ const WalletTokenDisplay:React.FC<{value: 'ERC20'| 'ERC721',isLoading:boolean, p
  }
 }
 
-const CopyButton:React.FC<{text:string}> = ({text}) => {
+export const CopyButton:React.FC<{text:string,message:string}> = ({text,message}) => {
     return(
         <TouchableOpacity onPress={() => {
             Clipboard.setString(text)
-            Alert.alert('Copied the wallet address!')
+            Alert.alert(message)
         }}>
             <Ionicons name='copy-outline' style={{fontSize:theme.fontsize.big, color:theme.colors.textWhite}}/>
         </TouchableOpacity>
@@ -62,14 +62,14 @@ const WalletDisplay:React.FC = () => {
         setIsLoading(true)
         updateCurrentBalanceAndPortfolioTokens()
         setIsLoading(false)
-    },[wallet])
+    },[wallet,portfolioEntries])
 
     if (isLoading) return <LoadingScreen placeholder='Loading wallet data...'/>
     return(
         <View style={{backgroundColor: theme.colors.background, flexDirection:'column', flex: 1, justifyContent:'flex-start'}}>
             <View style={{flexDirection: 'row',marginVertical:theme.distance.normal, justifyContent: 'center'}}>
                 <Text style={{color:theme.colors.textWhite, fontSize: theme.fontsize.big}}>{wallet.address.slice(0,15) + '...'}</Text>
-                <CopyButton text={wallet.address}/>
+                <CopyButton text={wallet.address} message='Copied the wallet address!'/>
             </View>
             <View style={{alignItems:'center'}}>
                 <Text style={{color:theme.colors.textWhite, fontSize: theme.fontsize.big}}>{currentBalance} ETH</Text>

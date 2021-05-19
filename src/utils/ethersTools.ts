@@ -41,8 +41,9 @@ export const getCurrentGas = async (wallet:Wallet) => {
 }
 
 export const getContractCurrentBalance = async (wallet:Wallet,contractAddress:string):Promise<number> => {
+    const contractAddressLowerCase = contractAddress.toLowerCase()
     const walletAddress:string = await wallet.getAddress()
-    const contract = new ethers.Contract(contractAddress, BASIC_ABI, wallet);
+    const contract = new ethers.Contract(contractAddressLowerCase, BASIC_ABI, wallet);
     const balance = await contract.balanceOf(walletAddress)
     return Number(ethers.utils.formatEther(balance))
 }

@@ -1,5 +1,5 @@
 import {Network, Synth, synthetix, SynthetixJS} from '@synthetixio/js'
-import {createMainnetProvider, getContractCurrentBalance} from './ethersTools';
+import {createKovanProvider, createMainnetProvider, getContractCurrentBalance} from './ethersTools';
 import {
     Block,
     BlockOption,
@@ -28,6 +28,11 @@ import snxData from 'synthetix-data'
 export const createMainnetSnxjs = () => {
     const mainnetProvider = createMainnetProvider()
     return synthetix({network: Network.Mainnet, provider: mainnetProvider})
+}
+
+export const createKovanSnxjs = () => {
+    const kovanProvider = createKovanProvider()
+    return synthetix({network: Network.Kovan, provider: kovanProvider})
 }
 
 export const createConnectedSnxjs = () => {
@@ -97,11 +102,12 @@ export const getTokenListEntryFromWatchlistEntry = async (snxjs:SynthetixJS,watc
             if (currentSynth) {
                 const currentSynthRate = await getLatestSynthRate(currentSynth.name)
                 const dailySynthRate = await getSynthRateByBlock(currentSynth.name,dailyBlock)
+                const synthAddress = getSynthAddress(snxjs,currentSynth.name)
                 return {
                     ...currentSynth,
                     formattedRate: currentSynthRate,
                     formattedRateDaily: dailySynthRate,
-                    address: getSynthAddress(snxjs,currentSynth.name),
+                    address: synthAddress,
                     dataSource: watchlistEntry.dataSource
                 }
             }
@@ -113,7 +119,8 @@ export const getTokenListEntryFromWatchlistEntry = async (snxjs:SynthetixJS,watc
 }
 
 export const getTokenListEntriesFromWatchlistEntries = async (watchlistEntries:WatchlistEntry[]):Promise<TokenListEntry[]> => {
-    const snxjs = createMainnetSnxjs()
+    // const snxjs = createMainnetSnxjs()
+    const snxjs = createKovanSnxjs()
     if (!snxjs) throw ('No signer has been connected')
     const newDailyBlock = store.getState().dailyBlock.blockNumber
     const newCurrentETHPrice = store.getState().ethPrice.price

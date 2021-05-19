@@ -56,7 +56,7 @@ const TokenListTile:React.FC<{token: TokenListEntry}> = ({token}) => {
                 <Text style={commonStyles.nameText}>{token.description}</Text>
             </View>
             <Text style={commonStyles.tileText}> {toMoney(token.formattedRate,3)}</Text>
-            {(token.quantity) ? <Text style={commonStyles.tileText}>{token.quantity}</Text> : null}
+            {(token.quantity) ? <Text style={commonStyles.tileText}>{token.quantity.toFixed(3)}</Text> : null}
             <PercentageChange currentPrice={token.formattedRate} dailyPrice={token.formattedRateDaily}/>
             <AddDeleteButton token={token} isIncluded={isIncluded}/>
         </View>
