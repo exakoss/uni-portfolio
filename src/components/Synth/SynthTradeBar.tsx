@@ -22,6 +22,8 @@ const SynthTradeBar:React.FC<{exchangedSynth: SynthData}> = ({exchangedSynth}) =
     const [isInverted,setIsInverted] = useState<boolean>(false)
     const isModalVisible:boolean = useSelector((state:RootStateOrAny) => state.modal.visible)
     const toggleModal = () => dispatch(setModal(!isModalVisible))
+    // const [t, setT] = useState(null)
+    let timeout: any
     //My eyes are bleeding while writing this code but it works for now
     //Fix later with custom React components and Formik fields
     if (!isInverted) return (
@@ -36,7 +38,12 @@ const SynthTradeBar:React.FC<{exchangedSynth: SynthData}> = ({exchangedSynth}) =
                         <Text style={{...commonStyles.tileText, marginHorizontal:theme.distance.tiny}}>Sell: sUSD</Text>
                         <FormikTextInput name='sUSDValue'
                                          placeholder='Amount of sUSD'
-                                         addOnChange={(text:string) => {setFieldValue('synthValue',String(Number(text) / exchangedSynth.formattedRate))}}
+                                         addOnChange={(text:string) => {
+                                             if (timeout) clearTimeout(timeout);
+                                             timeout = setTimeout(() => {
+                                                 setFieldValue('synthValue',String(Number(text) / exchangedSynth.formattedRate))
+                                             },750)
+                                         }}
                         />
 
                         <View style={{flexDirection:'row',justifyContent:'center'}}>
@@ -48,7 +55,12 @@ const SynthTradeBar:React.FC<{exchangedSynth: SynthData}> = ({exchangedSynth}) =
                         <Text style={{...commonStyles.tileText, marginHorizontal:theme.distance.tiny}}>Buy: {exchangedSynth.name}</Text>
                         <FormikTextInput name='synthValue'
                                          placeholder={`Amount of ${exchangedSynth.name}`}
-                                         addOnChange={(text:string) => {setFieldValue('sUSDValue',String(Number(text) * exchangedSynth.formattedRate))}}
+                                         addOnChange={(text:string) => {
+                                             if (timeout) clearTimeout(timeout);
+                                             timeout = setTimeout(() => {
+                                                 setFieldValue('sUSDValue',String(Number(text) * exchangedSynth.formattedRate))
+                                             },750)
+                                         }}
                         />
                         <Text style={{...commonStyles.nameText, marginHorizontal:theme.distance.tiny}}>Exchange fee (0.30%): ${Number(values.sUSDValue) * 0.003}</Text>
                         <TouchableButton text='Trade' onPress={() => {
@@ -72,7 +84,12 @@ const SynthTradeBar:React.FC<{exchangedSynth: SynthData}> = ({exchangedSynth}) =
                         <Text style={{...commonStyles.tileText, marginHorizontal:theme.distance.tiny}}>Sell: {exchangedSynth.name}</Text>
                         <FormikTextInput name='synthValue'
                                          placeholder={`Amount of ${exchangedSynth.name}`}
-                                         addOnChange={(text:string) => {setFieldValue('sUSDValue',String(Number(text) * exchangedSynth.formattedRate))}}
+                                         addOnChange={(text:string) => {
+                                             if (timeout) clearTimeout(timeout);
+                                             timeout = setTimeout(() => {
+                                                 setFieldValue('sUSDValue',String(Number(text) * exchangedSynth.formattedRate))
+                                             },750)
+                                         }}
                         />
 
 
@@ -85,7 +102,12 @@ const SynthTradeBar:React.FC<{exchangedSynth: SynthData}> = ({exchangedSynth}) =
                         <Text style={{...commonStyles.tileText, marginHorizontal:theme.distance.tiny}}>Buy: sUSD</Text>
                         <FormikTextInput name='sUSDValue'
                                          placeholder='Amount of sUSD'
-                                         addOnChange={(text:string) => {setFieldValue('synthValue',String(Number(text) / exchangedSynth.formattedRate))}}
+                                         addOnChange={(text:string) => {
+                                             if (timeout) clearTimeout(timeout);
+                                             timeout = setTimeout(() => {
+                                                 setFieldValue('synthValue',String(Number(text) / exchangedSynth.formattedRate))
+                                             },750)
+                                             }}
                         />
                         <Text style={{...commonStyles.nameText, marginHorizontal:theme.distance.tiny}}>Exchange fee (0.30%): ${Number(values.sUSDValue) * 0.003}</Text>
                         <TouchableButton text='Trade' onPress={() => {

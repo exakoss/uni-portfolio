@@ -90,7 +90,7 @@ const WalletDisplay:React.FC = () => {
                     onValueChange={(itemValue, itemIndex) => setSelectedValue(itemValue)}
                 >
                     <Picker.Item label="ERC-20 Tokens" value="ERC20" />
-                    <Picker.Item label="ERC-721 NFTs" value="ERC721" />
+                    {/*<Picker.Item label="ERC-721 NFTs" value="ERC721" />*/}
                 </Picker>
             </View>
             <View style={{flex: 1, marginTop: -200}}>

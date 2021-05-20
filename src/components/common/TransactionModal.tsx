@@ -26,7 +26,9 @@ const HashModal:React.FC<{hash:string,isHashVisible:boolean,setIsHashVisible: an
             deviceWidth={deviceWidth}
             deviceHeight={deviceHeight}
             isVisible={isHashVisible}
-            onBackdropPress={() => setIsHashVisible(false)}
+            // onBackdropPress={() => setIsHashVisible(false)}
+            onSwipeComplete={() => setIsHashVisible(false)}
+            swipeDirection={['left','right']}
             style={{
                 flex:0,
                 backgroundColor: theme.colors.background,
@@ -87,7 +89,9 @@ const TransactionModal:React.FC<{exchangeInput: SynthExchangeInput}> = ({exchang
             isVisible={isModalVisible}
             deviceHeight={deviceHeight}
             deviceWidth={deviceWidth}
-            onBackdropPress={() => toggleModal()}
+            // onBackdropPress={() => toggleModal()}
+            onSwipeComplete={() => toggleModal()}
+            swipeDirection={['up','down']}
             style={{
                 flex:1,
                 backgroundColor: theme.colors.background,

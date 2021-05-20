@@ -71,16 +71,16 @@ const TabNavigator:React.FC = () => {
                         )
                 }}
             />
-            <Tab.Screen
-                name="Chart"
-                component={SampleChart}
-                options={{
-                    tabBarLabel: 'Sample chart',
-                        tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="bar-chart" color={color} size={size} sharp/>
-                        )
-                }}
-            />
+            {/*<Tab.Screen*/}
+            {/*    name="Chart"*/}
+            {/*    component={SampleChart}*/}
+            {/*    options={{*/}
+            {/*        tabBarLabel: 'Sample chart',*/}
+            {/*            tabBarIcon: ({ color, size }) => (*/}
+            {/*            <Ionicons name="bar-chart" color={color} size={size} sharp/>*/}
+            {/*            )*/}
+            {/*    }}*/}
+            {/*/>*/}
     </Tab.Navigator>
 )
 }
