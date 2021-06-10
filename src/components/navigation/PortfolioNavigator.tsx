@@ -16,7 +16,7 @@ const PortfolioNavigator:React.FC = () => {
         <Portfolio.Navigator
         initialRouteName='Registration'
         screenOptions={{
-            header: () => <CurrentPriceHeader headerToken='ETH'/>
+            header: () => <CurrentPriceHeader/>
         }}
         >
             <Portfolio.Screen name='Registration' component={Registration}/>

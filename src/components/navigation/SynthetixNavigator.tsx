@@ -11,7 +11,7 @@ const SynthetixNavigator:React.FC = () => {
         <Synth.Navigator
         initialRouteName='SynthDisplay'
         screenOptions={{
-            header: () => <CurrentPriceHeader headerToken='SXN'/>
+            header: () => <CurrentPriceHeader/>
         }}
         >
             <Synth.Screen name='SynthDisplay' component={SynthDisplay}/>

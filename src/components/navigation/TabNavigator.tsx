@@ -1,18 +1,18 @@
 import React from 'react';
 import theme from '../../theme';
-import SearchBar from '../SearchBar';
 import {Ionicons} from '@expo/vector-icons';
-import WatchList from '../WatchList';
 import PortfolioNavigator from './PortfolioNavigator';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import SynthetixNavigator from './SynthetixNavigator';
-// import TempSynthTradeWrap from '../Synth/TempSynthTradeWrap';
+import FormikSearchBar from '../FormikSearchBar';
+import NewWatchlist from '../NewWatchlist';
+import SampleChart from '../temporary/SampleChart';
 
 const TabNavigator:React.FC = () => {
     const Tab = createBottomTabNavigator();
     return (
         <Tab.Navigator
-            initialRouteName="Search"
+            initialRouteName="FormikSearch"
             tabBarOptions={{
                 activeTintColor: '#5142c6',
                 inactiveTintColor: 'white',
@@ -22,23 +22,33 @@ const TabNavigator:React.FC = () => {
             sceneContainerStyle={{backgroundColor: theme.colors.background}}
         >
             <Tab.Screen
-                name="Search"
-                component={SearchBar}
+                name="FormikSearch"
+                component={FormikSearchBar}
                 options={{
-                tabBarLabel: 'Search',
+                    tabBarLabel: 'Search',
                     tabBarIcon: ({ color, size }) => (
-                    <Ionicons name="search" color={color} size={size} sharp/>
+                        <Ionicons name="search-circle" color={color} size={size} sharp/>
                     )
                 }}
             />
+            {/*<Tab.Screen*/}
+            {/*    name="Watchlist"*/}
+            {/*    component={WatchList}*/}
+            {/*    options={{*/}
+            {/*        tabBarLabel: 'Watchlist',*/}
+            {/*            tabBarIcon: ({ color, size }) => (*/}
+            {/*            <Ionicons name="list" color={color} size={size} sharp/>*/}
+            {/*            )*/}
+            {/*    }}*/}
+            {/*/>*/}
             <Tab.Screen
-                name="Watchlist"
-                component={WatchList}
+                name="NewWatchlist"
+                component={NewWatchlist}
                 options={{
                     tabBarLabel: 'Watchlist',
-                        tabBarIcon: ({ color, size }) => (
+                    tabBarIcon: ({ color, size }) => (
                         <Ionicons name="list" color={color} size={size} sharp/>
-                        )
+                    )
                 }}
             />
             <Tab.Screen
@@ -61,6 +71,16 @@ const TabNavigator:React.FC = () => {
                         )
                 }}
             />
+            {/*<Tab.Screen*/}
+            {/*    name="Chart"*/}
+            {/*    component={SampleChart}*/}
+            {/*    options={{*/}
+            {/*        tabBarLabel: 'Sample chart',*/}
+            {/*            tabBarIcon: ({ color, size }) => (*/}
+            {/*            <Ionicons name="bar-chart" color={color} size={size} sharp/>*/}
+            {/*            )*/}
+            {/*    }}*/}
+            {/*/>*/}
     </Tab.Navigator>
 )
 }

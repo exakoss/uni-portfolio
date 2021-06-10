@@ -13,3 +13,10 @@ export const blockClient = new ApolloClient({
     }),
     cache: new InMemoryCache()
 })
+
+export const synthRateClient = new ApolloClient({
+    cache: new InMemoryCache(),
+    link: new HttpLink({
+        uri: "https://api.thegraph.com/subgraphs/name/synthetixio-team/synthetix-rates"
+    })
+})

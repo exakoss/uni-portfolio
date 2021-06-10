@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react'
 import {View, Text, Dimensions, StyleSheet} from 'react-native';
 import {ExtendedToken} from '../types';
-import {getETHPrice, getTokenDataById, getBlock, calculateETHPrice, parsePriceToFixedNumber} from '../utils';
+import {getETHPrice, getTokenDataById, getBlockNumber, calculateETHPrice, parsePriceToFixedNumber} from '../utils';
 import {RootStateOrAny, useSelector} from 'react-redux';
 import { useRoute } from '@react-navigation/native';
 import theme from '../theme';
-import {PercentageChange} from './BaseTokenList';
+import {PercentageChange} from './TokenList';
 import {toMoney} from '../utils';
 import LoadingScreen from './LoadingScreen';
 
@@ -79,7 +79,7 @@ const SingleTokenView:React.FC = () => {
     useEffect(() => {
         const updateTokenData = async () => {
             //Fetching all the necessary data about the token
-            const twoDaysBlock = await getBlock('TWO_DAYS').then(result => result)
+            const twoDaysBlock = await getBlockNumber('TWO_DAYS').then(result => result)
             const oneDayETHPrice = await getETHPrice(dailyBlockNumber).then(result => result)
             const twoDaysETHPrice = await getETHPrice(twoDaysBlock).then(result => result)
             const currentTokenData = await getTokenDataById(tokenId).then(result => result)

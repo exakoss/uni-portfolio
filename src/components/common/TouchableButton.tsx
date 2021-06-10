@@ -14,7 +14,8 @@ const styles = StyleSheet.create({
         margin:theme.distance.small,
         borderWidth: 2,
         padding: theme.distance.small,
-        borderColor: theme.colors.textSecondary
+        borderColor: theme.colors.textSecondary,
+        borderRadius: 5
     },
     buttonText: {
         color:theme.colors.textWhite,

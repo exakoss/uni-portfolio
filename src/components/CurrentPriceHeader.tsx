@@ -4,9 +4,7 @@ import {RootStateOrAny, useSelector} from 'react-redux';
 import theme from '../theme';
 import {toMoney} from '../utils';
 
-type HeaderToken = 'ETH' | 'SXN'
-
-const CurrentPriceHeader:React.FC<{headerToken: HeaderToken}> = ({headerToken}) => {
+const CurrentPriceHeader:React.FC = () => {
     const ethPriceInUSD = useSelector((state:RootStateOrAny) => state.ethPrice.price)
     const snxPriceInUSD = useSelector((state:RootStateOrAny) => state.snxPrice.price)
 

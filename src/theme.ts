@@ -17,6 +17,7 @@ const theme = {
         bold: 700,
     },
     distance: {
+        extraLarge: 40,
         normal: 15,
         small: 10,
         tiny: 5
@@ -61,6 +62,17 @@ export const commonStyles = StyleSheet.create({
         color: theme.colors.textWhite,
         fontSize: theme.fontsize.big,
         textAlign: "center"
+    },
+    separator: {
+        height: theme.distance.small,
+        color: theme.colors.background
+    },
+    button: {
+        borderRadius: theme.distance.small,
+        fontSize: theme.fontsize.large,
+        height: theme.distance.extraLarge,
+        width: theme.distance.extraLarge,
+        backgroundColor: '#e0c68b'
     }
 })
 

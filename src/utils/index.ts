@@ -1,16 +1,18 @@
-import {blockClient} from '../graphql/client';
+import {blockClient, client} from '../graphql/client';
 import {TIMESTAMP_INTERVAL} from '../constants';
 import {
+    ETH_PRICE,
+    FETCH_DAILY_PRICES_BY_ID,
+    FETCH_TOKEN_DATA_BY_ID,
+    FETCH_TOKENS_BY_ID,
     FETCH_TOKENS_BY_NAME,
     GET_BLOCK,
-    FETCH_DAILY_PRICES_BY_ID,
-    FETCH_TOKENS_BY_ID,
-    FETCH_TOKEN_DATA_BY_ID,
-    ETH_PRICE
+    GET_BLOCKS, GET_UNI_PRICES_BY_BLOCK
 } from '../graphql/queries';
 import dayjs from 'dayjs';
-import {TokenData, DailyTokenData, ExtendedTokenData} from '../types';
-import {client} from '../graphql/client';
+import {Block, DailyTokenData, ExtendedTokenData, TokenData, TokenListEntry, WatchlistEntry, PriceChartEntry} from '../types';
+import {store} from '../store';
+
 
 export type GetBlockProp = 'ONE_DAY' | 'TWO_DAYS' | 'CURRENT_DAY'
 
@@ -24,7 +26,27 @@ export const getBlockFromTimestamp = async (timestamp: number) => {
         },
         fetchPolicy: 'cache-first'
     })
-    return Number(result?.data?.blocks?.[0]?.number)
+    //Catching the case when there is no corresponding block for the timestamp, because it was too recent
+    if (!result.data.blocks[0]) return await getBlock('CURRENT_DAY')
+    return result.data.blocks[0]
+}
+
+export const getCorrespondingBlocksFromTimestamps = async (timestamps:number[]):Promise<Block[]> => {
+    return await Promise.all(timestamps.map(async (t) => {
+        return await getBlockFromTimestamp(t)
+    }))
+}
+
+export const getAllBlocksFromTimestamps = async (startTimestamp:number,endTimestamp:number):Promise<Block[]> => {
+    let result = await blockClient.query({
+        query: GET_BLOCKS,
+        variables: {
+            timestampFrom: startTimestamp,
+            timestampTo: endTimestamp
+        },
+        fetchPolicy: 'cache-first'
+    })
+    return (result.data.blocks)
 }
 
 //Get a unix timestamp
@@ -50,8 +72,31 @@ export const getTimestamp = (period:GetBlockProp):number => {
     return day
 }
 
-//Get a block corresponding to the period
-export const getBlock = async (period:GetBlockProp): Promise<number> => {
+export const getTimestampsBackward = (hours:number):{currentUnix:number,backwardUnix:number} => {
+    const utcCurrentTime = dayjs()
+    const currentUnix = utcCurrentTime.startOf('minute').unix()
+    const backwardUnix = utcCurrentTime.subtract(hours,'hours').startOf('minute').unix()
+    return {currentUnix,backwardUnix}
+}
+
+//Generates a certain amount of dates with an hourly interval
+export const generateDates = (amount:number):{unixTimestamps:number[],plotlyTimestamps:string[]} => {
+    const utcCurrentTime = dayjs()
+    const blankDates = Array(amount+1).fill(0).map((v,index) => utcCurrentTime.subtract(amount - index,'hours').startOf('minute'))
+    const unixTimestamps:number[] = blankDates.map((v) => v.unix())
+    const plotlyTimestamps:string[] = blankDates.map((v) => v.format('YYYY-MM-DD HH:mm:ss'))
+    return {unixTimestamps,plotlyTimestamps}
+}
+
+//Get a block number corresponding to the period
+export const getBlockNumber = async (period:GetBlockProp): Promise<number> => {
+    const lastTimestamp = getTimestamp(period)
+    const newBlock = await getBlockFromTimestamp(lastTimestamp)
+    return Number(newBlock.number)
+    // return await getBlockFromTimestamp(lastTimestamp)
+}
+
+export const getBlock = async (period:GetBlockProp): Promise<Block> => {
     const lastTimestamp = getTimestamp(period)
     return await getBlockFromTimestamp(lastTimestamp)
 }
@@ -104,6 +149,71 @@ export const getTokenDataById = async (tokenId:string, blockNumber?:number): Pro
         fetchPolicy: 'network-only'
     })
     return result.data
+}
+
+export const getTokenPrices = async (tokenId:string,blocks:Block[]) => {
+    let result = await client.query({
+        query: GET_UNI_PRICES_BY_BLOCK(tokenId,blocks),
+        fetchPolicy:'cache-first'
+    })
+    const keys = Object.keys(result.data)
+    //@ts-ignore
+    const formattedPrices:PriceChartEntry[] = keys.map((k) => {
+        if (k[0] === 'b') {
+            const tokenIndex = `t${k.slice(1)}`
+            const derivedETH = result.data[tokenIndex].derivedETH as string
+            const parsedETHPrice = parsePriceToFixedNumber(result.data[k].ethPrice)
+            // return {timestamp:Number(k.slice(1)),formattedRate:calculateETHPrice(derivedETH,parsedETHPrice)}
+            return {formattedRate:calculateETHPrice(derivedETH,parsedETHPrice)}
+        } else;
+    }).filter(Boolean)
+    return formattedPrices
+}
+
+export const transformUNIQuotesToTokenListEntry = (tokensNow:TokenData,tokensDaily:DailyTokenData,currentETHPrice:number):TokenListEntry[] => {
+    const dailyETHPriceInUSD:number = parsePriceToFixedNumber(tokensDaily.bundles[0].ethPrice)
+    return tokensNow.tokens.map(t1 => {
+        const t2 = tokensDaily.tokens.find(t => t.id === t1.id)
+        return {
+            dataSource: 'UNI',
+            formattedRate: calculateETHPrice(t1.derivedETH, currentETHPrice),
+            name: t1.symbol,
+            asset: t1.symbol,
+            description: t1.name,
+            category: 'crypto',
+            sign: '',
+            address: t1.id,
+            // @ts-ignore
+            formattedRateDaily: calculateETHPrice(t2.derivedETH,dailyETHPriceInUSD),
+        }
+    })
+}
+
+export const isTokenListEntryIncluded = (entry:TokenListEntry, watchlistEntries:WatchlistEntry[]):boolean => {
+    // const watchlistEntries = store.getState().watchlist.watchlistEntries
+    switch (entry.dataSource) {
+        case 'SYNTH':
+            return watchlistEntries.some((e) => e.id === entry.name)
+        case 'UNI':
+            return watchlistEntries.some((e) => e.id === entry.address)
+        default:
+            return false
+    }
+}
+
+export const transformTokenListEntryToWatchlistEntry = (tokenListEntry:TokenListEntry):WatchlistEntry => {
+    switch (tokenListEntry.dataSource) {
+        case 'UNI':
+            return {
+                dataSource: 'UNI',
+                id: tokenListEntry.address as string
+            }
+        case 'SYNTH':
+            return {
+                dataSource: 'SYNTH',
+                id: tokenListEntry.name
+            }
+    }
 }
 
 //Parsing and calculating functions

@@ -1,10 +1,10 @@
 // import {useDispatch} from 'react-redux';
 import {store} from '../store';
 import {setDailyBlock} from '../reducers/dailyBlockReducer';
-import {getBlock} from '../utils';
+import {getBlockNumber} from '../utils';
 
 const useDailyBlock = async () => {
-    const newDailyBlock = await getBlock('ONE_DAY').then(result => result)
+    const newDailyBlock = await getBlockNumber('ONE_DAY')
     store.dispatch(setDailyBlock(newDailyBlock))
 }
 

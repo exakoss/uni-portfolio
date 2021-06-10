@@ -36,7 +36,7 @@ const PasswordInput:React.FC = () => {
     }
 
     return(
-        <View style={{flex: 1,backgroundColor: theme.colors.background, paddingTop: theme.distance.small}}>
+        <View style={{flex: 1,backgroundColor: theme.colors.background}}>
             <Formik onSubmit={onSubmit} initialValues={{password:'', passwordConfirmation: ''}} validationSchema={validationSchema}>
                 {({handleSubmit})=>(
                     <View>

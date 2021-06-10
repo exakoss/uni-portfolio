@@ -1,5 +1,6 @@
 import {gql} from '@apollo/client'
 import {BUNDLE_ID} from '../constants';
+import {Block} from '../types';
 
 export const FETCH_TOKENS_BY_NAME = gql`
     query findTokens($contains: String!) {
@@ -58,6 +59,40 @@ export const GET_BLOCK = gql`
         }
     }
 `
+
+export const GET_BLOCKS = gql`
+    query blocks($timestampFrom: Int!, $timestampTo: Int!) {
+        blocks(
+            orderBy: timestamp
+            where: { timestamp_gt: $timestampFrom, timestamp_lt: $timestampTo }
+        ) {
+            number
+            timestamp
+        }
+    }
+`
+
+export const GET_UNI_PRICES_BY_BLOCK = (tokenAddress:string, blocks:Block[]) => {
+    let queryString = 'query blocks {'
+    queryString += blocks.map(
+        (block) => `
+      t${block.timestamp}:token(id:"${tokenAddress}", block: { number: ${block.number} }) { 
+        derivedETH
+      }
+    `
+    )
+    queryString += ','
+    queryString += blocks.map(
+        (block) => `
+      b${block.timestamp}: bundle(id:"1", block: { number: ${block.number} }) { 
+        ethPrice
+      }
+    `
+    )
+
+    queryString += '}'
+    return gql(queryString)
+}
 
 export const FETCH_DAILY_PRICES_BY_ID = gql`
     query fetchDailyPricesById($tokenIds: [String!]!,$blockNumber: Int!) {

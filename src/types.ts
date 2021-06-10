@@ -1,11 +1,18 @@
 import {Wallet} from 'ethers'
-import {Synth} from '@synthetixio/js';
+import {Network, Synth} from '@synthetixio/js';
+import {bool} from 'yup';
 
 //Crypto entities
 export type Id = string
 
+export type DataSource = 'UNI' | 'SYNTH'
+
 export interface IdEntry {
     id:Id
+}
+
+export interface WatchlistEntry extends IdEntry{
+    dataSource: DataSource
 }
 
 export interface TokenEntry extends IdEntry{
@@ -14,6 +21,11 @@ export interface TokenEntry extends IdEntry{
 
 export interface PriceEntry extends IdEntry{
     price:number
+}
+
+export interface PriceChartEntry {
+    formattedRate: number,
+    // timestamp:number
 }
 
 export interface BasicToken extends TokenEntry{
@@ -27,7 +39,6 @@ export interface ExtendedTokenEntry extends BasicToken {
     untrackedVolumeUSD: string,
     totalLiquidity: string,
     txCount: string
-
 }
 
 export interface ExtendedToken extends NoDerivedETHBasicToken {
@@ -49,7 +60,6 @@ export interface BasicTokenDailyPrice extends BasicToken {
 }
 
 export interface Block {
-    id:string,
     number: number,
     timestamp: number
 }
@@ -62,6 +72,7 @@ export interface Bundle {
     ethPrice: string
 }
 
+export type NetworkString = keyof typeof Network
 //Fetched data entities based on crypto entities
 
 export interface TokenData {
@@ -90,21 +101,32 @@ export interface SynthDataDaily extends SynthData {
     formattedRateDaily : number
 }
 
+export interface TokenListEntry extends SynthDataDaily {
+    quantity?: number,
+    address?: string,
+    dataSource: 'UNI' | 'SYNTH'
+}
+
+export interface SynthExchangeInput {
+    baseKey: string,
+    amount: number,
+    rate: number,
+    quoteKey: string,
+    gasPrice?: number,
+    gasLimit?: number
+}
+
 export interface SynthDataExtended {
     synth: Synth,
     formattedRate: number,
-    formattedRateDaily :number,
-    supplyInUSD:number,
-    dailySupplyInUSD:number,
-    volumeInUSD:number,
-    dailyVolumeInUSD:number
+    formattedRateDaily: number,
+    supplyInUSD: number,
+    dailySupplyInUSD: number,
+    volumeInUSD: number,
+    dailyVolumeInUSD: number
 }
 
 //Redux states and actions
-export interface TokenState {
-    tokenIds: BasicToken['id'][]
-}
-
 export interface ETHAction {
     type: 'SET_ETH_PRICE',
     data: number
@@ -119,13 +141,8 @@ export interface SNXAction {
     data: number
 }
 
-export interface SNXState {
+export interface  SNXState {
     price: number
-}
-
-export interface TokenAction {
-    type: "ADD_TOKEN_ID" | "REMOVE_TOKEN_ID",
-    data: string
 }
 
 export interface dailyBlockState {
@@ -138,7 +155,7 @@ export interface dailyBlockAction {
 }
 
 export interface WalletState {
-    wallet: Wallet | {};
+    wallet: Wallet | undefined;
 }
 
 export interface WalletAction {
@@ -153,4 +170,31 @@ export interface SeedState {
 export interface SeedAction {
     type: 'SET_SEED',
     data: string
+}
+
+export interface ModalState {
+    visible: boolean
+}
+
+export interface ModalAction {
+    type: 'SET_VISIBILITY',
+    data: boolean
+}
+
+export interface WatchlistState {
+    watchlistEntries: WatchlistEntry[]
+}
+
+export interface WatchlistAction {
+    type: "ADD_WATCHLIST_ENTRY" | "REMOVE_WATCHLIST_ENTRY",
+    data: WatchlistEntry
+}
+
+export interface PortfolioState {
+    portfolioEntries: WatchlistEntry[]
+}
+
+export interface PortfolioAction {
+    type: "ADD_PORTFOLIO_ENTRY" | "REMOVE_PORTFOLIO_ENTRY",
+    data: WatchlistEntry
 }

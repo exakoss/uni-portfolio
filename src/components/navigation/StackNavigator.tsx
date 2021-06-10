@@ -11,7 +11,7 @@ const StackNavigator:React.FC = () => {
     const getHeaderTitle = (route:RouteProp<any, any>):string => {
         const routeName = getFocusedRouteNameFromRoute(route) ?? 'Search'
         switch (routeName) {
-            case 'Search':
+            case 'FormikSearch':
                 return 'Search'
             case 'Synthetix':
                 return 'Synthetix Trading'
